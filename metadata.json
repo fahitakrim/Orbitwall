@@ -1,0 +1,6 @@
+{
+  "name": "AuraWall",
+  "description": "Curated HD & 4K wallpapers with fast cloud virtual storage, local favorites, and instant home/lock screen setup.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
