@@ -2,27 +2,28 @@ package com.example.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-// AMOLED / Dark Color Palette for AuraWall
-val AmoledBackground = Color(0xFF08070D)
-val AmoledSurface = Color(0xFF12111A)
-val AmoledSurfaceVariant = Color(0xFF1C1A29)
-val AmoledSurfaceCard = Color(0xFF161423)
+// Nothing OS Signature Accents
+val NothingRed = Color(0xFFE51C23)
+val NothingBlue = Color(0xFF1E6BF1)
+val NothingGreen = Color(0xFF00E676)
 
-val VioletPrimary = Color(0xFFA78BFA)
-val VioletPrimaryDark = Color(0xFF7C3AED)
-val VioletContainer = Color(0xFF2E1A47)
-val OnVioletContainer = Color(0xFFEDE9FE)
+// Nothing OS Dark Mode Palette
+val NothingDarkBackground = Color(0xFF0B0B0C)
+val NothingDarkSurface = Color(0xFF151517)
+val NothingDarkBorder = Color(0xFF262629)
+val NothingDarkTextPrimary = Color(0xFFFFFFFF)
+val NothingDarkTextSecondary = Color(0xFF8E8E93)
+val NothingDarkPill = Color(0xFF222226)
 
-val CyanAccent = Color(0xFF22D3EE)
-val CyanContainer = Color(0xFF0E3A42)
-val OnCyanContainer = Color(0xFFCFFAFE)
+// Nothing OS Light Mode Palette
+val NothingLightBackground = Color(0xFFF2F2F5)
+val NothingLightSurface = Color(0xFFFFFFFF)
+val NothingLightBorder = Color(0xFFE2E2E7)
+val NothingLightTextPrimary = Color(0xFF111113)
+val NothingLightTextSecondary = Color(0xFF6C6C70)
+val NothingLightPill = Color(0xFFE5E5EB)
 
-val AmberAccent = Color(0xFFFBBF24)
-val RoseAccent = Color(0xFFF43F5E)
-
-val TextPrimaryDark = Color(0xFFF8FAFC)
-val TextSecondaryDark = Color(0xFF94A3B8)
-val TextMutedDark = Color(0xFF64748B)
-
-val CardBorder = Color(0xFF262338)
-val ScrimOverlay = Color(0x99000000)
+// Translucent & Overlay Colors
+val NothingDarkDock = Color(0xEE151517)
+val NothingLightDock = Color(0xEEFFFFFF)
+val NothingScrim = Color(0xAA000000)

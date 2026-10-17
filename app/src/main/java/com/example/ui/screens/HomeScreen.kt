@@ -1,6 +1,10 @@
 package com.example.ui.screens
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -11,6 +15,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -32,24 +37,32 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.model.Wallpaper
+import com.example.ui.components.NothingLogo4Dot
+import com.example.ui.components.TechnicalCircleGraphic
 import com.example.ui.components.WallpaperCard
+import com.example.ui.theme.DotMatrixFont
+import com.example.ui.theme.NothingRed
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -67,145 +80,221 @@ fun HomeScreen(
     onRefresh: () -> Unit,
     modifier: Modifier = Modifier
 ) {
-    val lightBg = Color(0xFFF7F8FC)
+    var isSearchExpanded by remember { mutableStateOf(searchQuery.isNotEmpty()) }
 
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(lightBg)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("home_screen")
     ) {
-        // Top App Bar: App Logo & "ORBITWALL" Branding
+        // --- Nothing OS Top App Bar: 4-Dot Logo | HOME | Search Icon ---
         Row(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween,
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 14.dp)
+                .padding(horizontal = 20.dp, vertical = 12.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(38.dp)
-                        .background(Color(0xFF14151C), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Wallpaper,
-                        contentDescription = "Orbitwall Logo",
-                        tint = Color.White,
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Text(
-                    text = "ORBITWALL",
-                    fontSize = 20.sp,
-                    fontWeight = FontWeight.Black,
-                    letterSpacing = 1.5.sp,
-                    color = Color(0xFF14151C)
-                )
-            }
+            // Nothing 4-Dot Signature Brand Logo (with bottom-right Red dot)
+            NothingLogo4Dot(
+                boxSize = 40.dp,
+                dotSize = 5.dp,
+                backgroundColor = MaterialTheme.colorScheme.surface,
+                borderColor = MaterialTheme.colorScheme.outline,
+                contrastDotColor = MaterialTheme.colorScheme.onSurface
+            )
 
+            // Center Clean HOME Title
+            Text(
+                text = "HOME",
+                fontFamily = DotMatrixFont,
+                fontWeight = FontWeight.Bold,
+                fontSize = 17.sp,
+                letterSpacing = 2.5.sp,
+                color = MaterialTheme.colorScheme.onBackground
+            )
+
+            // Right: Search Toggle & Refresh Icon
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Refresh Button
                 IconButton(
-                    onClick = onRefresh,
+                    onClick = {
+                        isSearchExpanded = !isSearchExpanded
+                        if (!isSearchExpanded) onSearchQueryChanged("")
+                    },
                     modifier = Modifier.size(38.dp)
                 ) {
                     Icon(
-                        imageVector = Icons.Default.Refresh,
-                        contentDescription = "Refresh Catalog",
-                        tint = Color(0xFF14151C),
+                        imageVector = if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search,
+                        contentDescription = "Search",
+                        tint = MaterialTheme.colorScheme.onBackground,
                         modifier = Modifier.size(22.dp)
                     )
                 }
             }
         }
 
-        // Horizontal Category Chips Row
-        LazyRow(
-            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 4.dp),
-            horizontalArrangement = Arrangement.spacedBy(10.dp),
-            modifier = Modifier.fillMaxWidth()
+        // --- Big Dot-Matrix Heading Area with Background Technical Circle Graphic ---
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp, vertical = 6.dp)
         ) {
-            items(categories) { category ->
-                val isSelected = category.equals(selectedCategory, ignoreCase = true)
-                Surface(
-                    shape = RoundedCornerShape(20.dp),
-                    color = if (isSelected) Color(0xFF14151C) else Color(0xFFEBEFF5),
-                    modifier = Modifier
-                        .clickable { onSelectCategory(category) }
-                        .testTag("category_chip_$category")
-                ) {
+            // Background Technical Blueprint Circle (Nothing OS signature)
+            TechnicalCircleGraphic(
+                modifier = Modifier
+                    .size(95.dp)
+                    .align(Alignment.CenterEnd)
+                    .offset(x = 10.dp, y = (-8).dp),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                accentColor = NothingRed.copy(alpha = 0.35f)
+            )
+
+            Column(modifier = Modifier.align(Alignment.CenterStart)) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = category,
-                        fontSize = 13.sp,
-                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                        color = if (isSelected) Color.White else Color(0xFF6B7280),
-                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp)
+                        text = "EXPLORE WALLS",
+                        fontFamily = DotMatrixFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 22.sp,
+                        letterSpacing = 2.sp,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
+                    Spacer(modifier = Modifier.width(6.dp))
+                    Text(
+                        text = "•",
+                        color = NothingRed,
+                        fontSize = 26.sp,
+                        fontWeight = FontWeight.Black
+                    )
+                }
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = "CURATED EVERYDAY • 4K HIGH FIDELITY",
+                    fontFamily = DotMatrixFont,
+                    fontWeight = FontWeight.Normal,
+                    fontSize = 11.sp,
+                    letterSpacing = 1.2.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+
+        // Search Bar (Expanded state)
+        AnimatedVisibility(
+            visible = isSearchExpanded,
+            enter = fadeIn(),
+            exit = fadeOut()
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 6.dp)
+            ) {
+                OutlinedTextField(
+                    value = searchQuery,
+                    onValueChange = onSearchQueryChanged,
+                    placeholder = {
+                        Text(
+                            text = "SEARCH WALLPAPERS, TAGS...",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 12.sp,
+                            letterSpacing = 1.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    },
+                    singleLine = true,
+                    leadingIcon = {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = null,
+                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    },
+                    trailingIcon = {
+                        if (searchQuery.isNotEmpty()) {
+                            IconButton(onClick = { onSearchQueryChanged("") }) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Clear",
+                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                            }
+                        }
+                    },
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = NothingRed,
+                        unfocusedBorderColor = MaterialTheme.colorScheme.outline,
+                        focusedContainerColor = MaterialTheme.colorScheme.surface,
+                        unfocusedContainerColor = MaterialTheme.colorScheme.surface,
+                        focusedTextColor = MaterialTheme.colorScheme.onSurface,
+                        unfocusedTextColor = MaterialTheme.colorScheme.onSurface
+                    ),
+                    shape = RoundedCornerShape(18.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .testTag("search_bar_input")
+                )
+            }
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // --- Categories Bar: Rounded Capsule Container with Red-Dot Selected Pill ---
+        Surface(
+            shape = RoundedCornerShape(26.dp),
+            color = MaterialTheme.colorScheme.surface,
+            border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 18.dp)
+        ) {
+            LazyRow(
+                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp),
+                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                items(categories) { category ->
+                    val isSelected = category.equals(selectedCategory, ignoreCase = true)
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(20.dp))
+                            .background(
+                                if (isSelected) MaterialTheme.colorScheme.onBackground else Color.Transparent
+                            )
+                            .clickable { onSelectCategory(category) }
+                            .padding(horizontal = 14.dp, vertical = 8.dp)
+                            .testTag("category_chip_$category")
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            if (isSelected) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(6.dp)
+                                        .background(NothingRed, CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                            }
+                            Text(
+                                text = category.uppercase(),
+                                fontFamily = DotMatrixFont,
+                                fontSize = 11.sp,
+                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                letterSpacing = 1.sp,
+                                color = if (isSelected) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 }
             }
         }
 
         Spacer(modifier = Modifier.height(10.dp))
 
-        // Search Bar
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp)
-        ) {
-            OutlinedTextField(
-                value = searchQuery,
-                onValueChange = onSearchQueryChanged,
-                placeholder = {
-                    Text(
-                        text = "Search wallpapers, tags...",
-                        fontSize = 13.sp,
-                        color = Color(0xFF9CA3AF)
-                    )
-                },
-                singleLine = true,
-                leadingIcon = {
-                    Icon(
-                        imageVector = Icons.Default.Search,
-                        contentDescription = "Search",
-                        tint = Color(0xFF6B7280),
-                        modifier = Modifier.size(20.dp)
-                    )
-                },
-                trailingIcon = {
-                    if (searchQuery.isNotEmpty()) {
-                        IconButton(onClick = { onSearchQueryChanged("") }) {
-                            Icon(
-                                imageVector = Icons.Default.Close,
-                                contentDescription = "Clear",
-                                tint = Color(0xFF6B7280),
-                                modifier = Modifier.size(18.dp)
-                            )
-                        }
-                    }
-                },
-                colors = OutlinedTextFieldDefaults.colors(
-                    focusedBorderColor = Color(0xFF14151C),
-                    unfocusedBorderColor = Color(0xFFE2E4EC),
-                    focusedContainerColor = Color.White,
-                    unfocusedContainerColor = Color.White,
-                    focusedTextColor = Color(0xFF14151C),
-                    unfocusedTextColor = Color(0xFF14151C)
-                ),
-                shape = RoundedCornerShape(24.dp),
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("search_bar_input")
-            )
-        }
-
-        Spacer(modifier = Modifier.height(10.dp))
-
-        // Pull-To-Refresh container with Staggered Grid of Wallpaper Cards
+        // --- Staggered Grid of Wallpapers with Pull-to-Refresh ---
         PullToRefreshBox(
             isRefreshing = isLoading,
             onRefresh = onRefresh,
@@ -218,7 +307,7 @@ fun HomeScreen(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier.fillMaxSize()
                 ) {
-                    CircularProgressIndicator(color = Color(0xFF14151C))
+                    CircularProgressIndicator(color = NothingRed)
                 }
             } else if (wallpapers.isEmpty()) {
                 Box(
@@ -234,52 +323,65 @@ fun HomeScreen(
                         Box(
                             contentAlignment = Alignment.Center,
                             modifier = Modifier
-                                .size(72.dp)
+                                .size(64.dp)
                                 .clip(CircleShape)
-                                .background(Color(0xFFEFF1F7))
+                                .background(MaterialTheme.colorScheme.surface)
+                                .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Wallpaper,
                                 contentDescription = null,
-                                tint = Color(0xFF8E95A8),
-                                modifier = Modifier.size(36.dp)
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(30.dp)
                             )
                         }
-                        Spacer(modifier = Modifier.height(18.dp))
-                        Text(
-                            text = "No Wallpapers Found",
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF14151C)
-                        )
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Text(
+                                text = "NO WALLPAPERS",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 2.sp,
+                                color = MaterialTheme.colorScheme.onBackground
+                            )
+                            Spacer(modifier = Modifier.width(4.dp))
+                            Text(
+                                text = "•",
+                                color = NothingRed,
+                                fontSize = 18.sp,
+                                fontWeight = FontWeight.Black
+                            )
+                        }
                         Spacer(modifier = Modifier.height(6.dp))
                         Text(
-                            text = "Pull down or tap below to refresh the catalog.",
-                            fontSize = 13.sp,
-                            color = Color(0xFF6B7280),
-                            textAlign = TextAlign.Center,
-                            lineHeight = 18.sp
+                            text = "Pull down or tap below to refresh.",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            textAlign = TextAlign.Center
                         )
-                        Spacer(modifier = Modifier.height(20.dp))
+                        Spacer(modifier = Modifier.height(18.dp))
                         Button(
                             onClick = onRefresh,
                             colors = ButtonDefaults.buttonColors(
-                                containerColor = Color(0xFF14151C),
-                                contentColor = Color.White
+                                containerColor = MaterialTheme.colorScheme.onBackground,
+                                contentColor = MaterialTheme.colorScheme.background
                             ),
-                            shape = RoundedCornerShape(22.dp),
-                            contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
+                            shape = RoundedCornerShape(20.dp),
+                            contentPadding = PaddingValues(horizontal = 20.dp, vertical = 10.dp)
                         ) {
                             Icon(
                                 imageVector = Icons.Default.Refresh,
                                 contentDescription = null,
-                                modifier = Modifier.size(18.dp)
+                                modifier = Modifier.size(16.dp)
                             )
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "Refresh Feed",
-                                fontSize = 14.sp,
-                                fontWeight = FontWeight.SemiBold
+                                text = "REFRESH FEED",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.sp
                             )
                         }
                     }
@@ -288,8 +390,8 @@ fun HomeScreen(
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Fixed(2),
                     contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 96.dp),
-                    horizontalArrangement = Arrangement.spacedBy(14.dp),
-                    verticalItemSpacing = 14.dp,
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    verticalItemSpacing = 12.dp,
                     modifier = Modifier
                         .fillMaxSize()
                         .testTag("wallpapers_staggered_grid")

@@ -3,6 +3,7 @@ package com.example.ui.theme
 import android.app.Activity
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.SideEffect
 import androidx.compose.ui.graphics.Color
@@ -10,44 +11,64 @@ import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.platform.LocalView
 import androidx.core.view.WindowCompat
 
-private val AuraWallColorScheme = darkColorScheme(
-    primary = VioletPrimary,
-    onPrimary = Color(0xFF1E1035),
-    primaryContainer = VioletContainer,
-    onPrimaryContainer = OnVioletContainer,
-    secondary = CyanAccent,
-    onSecondary = Color(0xFF00363D),
-    secondaryContainer = CyanContainer,
-    onSecondaryContainer = OnCyanContainer,
-    tertiary = AmberAccent,
-    background = AmoledBackground,
-    onBackground = TextPrimaryDark,
-    surface = AmoledSurface,
-    onSurface = TextPrimaryDark,
-    surfaceVariant = AmoledSurfaceVariant,
-    onSurfaceVariant = TextSecondaryDark,
-    outline = CardBorder
+enum class AppThemeMode {
+    DARK,
+    LIGHT
+}
+
+val NothingDarkColorScheme = darkColorScheme(
+    primary = NothingRed,
+    onPrimary = Color.White,
+    secondary = NothingBlue,
+    onSecondary = Color.White,
+    background = NothingDarkBackground,
+    onBackground = NothingDarkTextPrimary,
+    surface = NothingDarkSurface,
+    onSurface = NothingDarkTextPrimary,
+    surfaceVariant = NothingDarkPill,
+    onSurfaceVariant = NothingDarkTextSecondary,
+    outline = NothingDarkBorder
+)
+
+val NothingLightColorScheme = lightColorScheme(
+    primary = NothingRed,
+    onPrimary = Color.White,
+    secondary = NothingBlue,
+    onSecondary = Color.White,
+    background = NothingLightBackground,
+    onBackground = NothingLightTextPrimary,
+    surface = NothingLightSurface,
+    onSurface = NothingLightTextPrimary,
+    surfaceVariant = NothingLightPill,
+    onSurfaceVariant = NothingLightTextSecondary,
+    outline = NothingLightBorder
 )
 
 @Composable
 fun MyApplicationTheme(
+    darkTheme: Boolean = true,
     content: @Composable () -> Unit
 ) {
+    val colorScheme = if (darkTheme) NothingDarkColorScheme else NothingLightColorScheme
     val view = LocalView.current
+
     if (!view.isInEditMode) {
         SideEffect {
             val window = (view.context as? Activity)?.window
             if (window != null) {
                 window.statusBarColor = Color.Transparent.toArgb()
                 window.navigationBarColor = Color.Transparent.toArgb()
-                WindowCompat.getInsetsController(window, view).isAppearanceLightStatusBars = true
-                WindowCompat.getInsetsController(window, view).isAppearanceLightNavigationBars = true
+                val insetsController = WindowCompat.getInsetsController(window, view)
+                // In dark theme, status bar icons should be light (isAppearanceLightStatusBars = false)
+                // In light theme, status bar icons should be dark (isAppearanceLightStatusBars = true)
+                insetsController.isAppearanceLightStatusBars = !darkTheme
+                insetsController.isAppearanceLightNavigationBars = !darkTheme
             }
         }
     }
 
     MaterialTheme(
-        colorScheme = AuraWallColorScheme,
+        colorScheme = colorScheme,
         typography = Typography,
         content = content
     )

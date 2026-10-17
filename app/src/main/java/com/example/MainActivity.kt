@@ -11,7 +11,6 @@ import coil.ImageLoader
 import coil.disk.DiskCache
 import coil.memory.MemoryCache
 import com.example.ui.MainApp
-import com.example.ui.theme.MyApplicationTheme
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,9 +35,7 @@ class MainActivity : ComponentActivity() {
 
         enableEdgeToEdge()
         setContent {
-            MyApplicationTheme {
-                MainApp(modifier = Modifier.fillMaxSize())
-            }
+            MainApp(modifier = Modifier.fillMaxSize())
         }
     }
 }

@@ -1,16 +1,20 @@
 package com.example.ui
 
 import android.app.Application
+import android.content.Context
 import android.net.Uri
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import coil.Coil
 import com.example.data.SplitBackendRepository
 import com.example.data.local.AppDatabase
 import com.example.model.Wallpaper
 import com.example.model.toFavoriteEntity
 import com.example.model.toWallpaper
+import com.example.ui.theme.AppThemeMode
 import com.example.util.WallpaperDestination
 import com.example.util.WallpaperSystemHelper
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -33,18 +37,21 @@ enum class PreviewOverlayMode {
 }
 
 /**
- * Navigation destination tabs for the main app container.
+ * Navigation destination tabs for the main app container:
+ * 1. EXPLORE (Home)
+ * 2. FAVORITES (Heart)
+ * 3. SETTINGS (Gear)
  */
 enum class AppScreen {
     EXPLORE,
-    COLLECTIONS,
-    FAVORITES
+    FAVORITES,
+    SETTINGS
 }
 
 data class WallpaperUiState(
     val wallpapers: List<Wallpaper> = emptyList(),
     val isLoading: Boolean = false,
-    val selectedCategory: String = "Recents",
+    val selectedCategory: String = "All",
     val searchQuery: String = "",
     val isSearchBarActive: Boolean = false,
     val selectedWallpaper: Wallpaper? = null,
@@ -52,7 +59,10 @@ data class WallpaperUiState(
     val isApplyingWallpaper: Boolean = false,
     val isDownloading: Boolean = false,
     val currentScreen: AppScreen = AppScreen.EXPLORE,
-    val isOnboardingCompleted: Boolean = false
+    val isOnboardingCompleted: Boolean = false,
+    val themeMode: AppThemeMode = AppThemeMode.DARK,
+    val hapticEnabled: Boolean = true,
+    val cacheSizeMb: Double = 0.0
 )
 
 data class UploadUiState(
@@ -70,6 +80,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
     private val splitRepository = SplitBackendRepository()
     private val database = AppDatabase.getInstance(application)
     private val favoriteDao = database.favoriteWallpaperDao()
+    private val prefs = application.getSharedPreferences("orbitwall_prefs", Context.MODE_PRIVATE)
 
     private val _uiState = MutableStateFlow(WallpaperUiState())
     val uiState: StateFlow<WallpaperUiState> = _uiState.asStateFlow()
@@ -82,7 +93,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
     val userMessage: SharedFlow<String> = _userMessage.asSharedFlow()
 
     val categories = listOf(
-        "Recents",
+        "All",
         "Trending",
         "Popular",
         "AMOLED",
@@ -110,7 +121,13 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         )
 
     init {
-        loadWallpapers(category = "Recents")
+        val savedTheme = prefs.getString("theme_mode", AppThemeMode.DARK.name) ?: AppThemeMode.DARK.name
+        val theme = try { AppThemeMode.valueOf(savedTheme) } catch (_: Exception) { AppThemeMode.DARK }
+        val haptic = prefs.getBoolean("haptic_enabled", true)
+        _uiState.update { it.copy(themeMode = theme, hapticEnabled = haptic) }
+
+        calculateCacheSize()
+        loadWallpapers(category = "All")
     }
 
     fun loadWallpapers(
@@ -145,6 +162,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun refreshWallpapers() {
         loadWallpapers(forceRefresh = true)
+        calculateCacheSize()
     }
 
     fun selectCategory(category: String) {
@@ -187,6 +205,9 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun navigateToScreen(screen: AppScreen) {
         _uiState.update { it.copy(currentScreen = screen, selectedWallpaper = null) }
+        if (screen == AppScreen.SETTINGS) {
+            calculateCacheSize()
+        }
     }
 
     fun toggleFavorite(wallpaper: Wallpaper) {
@@ -233,14 +254,64 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             _uiState.update { it.copy(isDownloading = false) }
 
             result.onSuccess {
-                _userMessage.emit("Saved in 4K resolution to Pictures/AuraWall!")
+                _userMessage.emit("Saved in 4K resolution to Pictures/Orbitwall!")
             }.onFailure { error ->
                 _userMessage.emit("Download failed: ${error.localizedMessage ?: "Storage error"}")
             }
         }
     }
 
-    // --- Admin Upload Handlers ---
+    // --- Settings, Theme & Cache Management ---
+
+    fun setThemeMode(mode: AppThemeMode) {
+        prefs.edit().putString("theme_mode", mode.name).apply()
+        _uiState.update { it.copy(themeMode = mode) }
+    }
+
+    fun setHapticEnabled(enabled: Boolean) {
+        prefs.edit().putBoolean("haptic_enabled", enabled).apply()
+        _uiState.update { it.copy(hapticEnabled = enabled) }
+    }
+
+    fun calculateCacheSize() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            val cacheDir = app.cacheDir.resolve("orbitwall_image_cache")
+            var bytes = 0L
+            if (cacheDir.exists()) {
+                cacheDir.walkTopDown().forEach { file ->
+                    if (file.isFile) bytes += file.length()
+                }
+            }
+            val sizeMb = bytes / (1024.0 * 1024.0)
+            _uiState.update { it.copy(cacheSizeMb = sizeMb) }
+        }
+    }
+
+    @OptIn(coil.annotation.ExperimentalCoilApi::class)
+    fun clearImageCache() {
+        viewModelScope.launch(Dispatchers.IO) {
+            val app = getApplication<Application>()
+            try {
+                // Clear Coil memory and disk caches
+                val imageLoader = Coil.imageLoader(app)
+                imageLoader.diskCache?.clear()
+                imageLoader.memoryCache?.clear()
+
+                val cacheDir = app.cacheDir.resolve("orbitwall_image_cache")
+                if (cacheDir.exists()) {
+                    cacheDir.deleteRecursively()
+                    cacheDir.mkdirs()
+                }
+                _uiState.update { it.copy(cacheSizeMb = 0.0) }
+                _userMessage.emit("Image cache cleared successfully")
+            } catch (e: Exception) {
+                _userMessage.emit("Failed to clear cache: ${e.message}")
+            }
+        }
+    }
+
+    // --- Admin Upload Handlers (Retained for Service/Repository compatibility) ---
 
     fun onUploadImageSelected(uri: Uri?) {
         _uploadState.update {
@@ -262,55 +333,6 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun onUploadTagsChanged(tags: String) {
         _uploadState.update { it.copy(tags = tags) }
-    }
-
-    fun submitUpload() {
-        val state = _uploadState.value
-        val uri = state.selectedImageUri ?: run {
-            viewModelScope.launch { _userMessage.emit("Please pick an image from gallery first") }
-            return
-        }
-
-        if (state.title.isBlank()) {
-            viewModelScope.launch { _userMessage.emit("Please enter a title for the wallpaper") }
-            return
-        }
-
-        val tagList = state.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() }
-
-        viewModelScope.launch {
-            _uploadState.update { it.copy(isUploading = true, statusMessage = "Compressing 450px WebP thumbnail & uploading to GitHub + jsDelivr CDN...") }
-
-            val result = splitRepository.uploadWallpaperAsAdmin(
-                context = getApplication(),
-                imageUri = uri,
-                title = state.title.trim(),
-                category = state.category,
-                tags = tagList
-            )
-
-            result.onSuccess { createdWallpaper ->
-                _uploadState.update {
-                    it.copy(
-                        isUploading = false,
-                        isSuccess = true,
-                        statusMessage = "Uploaded successfully! Added to ${createdWallpaper.category}."
-                    )
-                }
-                _userMessage.emit("Wallpaper uploaded and live in catalog!")
-                // Refresh catalog list
-                loadWallpapers()
-            }.onFailure { error ->
-                _uploadState.update {
-                    it.copy(
-                        isUploading = false,
-                        isSuccess = false,
-                        statusMessage = "Upload error: ${error.localizedMessage}"
-                    )
-                }
-                _userMessage.emit("Upload failed: ${error.localizedMessage}")
-            }
-        }
     }
 
     fun resetUploadForm() {

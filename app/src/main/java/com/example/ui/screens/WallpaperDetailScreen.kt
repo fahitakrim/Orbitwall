@@ -71,8 +71,6 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.model.Wallpaper
 import com.example.ui.PreviewOverlayMode
-import com.example.ui.theme.AmoledSurfaceCard
-import com.example.ui.theme.CardBorder
 import com.example.util.WallpaperDestination
 import java.text.NumberFormat
 import java.text.SimpleDateFormat

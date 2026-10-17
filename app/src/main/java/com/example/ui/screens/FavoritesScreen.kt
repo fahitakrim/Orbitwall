@@ -2,6 +2,7 @@ package com.example.ui.screens
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -27,18 +29,22 @@ import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
-import androidx.compose.material3.Surface
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.model.Wallpaper
+import com.example.ui.components.TechnicalCircleGraphic
 import com.example.ui.components.WallpaperCard
+import com.example.ui.theme.DotMatrixFont
+import com.example.ui.theme.NothingRed
 
 @Composable
 fun FavoritesScreen(
@@ -51,23 +57,31 @@ fun FavoritesScreen(
 ) {
     BackHandler(onBack = onNavigateToExplore)
 
-    val lightBg = Color(0xFFF7F8FC)
-
     Column(
         modifier = modifier
             .fillMaxSize()
-            .background(lightBg)
+            .background(MaterialTheme.colorScheme.background)
             .testTag("favorites_screen")
     ) {
-        // Top Header with Back button
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        // --- Top Bar: Back Button | FAVORITES • | Technical Circle Graphic ---
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 14.dp, vertical = 14.dp)
+                .padding(horizontal = 16.dp, vertical = 12.dp)
         ) {
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            TechnicalCircleGraphic(
+                modifier = Modifier
+                    .size(90.dp)
+                    .align(Alignment.CenterEnd)
+                    .offset(x = 10.dp, y = (-4).dp),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                accentColor = NothingRed.copy(alpha = 0.35f)
+            )
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier.align(Alignment.CenterStart)
+            ) {
                 IconButton(
                     onClick = onNavigateToExplore,
                     modifier = Modifier.size(38.dp)
@@ -75,54 +89,50 @@ fun FavoritesScreen(
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                         contentDescription = "Back",
-                        tint = Color(0xFF14151C),
-                        modifier = Modifier.size(24.dp)
+                        tint = MaterialTheme.colorScheme.onBackground,
+                        modifier = Modifier.size(22.dp)
                     )
                 }
-                Spacer(modifier = Modifier.width(4.dp))
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .size(38.dp)
-                        .background(Color(0xFFE11D48).copy(alpha = 0.15f), RoundedCornerShape(12.dp))
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Favorite,
-                        contentDescription = null,
-                        tint = Color(0xFFE11D48),
-                        modifier = Modifier.size(20.dp)
-                    )
-                }
-                Spacer(modifier = Modifier.width(10.dp))
-                Column {
+                Spacer(modifier = Modifier.width(6.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
                     Text(
-                        text = "Favorites",
-                        fontSize = 20.sp,
+                        text = "FAVORITES",
+                        fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF14151C)
+                        fontSize = 20.sp,
+                        letterSpacing = 2.sp,
+                        color = MaterialTheme.colorScheme.onBackground
                     )
+                    Spacer(modifier = Modifier.width(6.dp))
                     Text(
-                        text = "Saved offline on device",
-                        fontSize = 11.sp,
-                        color = Color.Gray
+                        text = "•",
+                        color = NothingRed,
+                        fontSize = 24.sp,
+                        fontWeight = FontWeight.Black
                     )
                 }
-            }
-
-            Surface(
-                shape = RoundedCornerShape(14.dp),
-                color = Color(0xFF14151C)
-            ) {
-                Text(
-                    text = "${favorites.size} saved",
-                    color = Color.White,
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                )
             }
         }
 
+        // Subtitle & Item Count
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 24.dp, vertical = 2.dp)
+        ) {
+            Text(
+                text = "${favorites.size} WALLPAPERS SAVED ON-DEVICE",
+                fontFamily = DotMatrixFont,
+                fontSize = 11.sp,
+                letterSpacing = 1.2.sp,
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+
+        Spacer(modifier = Modifier.height(10.dp))
+
+        // --- Content: Grid or Empty State ---
         if (favorites.isEmpty()) {
             Box(
                 contentAlignment = Alignment.Center,
@@ -130,57 +140,83 @@ fun FavoritesScreen(
                     .fillMaxSize()
                     .padding(32.dp)
             ) {
-                Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.Center
+                ) {
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .size(76.dp)
-                            .background(Color(0xFFE11D48).copy(alpha = 0.1f), CircleShape)
+                            .size(72.dp)
+                            .clip(CircleShape)
+                            .background(MaterialTheme.colorScheme.surface)
+                            .border(1.dp, MaterialTheme.colorScheme.outline, CircleShape)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Favorite,
                             contentDescription = null,
-                            tint = Color(0xFFE11D48),
-                            modifier = Modifier.size(38.dp)
+                            tint = NothingRed,
+                            modifier = Modifier.size(32.dp)
                         )
                     }
                     Spacer(modifier = Modifier.height(18.dp))
-                    Text(
-                        text = "No favorites yet",
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color(0xFF14151C)
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "NO FAVORITES YET",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 17.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "•",
+                            color = NothingRed,
+                            fontSize = 20.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                    }
                     Spacer(modifier = Modifier.height(6.dp))
                     Text(
-                        text = "Tap the heart icon on any wallpaper in the 4K catalog to add it to your offline collection.",
+                        text = "Tap the heart icon on any wallpaper\nto save it offline in your collection.",
                         fontSize = 13.sp,
-                        color = Color.Gray,
-                        lineHeight = 19.sp,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                        lineHeight = 18.sp
                     )
                     Spacer(modifier = Modifier.height(24.dp))
                     Button(
                         onClick = onNavigateToExplore,
-                        shape = RoundedCornerShape(24.dp),
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = Color(0xFF14151C),
-                            contentColor = Color.White
+                            containerColor = MaterialTheme.colorScheme.onBackground,
+                            contentColor = MaterialTheme.colorScheme.background
                         ),
-                        modifier = Modifier.testTag("explore_wallpapers_button")
+                        shape = RoundedCornerShape(22.dp),
+                        contentPadding = PaddingValues(horizontal = 22.dp, vertical = 12.dp)
                     ) {
-                        Icon(imageVector = Icons.Default.Explore, contentDescription = null, tint = Color.White)
+                        Icon(
+                            imageVector = Icons.Default.Explore,
+                            contentDescription = null,
+                            modifier = Modifier.size(16.dp)
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text("Explore Wallpapers", color = Color.White, fontWeight = FontWeight.Bold)
+                        Text(
+                            text = "EXPLORE WALLPAPERS",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 1.sp
+                        )
                     }
                 }
             }
         } else {
             LazyVerticalStaggeredGrid(
                 columns = StaggeredGridCells.Fixed(2),
-                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 8.dp, bottom = 96.dp),
-                horizontalArrangement = Arrangement.spacedBy(14.dp),
-                verticalItemSpacing = 14.dp,
+                contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 96.dp),
+                horizontalArrangement = Arrangement.spacedBy(12.dp),
+                verticalItemSpacing = 12.dp,
                 modifier = Modifier
                     .fillMaxSize()
                     .testTag("favorites_staggered_grid")

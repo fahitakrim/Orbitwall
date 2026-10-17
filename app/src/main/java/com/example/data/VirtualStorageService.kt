@@ -83,15 +83,20 @@ class VirtualStorageService(
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
             val cacheBuster = if (forceRefresh) "?t=${System.currentTimeMillis()}" else ""
-            val catalogUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
-            val request = Request.Builder()
-                .url(catalogUrl)
-                .addHeader("Accept", "application/json")
-                .get()
-                .build()
+            val primaryUrl = "https://cdn.jsdelivr.net/gh/itztakrim/Orbitwall@main/wallpapers.json$cacheBuster"
+            val fallbackUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
 
-            val response = okHttpClient.newCall(request).execute()
-            if (response.isSuccessful) {
+            var response = try {
+                okHttpClient.newCall(Request.Builder().url(primaryUrl).addHeader("Accept", "application/json").get().build()).execute()
+            } catch (_: Exception) { null }
+
+            if (response == null || !response.isSuccessful) {
+                response = try {
+                    okHttpClient.newCall(Request.Builder().url(fallbackUrl).addHeader("Accept", "application/json").get().build()).execute()
+                } catch (_: Exception) { null }
+            }
+
+            if (response != null && response.isSuccessful) {
                 val jsonBody = response.body?.string().orEmpty()
                 val list = wallpaperListAdapter.fromJson(jsonBody)
                 if (!list.isNullOrEmpty()) {
