@@ -83,7 +83,7 @@ class VirtualStorageService(
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
             val cacheBuster = if (forceRefresh) "?t=${System.currentTimeMillis()}" else ""
-            val primaryUrl = "https://cdn.jsdelivr.net/gh/itztakrim/Orbitwall@main/wallpapers.json$cacheBuster"
+            val primaryUrl = "https://raw.githubusercontent.com/fahitakrim/Orbitwall/main/wallpapers.json$cacheBuster"
             val fallbackUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
 
             var response = try {

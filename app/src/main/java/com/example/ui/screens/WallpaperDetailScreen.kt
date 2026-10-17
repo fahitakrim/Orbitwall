@@ -77,9 +77,7 @@ import com.example.ui.PreviewOverlayMode
 import com.example.ui.theme.DotMatrixFont
 import com.example.ui.theme.NothingRed
 import com.example.util.WallpaperDestination
-import java.text.SimpleDateFormat
-import java.util.Calendar
-import java.util.Locale
+
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -475,25 +473,14 @@ private fun LockScreenOverlay() {
     val navBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
     val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
 
-    val calendar = remember { Calendar.getInstance() }
-    val hour24 = calendar.get(Calendar.HOUR_OF_DAY)
-    val minute = calendar.get(Calendar.MINUTE)
-    val timeHours = remember { String.format(Locale.getDefault(), "%02d", hour24) }
-    val timeMinutes = remember { String.format(Locale.getDefault(), "%02d", minute) }
-    val currentDateMonospace = remember {
-        val sdf = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
-        sdf.format(calendar.time)
-    }
-
     var isFlashlightOn by remember { mutableStateOf(false) }
     var isCameraActive by remember { mutableStateOf(false) }
 
     Box(
         modifier = Modifier.fillMaxSize()
     ) {
-        // Clean Nothing OS Lock Screen Clock at Top Center
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
+        // Subtle lock indicator at top center (No clock / watch)
+        Box(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .padding(top = statusBarPadding + 76.dp)
@@ -502,52 +489,7 @@ private fun LockScreenOverlay() {
                 imageVector = Icons.Default.Lock,
                 contentDescription = null,
                 tint = Color.White.copy(alpha = 0.7f),
-                modifier = Modifier.size(16.dp)
-            )
-            Spacer(modifier = Modifier.height(4.dp))
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center
-            ) {
-                Text(
-                    text = timeHours,
-                    fontFamily = DotMatrixFont,
-                    fontSize = 68.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    letterSpacing = 1.sp
-                )
-                Text(
-                    text = ":",
-                    fontFamily = DotMatrixFont,
-                    fontSize = 60.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = NothingRed,
-                    modifier = Modifier.padding(horizontal = 2.dp)
-                )
-                Text(
-                    text = timeMinutes,
-                    fontFamily = DotMatrixFont,
-                    fontSize = 68.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = Color.White,
-                    letterSpacing = 1.sp
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Box(
-                    modifier = Modifier
-                        .size(9.dp)
-                        .background(NothingRed, CircleShape)
-                )
-            }
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = currentDateMonospace.uppercase(),
-                fontFamily = DotMatrixFont,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.85f),
-                letterSpacing = 1.2.sp
+                modifier = Modifier.size(18.dp)
             )
         }
 

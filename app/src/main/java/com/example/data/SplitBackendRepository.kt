@@ -38,6 +38,7 @@ import java.util.concurrent.TimeUnit
  *    with zero bandwidth fees and unlimited edge caching.
  */
 class SplitBackendRepository(
+    private val context: Context? = null,
     private val supabaseUrl: String = getConfig("SUPABASE_URL", "https://your-project.supabase.co"),
     private val supabaseKey: String = getConfig("SUPABASE_ANON_KEY", ""),
     private val githubToken: String = getConfig("GITHUB_STORAGE_TOKEN", ""),
@@ -63,9 +64,24 @@ class SplitBackendRepository(
         Types.newParameterizedType(List::class.java, Wallpaper::class.java)
     )
 
+    private fun loadCatalogFromAssets(): List<Wallpaper> {
+        return try {
+            val ctx = context ?: return emptyList()
+            val jsonString = ctx.assets.open("wallpapers.json").bufferedReader().use { it.readText() }
+            wallpaperListAdapter.fromJson(jsonString).orEmpty()
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
     // Local cached fallback catalog ensures instant, smooth app previews
     private val localCatalog = mutableListOf<Wallpaper>().apply {
-        addAll(getCuratedCatalog())
+        val fromAssets = loadCatalogFromAssets()
+        if (fromAssets.isNotEmpty()) {
+            addAll(fromAssets)
+        } else {
+            addAll(getCuratedCatalog())
+        }
     }
 
     /**
@@ -101,7 +117,7 @@ class SplitBackendRepository(
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
             val cacheBuster = if (forceRefresh) "?t=${System.currentTimeMillis()}" else ""
-            val primaryUrl = "https://cdn.jsdelivr.net/gh/itztakrim/Orbitwall@main/wallpapers.json$cacheBuster"
+            val primaryUrl = "https://raw.githubusercontent.com/fahitakrim/Orbitwall/main/wallpapers.json$cacheBuster"
             val fallbackUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
 
             var response = try {

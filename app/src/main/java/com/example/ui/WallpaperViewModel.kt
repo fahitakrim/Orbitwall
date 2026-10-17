@@ -55,7 +55,7 @@ data class WallpaperUiState(
     val searchQuery: String = "",
     val isSearchBarActive: Boolean = false,
     val selectedWallpaper: Wallpaper? = null,
-    val previewMode: PreviewOverlayMode = PreviewOverlayMode.LOCK_SCREEN,
+    val previewMode: PreviewOverlayMode = PreviewOverlayMode.CLEAN,
     val isApplyingWallpaper: Boolean = false,
     val isDownloading: Boolean = false,
     val currentScreen: AppScreen = AppScreen.EXPLORE,
@@ -77,7 +77,7 @@ data class UploadUiState(
 
 class WallpaperViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val splitRepository = SplitBackendRepository()
+    private val splitRepository = SplitBackendRepository(context = application)
     private val database = AppDatabase.getInstance(application)
     private val favoriteDao = database.favoriteWallpaperDao()
     private val prefs = application.getSharedPreferences("orbitwall_prefs", Context.MODE_PRIVATE)
@@ -94,8 +94,6 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     val categories = listOf(
         "All",
-        "Trending",
-        "Popular",
         "AMOLED",
         "Anime",
         "Minimal",
@@ -138,7 +136,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val catFilter = when (category) {
-                "Recents", "Trending", "Popular", "All", null -> null
+                "All", null -> null
                 else -> category
             }
             val result = splitRepository.fetchWallpapers(
@@ -147,12 +145,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 forceRefresh = forceRefresh
             )
             result.onSuccess { list ->
-                val sortedList = when (category) {
-                    "Trending" -> list.sortedByDescending { it.views }
-                    "Popular" -> list.sortedByDescending { it.downloads }
-                    else -> list
-                }
-                _uiState.update { it.copy(wallpapers = sortedList, isLoading = false) }
+                _uiState.update { it.copy(wallpapers = list, isLoading = false) }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
                 _userMessage.emit("Displaying curated Orbitwall collection.")
