@@ -2,7 +2,6 @@ package com.example.ui
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,7 +13,6 @@ import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -41,7 +39,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ui.screens.AdminUploadScreen
+import com.example.ui.screens.CollectionsScreen
 import com.example.ui.screens.FavoritesScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.OnboardingScreen
@@ -54,7 +52,6 @@ fun MainApp(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    val uploadState by viewModel.uploadState.collectAsStateWithLifecycle()
     val favoriteWallpapers by viewModel.favoriteWallpapers.collectAsStateWithLifecycle()
     val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
 
@@ -106,7 +103,17 @@ fun MainApp(
                                     onSearchQueryChanged = { viewModel.onSearchQueryChanged(it) },
                                     onWallpaperClick = { viewModel.openWallpaperDetail(it) },
                                     onFavoriteClick = { viewModel.toggleFavorite(it) },
-                                    onOpenAdminUpload = { viewModel.navigateToScreen(AppScreen.ADMIN_UPLOAD) }
+                                    onRefresh = { viewModel.refreshWallpapers() }
+                                )
+                            }
+                            AppScreen.COLLECTIONS -> {
+                                CollectionsScreen(
+                                    wallpapers = uiState.wallpapers,
+                                    onSelectCategory = { category ->
+                                        viewModel.selectCategory(category)
+                                        viewModel.navigateToScreen(AppScreen.EXPLORE)
+                                    },
+                                    onNavigateToExplore = { viewModel.navigateToScreen(AppScreen.EXPLORE) }
                                 )
                             }
                             AppScreen.FAVORITES -> {
@@ -118,23 +125,10 @@ fun MainApp(
                                     onNavigateToExplore = { viewModel.navigateToScreen(AppScreen.EXPLORE) }
                                 )
                             }
-                            AppScreen.ADMIN_UPLOAD -> {
-                                AdminUploadScreen(
-                                    uploadState = uploadState,
-                                    categories = viewModel.categories,
-                                    onImageSelected = { viewModel.onUploadImageSelected(it) },
-                                    onTitleChanged = { viewModel.onUploadTitleChanged(it) },
-                                    onCategoryChanged = { viewModel.onUploadCategoryChanged(it) },
-                                    onTagsChanged = { viewModel.onUploadTagsChanged(it) },
-                                    onSubmitUpload = { viewModel.submitUpload() },
-                                    onResetForm = { viewModel.resetUploadForm() },
-                                    onNavigateBack = { viewModel.navigateToScreen(AppScreen.EXPLORE) }
-                                )
-                            }
                         }
                     }
 
-                    // Floating Glassmorphic Bottom Navigation Dock (Matching Screen 2)
+                    // Floating Glassmorphic Bottom Dock (3 clean tabs: Explore, Collections, Favorites)
                     if (uiState.selectedWallpaper == null) {
                         FloatingBottomNavDock(
                             currentScreen = uiState.currentScreen,
@@ -149,7 +143,7 @@ fun MainApp(
             }
         }
 
-        // Full Screen Wallpaper Detail Screen (Matching Screen 3)
+        // Full Screen Wallpaper Detail Screen
         uiState.selectedWallpaper?.let { selected ->
             WallpaperDetailScreen(
                 wallpaper = selected,
@@ -169,7 +163,7 @@ fun MainApp(
 }
 
 /**
- * Floating glassmorphic dock matching Screen 2 in the reference design.
+ * Floating glassmorphic dock with 3 user-facing tabs: Explore, Collections, Favorites.
  */
 @Composable
 private fun FloatingBottomNavDock(
@@ -193,18 +187,18 @@ private fun FloatingBottomNavDock(
             horizontalArrangement = Arrangement.SpaceEvenly,
             modifier = Modifier.fillMaxSize().padding(horizontal = 6.dp)
         ) {
-            // Tab 1: Home (white pill highlight when selected, dark icon)
+            // Tab 1: Explore (Home)
             DockTabItem(
                 icon = if (currentScreen == AppScreen.EXPLORE) Icons.Filled.Home else Icons.Outlined.Home,
                 isSelected = currentScreen == AppScreen.EXPLORE,
                 onClick = { onTabSelected(AppScreen.EXPLORE) }
             )
 
-            // Tab 2: Categories / Grid (or Admin Upload)
+            // Tab 2: Collections (Grid)
             DockTabItem(
-                icon = if (currentScreen == AppScreen.ADMIN_UPLOAD) Icons.Filled.GridView else Icons.Outlined.GridView,
-                isSelected = currentScreen == AppScreen.ADMIN_UPLOAD,
-                onClick = { onTabSelected(AppScreen.ADMIN_UPLOAD) }
+                icon = if (currentScreen == AppScreen.COLLECTIONS) Icons.Filled.GridView else Icons.Outlined.GridView,
+                isSelected = currentScreen == AppScreen.COLLECTIONS,
+                onClick = { onTabSelected(AppScreen.COLLECTIONS) }
             )
 
             // Tab 3: Favorites (Heart)

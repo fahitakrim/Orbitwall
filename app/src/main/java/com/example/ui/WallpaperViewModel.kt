@@ -37,8 +37,8 @@ enum class PreviewOverlayMode {
  */
 enum class AppScreen {
     EXPLORE,
-    FAVORITES,
-    ADMIN_UPLOAD
+    COLLECTIONS,
+    FAVORITES
 }
 
 data class WallpaperUiState(
@@ -113,7 +113,11 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         loadWallpapers(category = "Recents")
     }
 
-    fun loadWallpapers(category: String? = _uiState.value.selectedCategory, query: String? = _uiState.value.searchQuery) {
+    fun loadWallpapers(
+        category: String? = _uiState.value.selectedCategory,
+        query: String? = _uiState.value.searchQuery,
+        forceRefresh: Boolean = false
+    ) {
         viewModelScope.launch {
             _uiState.update { it.copy(isLoading = true) }
             val catFilter = when (category) {
@@ -122,7 +126,8 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             }
             val result = splitRepository.fetchWallpapers(
                 category = catFilter,
-                searchQuery = query
+                searchQuery = query,
+                forceRefresh = forceRefresh
             )
             result.onSuccess { list ->
                 val sortedList = when (category) {
@@ -133,9 +138,13 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 _uiState.update { it.copy(wallpapers = sortedList, isLoading = false) }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
-                _userMessage.emit("Displaying curated 4K wallpapers collection.")
+                _userMessage.emit("Displaying curated Orbitwall collection.")
             }
         }
+    }
+
+    fun refreshWallpapers() {
+        loadWallpapers(forceRefresh = true)
     }
 
     fun selectCategory(category: String) {

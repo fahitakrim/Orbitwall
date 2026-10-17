@@ -89,51 +89,41 @@ class SplitBackendRepository(
     }
 
     /**
-     * Part 1: Fetches paginated wallpapers from Supabase PostgreSQL REST API.
+     * Fetches paginated wallpapers directly from jsDelivr cloud catalog (wallpapers.json).
+     * Automatically caches results and supports force refresh with timestamp buster.
      */
     suspend fun fetchWallpapers(
         category: String? = null,
         searchQuery: String? = null,
         page: Int = 0,
-        pageSize: Int = 20
+        pageSize: Int = 20,
+        forceRefresh: Boolean = false
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
-        if (!isSupabaseConfigured()) {
-            return@withContext Result.success(filterLocalCatalog(category, searchQuery, page, pageSize))
-        }
-
         try {
-            val urlBuilder = StringBuilder("$supabaseUrl/rest/v1/wallpapers?select=*&order=created_at.desc")
-            urlBuilder.append("&limit=").append(pageSize)
-            urlBuilder.append("&offset=").append(page * pageSize)
-
-            if (!category.isNullOrBlank() && !category.equals("All", ignoreCase = true)) {
-                urlBuilder.append("&category=eq.").append(category)
-            }
-
-            if (!searchQuery.isNullOrBlank()) {
-                val q = searchQuery.trim()
-                urlBuilder.append("&or=(title.ilike.*$q*,category.ilike.*$q*)")
-            }
-
+            val cacheBuster = if (forceRefresh) "?t=${System.currentTimeMillis()}" else ""
+            val catalogUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
             val request = Request.Builder()
-                .url(urlBuilder.toString())
-                .addHeader("apikey", supabaseKey)
-                .addHeader("Authorization", "Bearer $supabaseKey")
+                .url(catalogUrl)
                 .addHeader("Accept", "application/json")
                 .get()
                 .build()
 
             val response = okHttpClient.newCall(request).execute()
-            if (!response.isSuccessful) {
-                return@withContext Result.success(filterLocalCatalog(category, searchQuery, page, pageSize))
+            if (response.isSuccessful) {
+                val jsonBody = response.body?.string().orEmpty()
+                val list = wallpaperListAdapter.fromJson(jsonBody)
+                if (!list.isNullOrEmpty()) {
+                    synchronized(localCatalog) {
+                        localCatalog.clear()
+                        localCatalog.addAll(list)
+                    }
+                }
             }
-
-            val jsonBody = response.body?.string().orEmpty()
-            val list = wallpaperListAdapter.fromJson(jsonBody) ?: emptyList()
-            Result.success(list)
         } catch (_: Exception) {
-            Result.success(filterLocalCatalog(category, searchQuery, page, pageSize))
+            // Network fallback to local in-memory catalog
         }
+
+        Result.success(filterLocalCatalog(category, searchQuery, page, pageSize))
     }
 
     /**
@@ -392,235 +382,246 @@ class SplitBackendRepository(
 
         private fun getCuratedCatalog(): List<Wallpaper> = listOf(
             Wallpaper(
-                id = "paper-01-crimson-flow",
-                title = "Crimson Flow Abstract",
-                category = "AMOLED",
-                tags = listOf("AMOLED", "Abstract", "Crimson", "Minimal", "3D Flow", "Dark"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#D00000",
-                downloads = 48200L,
-                views = 412000L
-            ),
-            Wallpaper(
-                id = "paper-02-eclipse-spheres",
-                title = "Eclipse Horizon Spheres",
-                category = "Minimal",
-                tags = listOf("Minimal", "Spheres", "Eclipse", "AMOLED", "Red Rim", "Geometry"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#C01525",
-                downloads = 39400L,
-                views = 328000L
-            ),
-            Wallpaper(
-                id = "paper-03-hooded-assassin",
-                title = "Hooded Assassin Silver Blade",
+                id = "paper-akatsuki-moonlit-gathering",
+                title = "Akatsuki Moonlit Gathering",
                 category = "Anime",
-                tags = listOf("Anime", "Cyberpunk", "Assassin", "Katana", "Cyber", "Dark"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#0D0E15",
-                downloads = 62100L,
-                views = 524000L
+                tags = listOf("Anime", "Akatsuki", "Red Moon", "Dark", "Clouds", "Naruto"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-akatsuki-moonlit-gathering.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-akatsuki-moonlit-gathering.png",
+                dominantColorHex = "#403E3E",
+                downloads = 94200L,
+                views = 780000L
             ),
             Wallpaper(
-                id = "paper-04-bauhaus-geometry",
-                title = "Bauhaus Minimal Geometry",
-                category = "Minimal",
-                tags = listOf("Minimal", "Bauhaus", "Geometric", "Pill", "Modern", "Abstract"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#EAB308",
-                downloads = 28700L,
-                views = 215000L
-            ),
-            Wallpaper(
-                id = "paper-05-samurai-katana-moon",
-                title = "Samurai Crimson Katana Moon",
+                id = "paper-itachi-red-moon",
+                title = "Itachi Uchiha Red Moon",
                 category = "Anime",
-                tags = listOf("Anime", "Samurai", "Crimson", "Katana", "Moon", "Warrior"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#990000",
-                downloads = 74500L,
-                views = 689000L
+                tags = listOf("Anime", "Itachi", "Sharingan", "Red Moon", "Uchiha", "Crow"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-red-moon.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-red-moon.png",
+                dominantColorHex = "#231B19",
+                downloads = 108400L,
+                views = 912000L
             ),
             Wallpaper(
-                id = "paper-06-silver-hair-lunar",
-                title = "Silver Haired Cyber Maiden",
+                id = "paper-kakashi-sharingan-moon",
+                title = "Kakashi Hatake Sharingan Moon",
                 category = "Anime",
-                tags = listOf("Anime", "Cyberpunk", "Portrait", "Silver Hair", "Cyborg", "Futuristic"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#1E1E2D",
-                downloads = 83200L,
-                views = 760000L
+                tags = listOf("Anime", "Kakashi", "Sharingan", "Moon", "Ninja", "Chidori"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-sharingan-moon.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-sharingan-moon.png",
+                dominantColorHex = "#47413F",
+                downloads = 88300L,
+                views = 720000L
             ),
             Wallpaper(
-                id = "paper-07-silver-hair-teal-eyes",
-                title = "Silver Haired Teal Gaze",
+                id = "paper-obito-spiral-mask",
+                title = "Obito Uchiha Spiral Mask",
                 category = "Anime",
-                tags = listOf("Anime", "Cyberpunk", "Teal Eyes", "Silver Hair", "Dark", "Portrait"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1563089145-599997674d42?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1563089145-599997674d42?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#0F172A",
-                downloads = 59800L,
-                views = 492000L
+                tags = listOf("Anime", "Obito", "Spiral Mask", "Kamui", "Moon", "Dark"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-spiral-mask.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-spiral-mask.png",
+                dominantColorHex = "#2E2C2B",
+                downloads = 96500L,
+                views = 815000L
             ),
             Wallpaper(
-                id = "paper-08-crimson-plume-knight",
-                title = "Crimson Plume Obsidian Knight",
-                category = "Anime",
-                tags = listOf("Anime", "Knight", "Crimson Plume", "Armor", "Sword", "Moon"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#B91C1C",
-                downloads = 67300L,
-                views = 580000L
-            ),
-            Wallpaper(
-                id = "paper-09-metallic-origami-crane",
-                title = "Metallic Origami Crane",
+                id = "paper-minimal-capsule-stack",
+                title = "Minimal Pill Capsule Stack",
                 category = "Minimal",
-                tags = listOf("Minimal", "Origami", "Crane", "Geometric", "Chrome", "AMOLED"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1579783900882-c0d3dad7b119?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#E2E8F0",
-                downloads = 41200L,
-                views = 345000L
+                tags = listOf("Minimal", "Pills", "Capsule", "Red Accent", "3D", "AMOLED"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-minimal-capsule-stack.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-minimal-capsule-stack.png",
+                dominantColorHex = "#6B4649",
+                downloads = 76200L,
+                views = 634000L
             ),
             Wallpaper(
-                id = "paper-10-liquid-chrome-sculpture",
-                title = "Liquid Chrome Infinity Sculpture",
-                category = "AMOLED",
-                tags = listOf("AMOLED", "Liquid Chrome", "Sculpture", "Mercury", "Fluid", "Red Glow"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#C02026",
-                downloads = 53800L,
-                views = 461000L
+                id = "paper-solitary-red-boat",
+                title = "Solitary Red Boat in Dark Ocean",
+                category = "Nature",
+                tags = listOf("Nature", "Ocean", "Waves", "Red Boat", "Aerial", "AMOLED"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-solitary-red-boat.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-solitary-red-boat.png",
+                dominantColorHex = "#1F2022",
+                downloads = 83400L,
+                views = 698000L
             ),
             Wallpaper(
-                id = "paper-11-wired-earphones-orbit",
-                title = "Wired Audio Circular Orbit",
-                category = "Minimal",
-                tags = listOf("Minimal", "Audio", "Earphones", "Orbit", "Industrial", "Dark"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#EF4444",
-                downloads = 32400L,
-                views = 289000L
+                id = "paper-cherry-blossom-black",
+                title = "Cherry Blossom Crimson Buds",
+                category = "Nature",
+                tags = listOf("Nature", "Sakura", "Cherry Blossom", "Branch", "Minimal", "AMOLED"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-cherry-blossom-black.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-cherry-blossom-black.png",
+                dominantColorHex = "#131010",
+                downloads = 71800L,
+                views = 589000L
             ),
             Wallpaper(
-                id = "paper-12-biometric-fingerprint",
-                title = "Biometric Fingerprint Red Center",
-                category = "Minimal",
-                tags = listOf("Minimal", "Fingerprint", "Biometric", "Tech", "Red Center", "AMOLED"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1526374965328-7f61d4dc18c5?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#DC2626",
-                downloads = 36900L,
-                views = 310000L
-            ),
-            Wallpaper(
-                id = "paper-13-transparent-cassette",
-                title = "Transparent Audio Cassette",
-                category = "Minimal",
-                tags = listOf("Minimal", "Cassette", "Retro", "Transparent", "Audio", "Vintage"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1541701494587-cb58502866ab?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#E5E7EB",
-                downloads = 45100L,
-                views = 390000L
-            ),
-            Wallpaper(
-                id = "paper-14-exploded-watch-mechanism",
-                title = "Exploded Chronograph Watch Mechanism",
-                category = "Minimal",
-                tags = listOf("Minimal", "Watch", "Gears", "Horology", "Mechanism", "Engineering"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#DC2626",
-                downloads = 51200L,
-                views = 440000L
-            ),
-            Wallpaper(
-                id = "paper-15-glass-butterfly-crimson",
-                title = "Glass Butterfly Red Accents",
-                category = "AMOLED",
-                tags = listOf("AMOLED", "Butterfly", "Glass", "Crimson", "Ethereal", "Wings"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#E11D48",
-                downloads = 58900L,
-                views = 512000L
-            ),
-            Wallpaper(
-                id = "paper-16-concentric-metallic-rings",
-                title = "Concentric Metallic Aperture Rings",
-                category = "Minimal",
-                tags = listOf("Minimal", "Aperture", "Concentric", "Rings", "Precision", "Optics"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#EF4444",
-                downloads = 34500L,
-                views = 298000L
-            ),
-            Wallpaper(
-                id = "paper-17-circular-speaker-grille",
-                title = "Circular Acoustic Speaker Grille",
-                category = "Minimal",
-                tags = listOf("Minimal", "Acoustic", "Speaker", "Grille", "Audio", "Hardware"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1545454675-3531b543be5d?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#DC2626",
-                downloads = 29400L,
-                views = 245000L
-            ),
-            Wallpaper(
-                id = "paper-18-crescent-moon-orbit",
-                title = "Crescent Moon Minimal Orbit",
-                category = "AMOLED",
-                tags = listOf("AMOLED", "Moon", "Crescent", "Orbit", "Space", "Minimal"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1532693322450-2cb5c511067d?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#D1D5DB",
-                downloads = 47800L,
-                views = 389000L
-            ),
-            Wallpaper(
-                id = "paper-19-black-feather-red-spine",
+                id = "paper-black-feather-red-spine",
                 title = "Black Feather Red Spine",
                 category = "AMOLED",
-                tags = listOf("AMOLED", "Feather", "Filigree", "Crimson Spine", "Minimal", "Ethereal"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1544967082-d9d25d867d66?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#EF4444",
-                downloads = 42100L,
-                views = 360000L
+                tags = listOf("AMOLED", "Feather", "Crimson Spine", "Minimal", "Filigree", "Dark"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-black-feather-red-spine.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-black-feather-red-spine.png",
+                dominantColorHex = "#110F0F",
+                downloads = 68900L,
+                views = 574000L
             ),
             Wallpaper(
-                id = "paper-20-red-solar-eclipse",
+                id = "paper-eclipse-spheres-red-glow",
+                title = "Eclipse Spheres Neon Red Glow",
+                category = "AMOLED",
+                tags = listOf("AMOLED", "Spheres", "Eclipse", "Red Glow", "Geometry", "Curvature"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-red-glow.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-red-glow.png",
+                dominantColorHex = "#281B1B",
+                downloads = 85200L,
+                views = 743000L
+            ),
+            Wallpaper(
+                id = "paper-eclipse-spheres-amber-glow",
+                title = "Eclipse Spheres Amber Glow",
+                category = "AMOLED",
+                tags = listOf("AMOLED", "Spheres", "Eclipse", "Amber Glow", "Geometry", "Warm"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-amber-glow.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-amber-glow.png",
+                dominantColorHex = "#5A3325",
+                downloads = 64100L,
+                views = 530000L
+            ),
+            Wallpaper(
+                id = "paper-crimson-amber-fluid-flow",
+                title = "Crimson & Amber Fluid Petals",
+                category = "AMOLED",
+                tags = listOf("AMOLED", "Fluid Flow", "Crimson", "Amber", "3D Flow", "Abstract"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crimson-amber-fluid-flow.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crimson-amber-fluid-flow.png",
+                dominantColorHex = "#7B2513",
+                downloads = 79400L,
+                views = 672000L
+            ),
+            Wallpaper(
+                id = "paper-monochrome-crimson-petal",
+                title = "Monochrome Wave Crimson Petal",
+                category = "AMOLED",
+                tags = listOf("AMOLED", "Monochrome", "Wave", "Crimson Petal", "Minimal", "Abstract"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-monochrome-crimson-petal.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-monochrome-crimson-petal.png",
+                dominantColorHex = "#4A2C2E",
+                downloads = 73500L,
+                views = 612000L
+            ),
+            Wallpaper(
+                id = "paper-red-solar-eclipse",
                 title = "Red Solar Eclipse Minimal",
                 category = "AMOLED",
                 tags = listOf("AMOLED", "Eclipse", "Solar", "Corona", "Red Sun", "Space"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1506703719100-a0f3a48c0f86?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#B91C1C",
-                downloads = 56200L,
-                views = 478000L
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-solar-eclipse.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-solar-eclipse.png",
+                dominantColorHex = "#190303",
+                downloads = 81200L,
+                views = 701000L
             ),
             Wallpaper(
-                id = "paper-21-red-moon-misty-forest",
-                title = "Red Moon Misty Mountain Forest",
+                id = "paper-crescent-moon-minimal-orbit",
+                title = "Crescent Moon Minimal Orbit",
+                category = "AMOLED",
+                tags = listOf("AMOLED", "Moon", "Crescent", "Orbit", "Space", "Minimal"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crescent-moon-minimal-orbit.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crescent-moon-minimal-orbit.png",
+                dominantColorHex = "#181818",
+                downloads = 69300L,
+                views = 590000L
+            ),
+            Wallpaper(
+                id = "paper-red-moon-misty-forest",
+                title = "Red Moon Misty Forest",
                 category = "Nature",
                 tags = listOf("Nature", "Red Moon", "Forest", "Fog", "Mountains", "Dark Pines"),
-                thumbnailUrl = "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=450&auto=format&fit=crop&q=80",
-                fullResUrl = "https://images.unsplash.com/photo-1509114397022-ed747cca3f65?w=2160&auto=format&fit=crop&q=95",
-                dominantColorHex = "#B91C1C",
-                downloads = 61400L,
-                views = 530000L
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-moon-misty-forest.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-moon-misty-forest.png",
+                dominantColorHex = "#292222",
+                downloads = 91400L,
+                views = 765000L
+            ),
+            Wallpaper(
+                id = "paper-circular-speaker-grille",
+                title = "Circular Speaker Grille",
+                category = "Minimal",
+                tags = listOf("Minimal", "Audio", "Acoustic", "Speaker", "Grille", "Hardware"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-circular-speaker-grille.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-circular-speaker-grille.png",
+                dominantColorHex = "#1C1C1C",
+                downloads = 58200L,
+                views = 480000L
+            ),
+            Wallpaper(
+                id = "paper-concentric-metallic-rings",
+                title = "Concentric Metallic Rings",
+                category = "Minimal",
+                tags = listOf("Minimal", "Aperture", "Concentric", "Rings", "Precision", "Optics"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-concentric-metallic-rings.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-concentric-metallic-rings.png",
+                dominantColorHex = "#080808",
+                downloads = 62700L,
+                views = 512000L
+            ),
+            Wallpaper(
+                id = "paper-dotted-sound-wave",
+                title = "Dotted Sound Wave Minimal",
+                category = "Minimal",
+                tags = listOf("Minimal", "Sound Wave", "Dots", "Audio", "AMOLED", "Digital"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dotted-sound-wave.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dotted-sound-wave.png",
+                dominantColorHex = "#000000",
+                downloads = 55400L,
+                views = 460000L
+            ),
+            Wallpaper(
+                id = "paper-geometric-circles-diagram",
+                title = "Geometric Circles Diagram",
+                category = "Minimal",
+                tags = listOf("Minimal", "Geometry", "Diagram", "Concentric", "Circles", "Linear"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-geometric-circles-diagram.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-geometric-circles-diagram.png",
+                dominantColorHex = "#060606",
+                downloads = 51900L,
+                views = 432000L
+            ),
+            Wallpaper(
+                id = "paper-transparent-cassette",
+                title = "Transparent Audio Cassette",
+                category = "Minimal",
+                tags = listOf("Minimal", "Cassette", "Retro", "Transparent", "Audio", "Vintage"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-transparent-cassette.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-transparent-cassette.png",
+                dominantColorHex = "#1A1919",
+                downloads = 74300L,
+                views = 628000L
+            ),
+            Wallpaper(
+                id = "paper-bauhaus-geometry-ochre-red",
+                title = "Bauhaus Geometry Ochre & Red",
+                category = "Minimal",
+                tags = listOf("Minimal", "Bauhaus", "Geometric", "Dotted", "Pill", "Modern"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-ochre-red.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-ochre-red.png",
+                dominantColorHex = "#AC775C",
+                downloads = 67200L,
+                views = 558000L
+            ),
+            Wallpaper(
+                id = "paper-bauhaus-geometry-monochrome-red",
+                title = "Bauhaus Geometry Monochrome & Red",
+                category = "Minimal",
+                tags = listOf("Minimal", "Bauhaus", "Geometric", "Monochrome", "Red Accent", "Dotted"),
+                thumbnailUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-monochrome-red.jpg",
+                fullResUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-monochrome-red.png",
+                dominantColorHex = "#8B6564",
+                downloads = 63800L,
+                views = 529000L
             )
         )
     }

@@ -57,14 +57,14 @@ fun OnboardingScreen(
         wallpapers.map { it.thumbnailUrl }
     } else {
         listOf(
-            "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?w=450&auto=format&fit=crop&q=80", // Crimson Flow Abstract
-            "https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?w=450&auto=format&fit=crop&q=80", // Eclipse Horizon Spheres
-            "https://images.unsplash.com/photo-1578632767115-351597cf2477?w=450&auto=format&fit=crop&q=80", // Hooded Assassin Silver Blade
-            "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=450&auto=format&fit=crop&q=80", // Samurai Crimson Katana Moon
-            "https://images.unsplash.com/photo-1607604276583-eef5d076aa5f?w=450&auto=format&fit=crop&q=80", // Silver Haired Cyber Maiden
-            "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?w=450&auto=format&fit=crop&q=80", // Crimson Plume Obsidian Knight
-            "https://images.unsplash.com/photo-1620641788421-7a1c342ea42e?w=450&auto=format&fit=crop&q=80", // Liquid Chrome Infinity Sculpture
-            "https://images.unsplash.com/photo-1550684848-fac1c5b4e853?w=450&auto=format&fit=crop&q=80"  // Glass Butterfly Red Accents
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-akatsuki-moonlit-gathering.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-minimal-capsule-stack.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-red-moon.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-solitary-red-boat.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-red-glow.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-sharingan-moon.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crimson-amber-fluid-flow.jpg",
+            "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-cherry-blossom-black.jpg"
         )
     }
 

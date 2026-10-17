@@ -92,7 +92,7 @@ object WallpaperSystemHelper {
         try {
             val appContext = context.applicationContext
             val safeTitle = title.replace(Regex("[^a-zA-Z0-9_-]"), "_").take(30)
-            val fileName = "AuraWall_${safeTitle}_${System.currentTimeMillis()}.jpg"
+            val fileName = "Orbitwall_${safeTitle}_${System.currentTimeMillis()}.jpg"
 
             val imageBytes = downloadBytes(appContext, fullResUrl)
                 ?: return@withContext Result.failure(IllegalStateException("Failed to download image data"))
@@ -103,7 +103,7 @@ object WallpaperSystemHelper {
                 val contentValues = ContentValues().apply {
                     put(MediaStore.Images.Media.DISPLAY_NAME, fileName)
                     put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                    put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/AuraWall")
+                    put(MediaStore.Images.Media.RELATIVE_PATH, "${Environment.DIRECTORY_PICTURES}/Orbitwall")
                     put(MediaStore.Images.Media.IS_PENDING, 1)
                 }
 
@@ -123,8 +123,8 @@ object WallpaperSystemHelper {
             } else {
                 // Legacy Android 9 and lower
                 val picturesDir = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES)
-                val auraWallDir = File(picturesDir, "AuraWall").apply { if (!exists()) mkdirs() }
-                val targetFile = File(auraWallDir, fileName)
+                val orbitwallDir = File(picturesDir, "Orbitwall").apply { if (!exists()) mkdirs() }
+                val targetFile = File(orbitwallDir, fileName)
 
                 FileOutputStream(targetFile).use { outputStream ->
                     outputStream.write(imageBytes)
@@ -149,11 +149,16 @@ object WallpaperSystemHelper {
     }
 
     /**
-     * Downloads image as decoded Bitmap, supporting both content URIs and remote URLs.
+     * Downloads image as decoded Bitmap, supporting android assets, content URIs, and remote URLs.
      */
     private fun downloadBitmap(context: Context, urlOrUri: String): Bitmap? {
         return try {
-            if (urlOrUri.startsWith("content://") || urlOrUri.startsWith("file://") || urlOrUri.startsWith("android.resource://")) {
+            if (urlOrUri.startsWith("file:///android_asset/")) {
+                val assetPath = urlOrUri.removePrefix("file:///android_asset/")
+                context.assets.open(assetPath).use { inputStream ->
+                    BitmapFactory.decodeStream(inputStream)
+                }
+            } else if (urlOrUri.startsWith("content://") || urlOrUri.startsWith("file://") || urlOrUri.startsWith("android.resource://")) {
                 val uri = Uri.parse(urlOrUri)
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     BitmapFactory.decodeStream(inputStream)
@@ -173,11 +178,16 @@ object WallpaperSystemHelper {
     }
 
     /**
-     * Downloads raw bytes of the image file, supporting both content URIs and remote URLs.
+     * Downloads raw bytes of the image file, supporting android assets, content URIs, and remote URLs.
      */
     private fun downloadBytes(context: Context, urlOrUri: String): ByteArray? {
         return try {
-            if (urlOrUri.startsWith("content://") || urlOrUri.startsWith("file://") || urlOrUri.startsWith("android.resource://")) {
+            if (urlOrUri.startsWith("file:///android_asset/")) {
+                val assetPath = urlOrUri.removePrefix("file:///android_asset/")
+                context.assets.open(assetPath).use { inputStream ->
+                    inputStream.readBytes()
+                }
+            } else if (urlOrUri.startsWith("content://") || urlOrUri.startsWith("file://") || urlOrUri.startsWith("android.resource://")) {
                 val uri = Uri.parse(urlOrUri)
                 context.contentResolver.openInputStream(uri)?.use { inputStream ->
                     inputStream.readBytes()
