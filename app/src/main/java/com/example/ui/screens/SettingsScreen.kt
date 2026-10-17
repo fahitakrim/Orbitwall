@@ -742,7 +742,7 @@ fun SettingsScreen(
                     AnnouncementCard(
                         title = "Orbitwall v1.0 Released",
                         tag = "OFFICIAL LAUNCH",
-                        description = "Welcome to the all-new Nothing OS design system with Dot-Matrix typography, 4 live lock screen clock faces, and smooth wallpaper swiping."
+                        description = "Welcome to the all-new Nothing OS design system with Dot-Matrix typography, curated AMOLED & minimal wallpapers, and smooth swipe previews."
                     )
                     AnnouncementCard(
                         title = "Virtual Cloud Catalog",
