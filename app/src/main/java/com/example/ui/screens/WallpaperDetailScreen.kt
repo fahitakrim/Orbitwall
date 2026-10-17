@@ -4,6 +4,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,6 +26,8 @@ import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
@@ -51,6 +54,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -58,7 +62,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -75,22 +82,27 @@ import com.example.ui.theme.DotMatrixFont
 import com.example.ui.theme.NothingRed
 import com.example.util.WallpaperDestination
 import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.cos
+import kotlin.math.sin
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WallpaperDetailScreen(
     wallpaper: Wallpaper,
-    isFavorite: Boolean,
+    wallpapers: List<Wallpaper> = emptyList(),
+    favoriteIds: Set<String> = emptySet(),
     previewMode: PreviewOverlayMode,
     isApplying: Boolean,
     isDownloading: Boolean,
     onBackClick: () -> Unit,
     onPreviewModeChange: (PreviewOverlayMode) -> Unit,
-    onToggleFavorite: () -> Unit,
-    onApplyWallpaper: (WallpaperDestination) -> Unit,
-    onDownloadToGallery: () -> Unit,
+    onToggleFavorite: (Wallpaper) -> Unit = {},
+    onApplyWallpaper: (Wallpaper, WallpaperDestination) -> Unit = { _, _ -> },
+    onDownloadToGallery: (Wallpaper) -> Unit = {},
+    onWallpaperChanged: (Wallpaper) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     BackHandler(onBack = onBackClick)
@@ -98,6 +110,27 @@ fun WallpaperDetailScreen(
     val context = LocalContext.current
     var showApplySheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+    var lockClockStyle by remember { mutableStateOf(LockClockStyle.NOTHING_DOT) }
+
+    val displayList = remember(wallpapers, wallpaper) {
+        if (wallpapers.isNotEmpty()) wallpapers else listOf(wallpaper)
+    }
+    val initialIndex = remember(displayList, wallpaper) {
+        displayList.indexOfFirst { it.id == wallpaper.id }.coerceAtLeast(0)
+    }
+    val pagerState = rememberPagerState(
+        initialPage = initialIndex,
+        pageCount = { displayList.size }
+    )
+    val currentWallpaper = displayList.getOrNull(pagerState.currentPage) ?: wallpaper
+    val isCurrentFavorite = favoriteIds.contains(currentWallpaper.id)
+
+    LaunchedEffect(pagerState.currentPage) {
+        val active = displayList.getOrNull(pagerState.currentPage)
+        if (active != null) {
+            onWallpaperChanged(active)
+        }
+    }
 
     Box(
         modifier = modifier
@@ -105,24 +138,35 @@ fun WallpaperDetailScreen(
             .background(Color.Black)
             .testTag("wallpaper_detail_screen")
     ) {
-        // Fullscreen Wallpaper Image
-        AsyncImage(
-            model = ImageRequest.Builder(context)
-                .data(wallpaper.fullResUrl)
-                .crossfade(true)
-                .placeholder(android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor(wallpaper.dominantColorHex)))
-                .build(),
-            contentDescription = wallpaper.title,
-            contentScale = ContentScale.Crop,
+        // Horizontal Pager for Swipe between Wallpapers
+        HorizontalPager(
+            state = pagerState,
             modifier = Modifier
                 .fillMaxSize()
-                .testTag("full_res_image")
-        )
+                .testTag("full_res_pager")
+        ) { page ->
+            val pageWallpaper = displayList[page]
+            AsyncImage(
+                model = ImageRequest.Builder(context)
+                    .data(pageWallpaper.fullResUrl)
+                    .crossfade(true)
+                    .placeholder(android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor(pageWallpaper.dominantColorHex)))
+                    .build(),
+                contentDescription = pageWallpaper.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier
+                    .fillMaxSize()
+                    .testTag("full_res_image")
+            )
+        }
 
         // Simulated Overlay based on active mode
         when (previewMode) {
             PreviewOverlayMode.LOCK_SCREEN -> {
-                LockScreenOverlay()
+                LockScreenOverlay(
+                    clockStyle = lockClockStyle,
+                    onSelectClockStyle = { lockClockStyle = it }
+                )
             }
             PreviewOverlayMode.HOME_SCREEN -> {
                 HomeScreenOverlay()
@@ -200,7 +244,7 @@ fun WallpaperDetailScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = navBarPadding + 20.dp)
                 .height(56.dp)
-                .width(240.dp)
+                .width(204.dp)
                 .clip(RoundedCornerShape(28.dp))
                 .testTag("detail_bottom_dock")
         ) {
@@ -209,7 +253,7 @@ fun WallpaperDetailScreen(
                 horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 6.dp)
             ) {
                 // 1. Download to Gallery Button
                 Box(
@@ -217,7 +261,7 @@ fun WallpaperDetailScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .clickable(enabled = !isDownloading) { onDownloadToGallery() }
+                        .clickable(enabled = !isDownloading) { onDownloadToGallery(currentWallpaper) }
                         .testTag("detail_download_pill")
                 ) {
                     if (isDownloading) {
@@ -248,9 +292,9 @@ fun WallpaperDetailScreen(
                 Box(
                     contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .height(42.dp)
-                        .width(76.dp)
-                        .clip(RoundedCornerShape(21.dp))
+                        .height(40.dp)
+                        .width(64.dp)
+                        .clip(RoundedCornerShape(20.dp))
                         .background(Color.White)
                         .clickable(enabled = !isApplying) { showApplySheet = true }
                         .testTag("detail_apply_checkmark")
@@ -285,13 +329,13 @@ fun WallpaperDetailScreen(
                     modifier = Modifier
                         .size(44.dp)
                         .clip(CircleShape)
-                        .clickable { onToggleFavorite() }
+                        .clickable { onToggleFavorite(currentWallpaper) }
                         .testTag("detail_favorite_button")
                 ) {
                     Icon(
-                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        imageVector = if (isCurrentFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
                         contentDescription = "Favorite",
-                        tint = if (isFavorite) NothingRed else Color.White,
+                        tint = if (isCurrentFavorite) NothingRed else Color.White,
                         modifier = Modifier.size(22.dp)
                     )
                 }
@@ -342,7 +386,7 @@ fun WallpaperDetailScreen(
                         icon = Icons.Default.Home,
                         onClick = {
                             showApplySheet = false
-                            onApplyWallpaper(WallpaperDestination.HOME_SCREEN)
+                            onApplyWallpaper(currentWallpaper, WallpaperDestination.HOME_SCREEN)
                         }
                     )
 
@@ -354,7 +398,7 @@ fun WallpaperDetailScreen(
                         icon = Icons.Default.Lock,
                         onClick = {
                             showApplySheet = false
-                            onApplyWallpaper(WallpaperDestination.LOCK_SCREEN)
+                            onApplyWallpaper(currentWallpaper, WallpaperDestination.LOCK_SCREEN)
                         }
                     )
 
@@ -366,7 +410,7 @@ fun WallpaperDetailScreen(
                         icon = Icons.Default.Smartphone,
                         onClick = {
                             showApplySheet = false
-                            onApplyWallpaper(WallpaperDestination.BOTH)
+                            onApplyWallpaper(currentWallpaper, WallpaperDestination.BOTH)
                         }
                     )
                 }
@@ -437,100 +481,414 @@ private fun ApplyDestinationItem(
     }
 }
 
+enum class LockClockStyle(val displayName: String) {
+    NOTHING_DOT("DOT"),
+    STACKED_BOLD("STACKED"),
+    ANALOG_BLUEPRINT("ANALOG"),
+    MINIMAL_CLEAN("MINIMAL")
+}
+
 @Composable
-private fun LockScreenOverlay() {
+private fun AnalogLockClockDial(
+    calendar: Calendar,
+    modifier: Modifier = Modifier
+) {
+    val hour = calendar.get(Calendar.HOUR)
+    val minute = calendar.get(Calendar.MINUTE)
+    val second = calendar.get(Calendar.SECOND)
+
+    Canvas(
+        modifier = modifier
+            .size(136.dp)
+            .padding(4.dp)
+    ) {
+        val center = Offset(size.width / 2f, size.height / 2f)
+        val radius = size.minDimension / 2f
+
+        // Outer blueprint circle
+        drawCircle(
+            color = Color.White.copy(alpha = 0.22f),
+            radius = radius - 2.dp.toPx(),
+            style = Stroke(width = 1.5.dp.toPx())
+        )
+
+        // 12 hour ticks
+        for (i in 0 until 12) {
+            val angleRad = Math.toRadians((i * 30.0) - 90.0)
+            val is12 = i == 0
+            val isQuarter = i % 3 == 0
+
+            val tickLength = when {
+                is12 -> 13.dp.toPx()
+                isQuarter -> 10.dp.toPx()
+                else -> 6.dp.toPx()
+            }
+            val tickColor = if (is12) NothingRed else Color.White.copy(alpha = if (isQuarter) 0.9f else 0.45f)
+            val strokeWidth = if (is12) 3.dp.toPx() else if (isQuarter) 2.dp.toPx() else 1.2.dp.toPx()
+
+            val startRadius = radius - 4.dp.toPx() - tickLength
+            val endRadius = radius - 4.dp.toPx()
+
+            val startX = center.x + (startRadius * cos(angleRad)).toFloat()
+            val startY = center.y + (startRadius * sin(angleRad)).toFloat()
+            val endX = center.x + (endRadius * cos(angleRad)).toFloat()
+            val endY = center.y + (endRadius * sin(angleRad)).toFloat()
+
+            drawLine(
+                color = tickColor,
+                start = Offset(startX, startY),
+                end = Offset(endX, endY),
+                strokeWidth = strokeWidth,
+                cap = StrokeCap.Round
+            )
+        }
+
+        // Hour Hand
+        val hourAngle = Math.toRadians(((hour + minute / 60f) * 30.0) - 90.0)
+        val hourHandLength = radius * 0.52f
+        val hourEndX = center.x + (hourHandLength * cos(hourAngle)).toFloat()
+        val hourEndY = center.y + (hourHandLength * sin(hourAngle)).toFloat()
+        drawLine(
+            color = Color.White,
+            start = center,
+            end = Offset(hourEndX, hourEndY),
+            strokeWidth = 3.5.dp.toPx(),
+            cap = StrokeCap.Round
+        )
+
+        // Minute Hand
+        val minAngle = Math.toRadians(((minute + second / 60f) * 6.0) - 90.0)
+        val minHandLength = radius * 0.74f
+        val minEndX = center.x + (minHandLength * cos(minAngle)).toFloat()
+        val minEndY = center.y + (minHandLength * sin(minAngle)).toFloat()
+        drawLine(
+            color = Color.White.copy(alpha = 0.9f),
+            start = center,
+            end = Offset(minEndX, minEndY),
+            strokeWidth = 2.2.dp.toPx(),
+            cap = StrokeCap.Round
+        )
+
+        // Second Hand (Signature Nothing Red)
+        val secAngle = Math.toRadians((second * 6.0) - 90.0)
+        val secHandLength = radius * 0.82f
+        val secEndX = center.x + (secHandLength * cos(secAngle)).toFloat()
+        val secEndY = center.y + (secHandLength * sin(secAngle)).toFloat()
+        val tailLength = radius * 0.16f
+        val tailX = center.x - (tailLength * cos(secAngle)).toFloat()
+        val tailY = center.y - (tailLength * sin(secAngle)).toFloat()
+        drawLine(
+            color = NothingRed,
+            start = Offset(tailX, tailY),
+            end = Offset(secEndX, secEndY),
+            strokeWidth = 1.5.dp.toPx(),
+            cap = StrokeCap.Round
+        )
+
+        // Center Pivot Dots
+        drawCircle(
+            color = NothingRed,
+            radius = 4.dp.toPx(),
+            center = center
+        )
+        drawCircle(
+            color = Color.White,
+            radius = 1.8.dp.toPx(),
+            center = center
+        )
+    }
+}
+
+@Composable
+private fun LockScreenOverlay(
+    clockStyle: LockClockStyle,
+    onSelectClockStyle: (LockClockStyle) -> Unit
+) {
+    val navBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
+
+    val calendar = remember { Calendar.getInstance() }
+    val hour24 = calendar.get(Calendar.HOUR_OF_DAY)
+    val minute = calendar.get(Calendar.MINUTE)
+    val timeHours = remember { String.format(Locale.getDefault(), "%02d", hour24) }
+    val timeMinutes = remember { String.format(Locale.getDefault(), "%02d", minute) }
     val currentTime = remember {
         val sdf = SimpleDateFormat("h:mm", Locale.getDefault())
-        sdf.format(Date())
+        sdf.format(calendar.time)
     }
-    val currentDate = remember {
+    val currentDateMonospace = remember {
+        val sdf = SimpleDateFormat("EEE, dd MMM", Locale.getDefault())
+        sdf.format(calendar.time)
+    }
+    val currentDateFull = remember {
         val sdf = SimpleDateFormat("EEEE, MMMM d", Locale.getDefault())
-        sdf.format(Date())
+        sdf.format(calendar.time)
     }
 
+    var isFlashlightOn by remember { mutableStateOf(false) }
+    var isCameraActive by remember { mutableStateOf(false) }
+
     Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .padding(horizontal = 24.dp)
+        modifier = Modifier.fillMaxSize()
     ) {
+        // Clock Section at TopCenter (tap anywhere on clock to cycle clock styles)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
                 .align(Alignment.TopCenter)
-                .padding(top = 90.dp)
+                .padding(top = statusBarPadding + 76.dp)
+                .clickable(
+                    indication = null,
+                    interactionSource = remember { androidx.compose.foundation.interaction.MutableInteractionSource() }
+                ) {
+                    val nextOrdinal = (clockStyle.ordinal + 1) % LockClockStyle.values().size
+                    onSelectClockStyle(LockClockStyle.values()[nextOrdinal])
+                }
+        ) {
+            when (clockStyle) {
+                LockClockStyle.NOTHING_DOT -> {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = timeHours,
+                            fontFamily = DotMatrixFont,
+                            fontSize = 68.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            letterSpacing = 1.sp
+                        )
+                        Text(
+                            text = ":",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 60.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NothingRed,
+                            modifier = Modifier.padding(horizontal = 2.dp)
+                        )
+                        Text(
+                            text = timeMinutes,
+                            fontFamily = DotMatrixFont,
+                            fontSize = 68.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White,
+                            letterSpacing = 1.sp
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(9.dp)
+                                .background(NothingRed, CircleShape)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = currentDateMonospace.uppercase(),
+                        fontFamily = DotMatrixFont,
+                        fontSize = 13.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.85f),
+                        letterSpacing = 1.2.sp
+                    )
+                }
+                LockClockStyle.STACKED_BOLD -> {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = timeHours,
+                        fontFamily = DotMatrixFont,
+                        fontSize = 76.sp,
+                        fontWeight = FontWeight.Black,
+                        color = Color.White,
+                        lineHeight = 72.sp,
+                        letterSpacing = 2.sp
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Text(
+                            text = timeMinutes,
+                            fontFamily = DotMatrixFont,
+                            fontSize = 76.sp,
+                            fontWeight = FontWeight.Black,
+                            color = Color.White,
+                            lineHeight = 72.sp,
+                            letterSpacing = 2.sp
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Box(
+                            modifier = Modifier
+                                .size(11.dp)
+                                .background(NothingRed, CircleShape)
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(6.dp))
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = Color.Black.copy(alpha = 0.35f),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.15f))
+                    ) {
+                        Text(
+                            text = currentDateMonospace.uppercase(),
+                            fontFamily = DotMatrixFont,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White.copy(alpha = 0.9f),
+                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+                            letterSpacing = 1.sp
+                        )
+                    }
+                }
+                LockClockStyle.ANALOG_BLUEPRINT -> {
+                    AnalogLockClockDial(calendar = calendar)
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Lock,
+                            contentDescription = null,
+                            tint = Color.White.copy(alpha = 0.6f),
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = currentDateMonospace.uppercase(),
+                            fontFamily = DotMatrixFont,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            color = Color.White.copy(alpha = 0.85f),
+                            letterSpacing = 1.sp
+                        )
+                    }
+                }
+                LockClockStyle.MINIMAL_CLEAN -> {
+                    Icon(
+                        imageVector = Icons.Default.Lock,
+                        contentDescription = null,
+                        tint = Color.White.copy(alpha = 0.7f),
+                        modifier = Modifier.size(16.dp)
+                    )
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = currentTime,
+                        fontSize = 72.sp,
+                        fontWeight = FontWeight.Light,
+                        color = Color.White,
+                        letterSpacing = (-2).sp
+                    )
+                    Text(
+                        text = currentDateFull,
+                        fontSize = 14.sp,
+                        fontWeight = FontWeight.Medium,
+                        color = Color.White.copy(alpha = 0.85f)
+                    )
+                }
+            }
+
+            Spacer(modifier = Modifier.height(14.dp))
+
+            // Clock Face Selector Segmented Tabs
+            Row(
+                horizontalArrangement = Arrangement.Center,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .background(Color.Black.copy(alpha = 0.45f), RoundedCornerShape(20.dp))
+                    .border(1.dp, Color.White.copy(alpha = 0.15f), RoundedCornerShape(20.dp))
+                    .padding(3.dp)
+            ) {
+                LockClockStyle.values().forEach { style ->
+                    val isSelected = style == clockStyle
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(16.dp))
+                            .background(if (isSelected) Color.White else Color.Transparent)
+                            .clickable { onSelectClockStyle(style) }
+                            .padding(horizontal = 9.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = style.displayName,
+                            fontFamily = DotMatrixFont,
+                            fontSize = 10.sp,
+                            fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal,
+                            color = if (isSelected) Color.Black else Color.White.copy(alpha = 0.7f),
+                            letterSpacing = 0.5.sp
+                        )
+                    }
+                }
+            }
+        }
+
+        // Bottom Left Corner: Flashlight Shortcut Button
+        Box(
+            contentAlignment = Alignment.Center,
+            modifier = Modifier
+                .align(Alignment.BottomStart)
+                .padding(start = 16.dp, bottom = navBarPadding + 23.dp)
+                .size(50.dp)
+                .background(
+                    if (isFlashlightOn) Color(0xFFFFD600) else Color.Black.copy(alpha = 0.55f),
+                    CircleShape
+                )
+                .border(
+                    1.dp,
+                    if (isFlashlightOn) Color(0xFFFFEA00) else Color.White.copy(alpha = 0.25f),
+                    CircleShape
+                )
+                .clickable { isFlashlightOn = !isFlashlightOn }
         ) {
             Icon(
-                imageVector = Icons.Default.Lock,
-                contentDescription = null,
-                tint = Color.White.copy(alpha = 0.7f),
-                modifier = Modifier.size(18.dp)
-            )
-            Spacer(modifier = Modifier.height(6.dp))
-            Text(
-                text = currentTime,
-                fontSize = 70.sp,
-                fontWeight = FontWeight.Light,
-                color = Color.White,
-                letterSpacing = (-1).sp
-            )
-            Text(
-                text = currentDate,
-                fontSize = 15.sp,
-                fontWeight = FontWeight.Medium,
-                color = Color.White.copy(alpha = 0.85f)
+                imageVector = Icons.Default.FlashlightOn,
+                contentDescription = "Flashlight",
+                tint = if (isFlashlightOn) Color.Black else Color.White,
+                modifier = Modifier.size(24.dp)
             )
         }
 
-        Row(
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
+        // Bottom Right Corner: Camera Shortcut Button
+        Box(
+            contentAlignment = Alignment.Center,
             modifier = Modifier
-                .fillMaxWidth()
-                .align(Alignment.BottomCenter)
-                .padding(bottom = 240.dp)
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = navBarPadding + 23.dp)
+                .size(50.dp)
+                .background(
+                    if (isCameraActive) Color.White.copy(alpha = 0.85f) else Color.Black.copy(alpha = 0.55f),
+                    CircleShape
+                )
+                .border(1.dp, Color.White.copy(alpha = 0.25f), CircleShape)
+                .clickable { isCameraActive = !isCameraActive }
         ) {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color.Black.copy(alpha = 0.45f), CircleShape)
-                    .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.FlashlightOn,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
-
-            Box(
-                modifier = Modifier
-                    .width(100.dp)
-                    .height(4.dp)
-                    .background(Color.White.copy(alpha = 0.75f), RoundedCornerShape(2.dp))
+            Icon(
+                imageVector = Icons.Default.CameraAlt,
+                contentDescription = "Camera",
+                tint = if (isCameraActive) Color.Black else Color.White,
+                modifier = Modifier.size(24.dp)
             )
-
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier
-                    .size(48.dp)
-                    .background(Color.Black.copy(alpha = 0.45f), CircleShape)
-                    .border(1.dp, Color.White.copy(alpha = 0.3f), CircleShape)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.CameraAlt,
-                    contentDescription = null,
-                    tint = Color.White,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
         }
     }
 }
 
 @Composable
 private fun HomeScreenOverlay() {
+    val navBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
+    val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -543,7 +901,7 @@ private fun HomeScreenOverlay() {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.TopCenter)
-                .padding(top = 90.dp)
+                .padding(top = statusBarPadding + 76.dp)
                 .height(46.dp)
         ) {
             Row(
@@ -578,7 +936,7 @@ private fun HomeScreenOverlay() {
             modifier = Modifier
                 .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(bottom = 240.dp)
+                .padding(bottom = navBarPadding + 96.dp)
         ) {
             SimulatedDockIcon(icon = Icons.Default.Phone, label = "Phone", iconColor = Color(0xFF22C55E))
             SimulatedDockIcon(icon = Icons.Default.Search, label = "Browser", iconColor = Color(0xFF3B82F6))

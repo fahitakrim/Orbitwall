@@ -223,8 +223,12 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun applyWallpaper(destination: WallpaperDestination) {
-        val wallpaper = _uiState.value.selectedWallpaper ?: return
+    fun setSelectedWallpaper(wallpaper: Wallpaper) {
+        _uiState.update { it.copy(selectedWallpaper = wallpaper) }
+    }
+
+    fun applyWallpaper(destination: WallpaperDestination, targetWallpaper: Wallpaper? = null) {
+        val wallpaper = targetWallpaper ?: _uiState.value.selectedWallpaper ?: return
         viewModelScope.launch {
             _uiState.update { it.copy(isApplyingWallpaper = true) }
             val result = WallpaperSystemHelper.applyWallpaper(
@@ -242,8 +246,8 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
-    fun downloadWallpaperToGallery() {
-        val wallpaper = _uiState.value.selectedWallpaper ?: return
+    fun downloadWallpaperToGallery(targetWallpaper: Wallpaper? = null) {
+        val wallpaper = targetWallpaper ?: _uiState.value.selectedWallpaper ?: return
         viewModelScope.launch {
             _uiState.update { it.copy(isDownloading = true) }
             val result = WallpaperSystemHelper.saveToGallery(

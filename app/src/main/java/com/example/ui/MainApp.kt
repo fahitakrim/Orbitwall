@@ -250,7 +250,8 @@ fun MainApp(
             uiState.selectedWallpaper?.let { selected ->
                 WallpaperDetailScreen(
                     wallpaper = selected,
-                    isFavorite = favoriteIds.contains(selected.id),
+                    wallpapers = uiState.wallpapers,
+                    favoriteIds = favoriteIds,
                     previewMode = uiState.previewMode,
                     isApplying = uiState.isApplyingWallpaper,
                     isDownloading = uiState.isDownloading,
@@ -262,17 +263,20 @@ fun MainApp(
                         triggerHaptic()
                         viewModel.setPreviewMode(it)
                     },
-                    onToggleFavorite = {
+                    onToggleFavorite = { wp ->
                         triggerHaptic()
-                        viewModel.toggleFavorite(selected)
+                        viewModel.toggleFavorite(wp)
                     },
-                    onApplyWallpaper = {
+                    onApplyWallpaper = { wp, destination ->
                         triggerHaptic()
-                        viewModel.applyWallpaper(it)
+                        viewModel.applyWallpaper(destination, wp)
                     },
-                    onDownloadToGallery = {
+                    onDownloadToGallery = { wp ->
                         triggerHaptic()
-                        viewModel.downloadWallpaperToGallery()
+                        viewModel.downloadWallpaperToGallery(wp)
+                    },
+                    onWallpaperChanged = { wp ->
+                        viewModel.setSelectedWallpaper(wp)
                     },
                     modifier = Modifier.fillMaxSize()
                 )

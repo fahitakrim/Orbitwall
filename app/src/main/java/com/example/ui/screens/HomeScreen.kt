@@ -51,6 +51,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
@@ -92,14 +93,14 @@ fun HomeScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 8.dp)
+                .padding(start = 20.dp, end = 16.dp, top = 2.dp, bottom = 2.dp)
         ) {
             // Background Blueprint Graphic in top right
             TechnicalCircleGraphic(
                 modifier = Modifier
-                    .size(80.dp)
+                    .size(72.dp)
                     .align(Alignment.CenterEnd)
-                    .offset(x = 10.dp, y = (-4).dp),
+                    .offset(x = 10.dp, y = (-2).dp),
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
                 accentColor = NothingRed.copy(alpha = 0.35f)
             )
@@ -128,12 +129,12 @@ fun HomeScreen(
                             fontWeight = FontWeight.Black
                         )
                     }
-                    Spacer(modifier = Modifier.height(2.dp))
+                    Spacer(modifier = Modifier.height(1.dp))
                     Text(
                         text = "EXPLORE WALLS",
                         fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Normal,
-                        fontSize = 11.sp,
+                        fontSize = 10.sp,
                         letterSpacing = 1.2.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -145,13 +146,13 @@ fun HomeScreen(
                         isSearchExpanded = !isSearchExpanded
                         if (!isSearchExpanded) onSearchQueryChanged("")
                     },
-                    modifier = Modifier.size(38.dp)
+                    modifier = Modifier.size(36.dp)
                 ) {
                     Icon(
                         imageVector = if (isSearchExpanded) Icons.Default.Close else Icons.Default.Search,
                         contentDescription = "Search",
                         tint = MaterialTheme.colorScheme.onBackground,
-                        modifier = Modifier.size(22.dp)
+                        modifier = Modifier.size(20.dp)
                     )
                 }
             }
@@ -166,7 +167,7 @@ fun HomeScreen(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 6.dp)
+                    .padding(horizontal = 18.dp, vertical = 4.dp)
             ) {
                 OutlinedTextField(
                     value = searchQuery,
@@ -217,20 +218,20 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(2.dp))
 
         // --- Categories Bar: Rounded Capsule Container with Red-Dot Selected Pill ---
         Surface(
-            shape = RoundedCornerShape(26.dp),
+            shape = RoundedCornerShape(20.dp),
             color = MaterialTheme.colorScheme.surface,
             border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 18.dp)
+                .padding(horizontal = 16.dp)
         ) {
             LazyRow(
-                contentPadding = PaddingValues(horizontal = 6.dp, vertical = 6.dp),
-                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                contentPadding = PaddingValues(horizontal = 4.dp, vertical = 3.dp),
+                horizontalArrangement = Arrangement.spacedBy(4.dp),
                 modifier = Modifier.fillMaxWidth()
             ) {
                 items(categories) { category ->
@@ -238,22 +239,22 @@ fun HomeScreen(
                     Box(
                         contentAlignment = Alignment.Center,
                         modifier = Modifier
-                            .clip(RoundedCornerShape(20.dp))
+                            .clip(RoundedCornerShape(16.dp))
                             .background(
                                 if (isSelected) MaterialTheme.colorScheme.onBackground else Color.Transparent
                             )
                             .clickable { onSelectCategory(category) }
-                            .padding(horizontal = 14.dp, vertical = 8.dp)
+                            .padding(horizontal = 12.dp, vertical = 6.dp)
                             .testTag("category_chip_$category")
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             if (isSelected) {
                                 Box(
                                     modifier = Modifier
-                                        .size(6.dp)
+                                        .size(5.dp)
                                         .background(NothingRed, CircleShape)
                                 )
-                                Spacer(modifier = Modifier.width(6.dp))
+                                Spacer(modifier = Modifier.width(5.dp))
                             }
                             Text(
                                 text = category.uppercase(),
@@ -269,7 +270,7 @@ fun HomeScreen(
             }
         }
 
-        Spacer(modifier = Modifier.height(10.dp))
+        Spacer(modifier = Modifier.height(4.dp))
 
         // --- Staggered Grid of Wallpapers with Pull-to-Refresh ---
         PullToRefreshBox(
@@ -366,7 +367,7 @@ fun HomeScreen(
             } else {
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Fixed(2),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 6.dp, bottom = 96.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 100.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalItemSpacing = 12.dp,
                     modifier = Modifier
@@ -383,6 +384,24 @@ fun HomeScreen(
                     }
                 }
             }
+
+            // Bottom fade gradient so wallpapers dissolve smoothly before the bottom edge
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(110.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colorStops = arrayOf(
+                                0.0f to Color.Transparent,
+                                0.35f to MaterialTheme.colorScheme.background.copy(alpha = 0.45f),
+                                0.7f to MaterialTheme.colorScheme.background.copy(alpha = 0.85f),
+                                1.0f to MaterialTheme.colorScheme.background
+                            )
+                        )
+                    )
+            )
         }
     }
 }
