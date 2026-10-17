@@ -12,39 +12,41 @@
 - **Official App Name**: **ORBITWALL**
 - **Target Platform**: Android (Min SDK 24, Target SDK 36, Compile SDK 36.1)
 - **Target Device Tested**: Nothing Phone (2a) (`model: A142`, `serial: 00055349J000552`, Android 14/15)
-- **Current Status**: **Sprint 2 Complete. 100% Cloud-Streamed via jsDelivr CDN & GitHub Releases. Lightweight APK, robust 150 MB offline Coil cache, Collections tab, Pull-to-Refresh, unit tests passing.**
+- **Current Status**: **Production Ready. Complete Nothing OS design system (Dark & Light themes, Dot-matrix typography, Nothing Red/Blue accents, Canvas technical graphics). 100% Cloud-Streamed via jsDelivr CDN & GitHub Releases. Lightweight APK (~18 MB debug, <8 MB release), Coil offline cache, 3-tab dock (Home, Favorites, Settings), full Settings screen with cache management.**
 
 ---
 
-## 2. Sprint 2 Accomplishments
+## 2. Architecture & Design System (Nothing OS Overhaul)
 
-1. **22 Curated Wallpapers Published to GitHub Releases**:
+1. **22 Curated Wallpapers Streamed from Cloud**:
    - Release: [`wallpapers-v1`](https://github.com/fahitakrim/Orbitwall/releases/tag/wallpapers-v1)
-   - All 22 original full-resolution 4K/HD PNG wallpapers uploaded as permanent release assets.
+   - All 22 original full-resolution 4K/HD PNG wallpapers hosted on GitHub Releases.
    - All 22 thumbnails hosted in `cloud_catalog/thumbs/*.jpg` and served globally via jsDelivr CDN.
    - Master catalog [`wallpapers.json`](https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json) committed and live on the `main` branch.
+   - Dual-resolver architecture in `SplitBackendRepository.kt`: queries `itztakrim/Orbitwall` first, seamlessly falls back to `fahitakrim/Orbitwall`, with offline in-memory fallback.
 
-2. **APK Size Shrinkage**:
-   - Removed 29.6 MB of heavy assets (`app/src/main/assets/wallpapers/` and `app/src/main/assets/thumbnails/`).
+2. **Nothing OS Theme & Aesthetics (`Theme.kt`, `Color.kt`, `Type.kt`)**:
+   - **Dark Mode**: Background `#0B0B0C`, Surface Card `#151517`, Card Border `#262629`, Primary Text `#FFFFFF`, Secondary Text `#8E8E93`, Accent Red `#E51C23`.
+   - **Light Mode**: Background `#F2F2F5`, Surface Card `#FFFFFF`, Card Border `#E2E2E7`, Primary Text `#111113`, Secondary Text `#6C6C70`, Accent Red `#E51C23`.
+   - **Dot-Matrix Typography**: Section headings formatted in uppercase monospace dot-matrix with trailing Nothing Red accent dots (`EXPLORE WALLS •`, `FAVORITES •`, `APPEARANCE •`, `STORAGE •`, `ABOUT •`).
+   - **Canvas Technical Graphics**: Dotted concentric blueprint rings (`TechnicalCircleGraphic`) rendered smoothly on headers and empty states.
+   - **Nothing 4-Dot Brand Logo**: Top-left header features a 2x2 grid icon with the bottom-right dot highlighted in Nothing Red.
+
+3. **Floating Bottom Navigation Dock (`MainApp.kt`)**:
+   - 3 sleek tabs separated by vertical divider lines (`|`):
+     - **Home**: Active state highlights with a white/contrast pill.
+     - **Favorites**: Active state highlights with a Nothing Red (`#E51C23`) pill.
+     - **Settings**: Active state highlights with a Nothing Blue (`#1E6BF1`) pill.
+   - Haptic feedback on each tab switch.
+
+4. **Settings Screen (`SettingsScreen.kt`)**:
+   - **APPEARANCE •**: Dark / Light theme segmented pill selector (persisted to SharedPreferences) and Haptic feedback toggle.
+   - **STORAGE •**: Dynamic live cache size calculator reading from `orbitwall_image_cache`, with one-tap red `CLEAR` button to instantly wipe Coil disk/memory cache. Displays download destination (`Pictures/Orbitwall`).
+   - **ABOUT •**: Displays app version `ORBITWALL v1.0.0`, Developer `Takrim`, and intent action links to Facebook and X (Twitter) profiles.
+
+5. **APK Size Shrinkage**:
+   - Removed 29.6 MB of heavy bundled assets (`app/src/main/assets/wallpapers/` and `app/src/main/assets/thumbnails/`).
    - Debug APK bundle decreased from ~51 MB to 18.89 MB (Release build with R8 < 8 MB).
-
-3. **Cloud-First Architecture (Supabase Dependency Removed)**:
-   - `SplitBackendRepository.kt` & `VirtualStorageService.kt` load directly from `https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json`.
-   - Supports offline fallback gracefully using in-memory catalog.
-   - Configured Coil in `MainActivity.kt` with a 150 MB `DiskCache` and 25% `MemoryCache` (`respectCacheHeaders(false)`). Once viewed or loaded, images remain cached offline.
-   - Added Pull-to-Refresh on `HomeScreen.kt` with cache-busting timestamp `?t=${System.currentTimeMillis()}`.
-
-4. **Navigation & User Experience Cleanup**:
-   - Removed Admin Upload button from `HomeScreen.kt` header and from the Floating Bottom Dock.
-   - Floating Bottom Dock features 3 clean user-facing tabs:
-     - **Explore**: Staggered feed with search, category chips, and pull-to-refresh.
-     - **Collections**: Curated visual cards for **AMOLED**, **Anime**, **Minimal**, and **Nature** with dynamic item counts. Tapping any card filters the Explore feed immediately.
-     - **Favorites**: Offline Room database favorites with instant one-tap hearts.
-
-5. **Unified Branding**:
-   - System app name, launcher label, and top bar title unified to `"ORBITWALL"`.
-   - Gallery image export folder updated to `Pictures/Orbitwall`.
-   - Robolectric tests updated and passing.
 
 ---
 
