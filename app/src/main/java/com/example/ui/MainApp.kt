@@ -1,18 +1,28 @@
 package com.example.ui
 
 import android.view.HapticFeedbackConstants
-import androidx.compose.animation.Crossfade
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.gestures.Orientation
+import androidx.compose.foundation.gestures.draggable
+import androidx.compose.foundation.gestures.rememberDraggableState
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.PagerState
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -30,12 +40,15 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
@@ -53,7 +66,10 @@ import com.example.ui.theme.NothingDarkDock
 import com.example.ui.theme.NothingLightDock
 import com.example.ui.theme.NothingRed
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MainApp(
     viewModel: WallpaperViewModel = viewModel(),
@@ -63,6 +79,7 @@ fun MainApp(
     val favoriteWallpapers by viewModel.favoriteWallpapers.collectAsStateWithLifecycle()
     val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
     val view = LocalView.current
+    val coroutineScope = rememberCoroutineScope()
 
     val snackbarHostState = remember { SnackbarHostState() }
 
@@ -75,6 +92,40 @@ fun MainApp(
     fun triggerHaptic() {
         if (uiState.hapticEnabled) {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        }
+    }
+
+    val pagerState = rememberPagerState(
+        initialPage = when (uiState.currentScreen) {
+            AppScreen.EXPLORE -> 0
+            AppScreen.FAVORITES -> 1
+            AppScreen.SETTINGS -> 2
+        },
+        pageCount = { 3 }
+    )
+
+    // Sync Pager state -> ViewModel navigation state with haptic feedback
+    LaunchedEffect(pagerState.currentPage) {
+        val targetScreen = when (pagerState.currentPage) {
+            0 -> AppScreen.EXPLORE
+            1 -> AppScreen.FAVORITES
+            else -> AppScreen.SETTINGS
+        }
+        if (uiState.currentScreen != targetScreen) {
+            triggerHaptic()
+            viewModel.navigateToScreen(targetScreen)
+        }
+    }
+
+    // Sync ViewModel navigation state -> Pager scroll
+    LaunchedEffect(uiState.currentScreen) {
+        val targetPage = when (uiState.currentScreen) {
+            AppScreen.EXPLORE -> 0
+            AppScreen.FAVORITES -> 1
+            AppScreen.SETTINGS -> 2
+        }
+        if (pagerState.currentPage != targetPage) {
+            pagerState.animateScrollToPage(targetPage)
         }
     }
 
@@ -94,7 +145,7 @@ fun MainApp(
                     }
                 )
             } else {
-                // Main App Experience
+                // Main App Experience with Full-Screen Swipeable HorizontalPager
                 Scaffold(
                     snackbarHost = {
                         SnackbarHost(
@@ -109,12 +160,12 @@ fun MainApp(
                             .fillMaxSize()
                             .padding(paddingValues)
                     ) {
-                        Crossfade(
-                            targetState = uiState.currentScreen,
-                            label = "main_screen_fade"
-                        ) { screen ->
-                            when (screen) {
-                                AppScreen.EXPLORE -> {
+                        HorizontalPager(
+                            state = pagerState,
+                            modifier = Modifier.fillMaxSize()
+                        ) { page ->
+                            when (page) {
+                                0 -> {
                                     HomeScreen(
                                         wallpapers = uiState.wallpapers,
                                         isLoading = uiState.isLoading,
@@ -141,7 +192,7 @@ fun MainApp(
                                         }
                                     )
                                 }
-                                AppScreen.FAVORITES -> {
+                                1 -> {
                                     FavoritesScreen(
                                         favorites = favoriteWallpapers,
                                         favoriteIds = favoriteIds,
@@ -155,11 +206,13 @@ fun MainApp(
                                         },
                                         onNavigateToExplore = {
                                             triggerHaptic()
-                                            viewModel.navigateToScreen(AppScreen.EXPLORE)
+                                            coroutineScope.launch {
+                                                pagerState.animateScrollToPage(0)
+                                            }
                                         }
                                     )
                                 }
-                                AppScreen.SETTINGS -> {
+                                2 -> {
                                     SettingsScreen(
                                         currentTheme = uiState.themeMode,
                                         isHapticEnabled = uiState.hapticEnabled,
@@ -172,14 +225,16 @@ fun MainApp(
                             }
                         }
 
-                        // Floating Glassmorphic Bottom Dock (3 tabs: Home, Favorites, Settings with dividers)
+                        // Floating Glassmorphic Bottom Dock (Symmetric Concentric Capsule with Gesture Swipe)
                         if (uiState.selectedWallpaper == null) {
                             NothingBottomNavDock(
-                                currentScreen = uiState.currentScreen,
+                                pagerState = pagerState,
                                 isDarkMode = uiState.themeMode == AppThemeMode.DARK,
-                                onTabSelected = {
+                                onTabSelected = { targetPage ->
                                     triggerHaptic()
-                                    viewModel.navigateToScreen(it)
+                                    coroutineScope.launch {
+                                        pagerState.animateScrollToPage(targetPage)
+                                    }
                                 },
                                 modifier = Modifier
                                     .align(Alignment.BottomCenter)
@@ -227,106 +282,190 @@ fun MainApp(
 }
 
 /**
- * Nothing OS 3-Tab Floating Pill Navigation Dock:
- * - Home: Contrast pill highlight
- * - Divider line (|)
- * - Favorites: Red (#E51C23) pill highlight
- * - Divider line (|)
- * - Settings: Blue (#1E6BF1) pill highlight
+ * Nothing OS Symmetrical Concentric Capsule Pill Navigation Dock:
+ * - Outer capsule: 56dp height with 28dp radius
+ * - Inner margin: 4dp padding all around
+ * - Inner sliding indicator: 48dp height with 24dp radius (perfect concentric curvature R_inner = R_outer - padding)
+ * - Symmetrically blends with outer capsule edges on left (Home) and right (Settings)
+ * - Swipe gestures on dock itself and full screen seamlessly shift active pill
  */
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun NothingBottomNavDock(
-    currentScreen: AppScreen,
+    pagerState: PagerState,
     isDarkMode: Boolean,
-    onTabSelected: (AppScreen) -> Unit,
+    onTabSelected: (Int) -> Unit,
     modifier: Modifier = Modifier
 ) {
+    var totalDragDelta by remember { mutableFloatStateOf(0f) }
+    val draggableState = rememberDraggableState { delta ->
+        totalDragDelta += delta
+    }
+
+    // Continuous page position: [0.0f .. 2.0f]
+    val continuousPage = (pagerState.currentPage + pagerState.currentPageOffsetFraction)
+        .coerceIn(0f, 2f)
+
+    val homePillColor = if (isDarkMode) Color.White else MaterialTheme.colorScheme.onBackground
+    val activeIndicatorColor = when {
+        continuousPage <= 1f -> lerp(homePillColor, NothingRed, continuousPage)
+        else -> lerp(NothingRed, NothingBlue, continuousPage - 1f)
+    }
+
     Surface(
-        shape = RoundedCornerShape(32.dp),
+        shape = RoundedCornerShape(28.dp),
         color = if (isDarkMode) NothingDarkDock else NothingLightDock,
         border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
         shadowElevation = 16.dp,
         modifier = modifier
-            .height(58.dp)
-            .width(250.dp)
-            .clip(RoundedCornerShape(32.dp))
+            .height(56.dp)
+            .width(240.dp)
+            .clip(RoundedCornerShape(28.dp))
+            .draggable(
+                state = draggableState,
+                orientation = Orientation.Horizontal,
+                onDragStopped = { velocity ->
+                    val threshold = 30f
+                    if (velocity < -200f || totalDragDelta < -threshold) {
+                        // Swiped left -> move right (next tab)
+                        val target = (pagerState.currentPage + 1).coerceAtMost(2)
+                        onTabSelected(target)
+                    } else if (velocity > 200f || totalDragDelta > threshold) {
+                        // Swiped right -> move left (prev tab)
+                        val target = (pagerState.currentPage - 1).coerceAtLeast(0)
+                        onTabSelected(target)
+                    }
+                    totalDragDelta = 0f
+                }
+            )
             .testTag("floating_dock")
     ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceEvenly,
+        Box(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(horizontal = 8.dp)
+                .padding(4.dp)
         ) {
-            // Tab 1: Home (Contrast White / Dark Pill)
-            DockTabItem(
-                icon = if (currentScreen == AppScreen.EXPLORE) Icons.Filled.Home else Icons.Outlined.Home,
-                isSelected = currentScreen == AppScreen.EXPLORE,
-                activePillColor = if (isDarkMode) Color.White else MaterialTheme.colorScheme.onBackground,
-                activeIconColor = if (isDarkMode) Color.Black else MaterialTheme.colorScheme.background,
-                onClick = { onTabSelected(AppScreen.EXPLORE) }
-            )
+            BoxWithConstraints(modifier = Modifier.fillMaxSize()) {
+                val totalWidth = maxWidth
+                val slotWidth = totalWidth / 3f
 
-            // Thin Vertical Divider Line (|)
-            Box(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(20.dp)
-                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
-            )
+                // 1. Thin Vertical Divider Lines (|) Layer
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .height(18.dp)
+                            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                    Box(
+                        modifier = Modifier
+                            .width(1.dp)
+                            .height(18.dp)
+                            .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.5f))
+                    )
+                    Spacer(modifier = Modifier.weight(1f))
+                }
 
-            // Tab 2: Favorites (Red #E51C23 Pill)
-            DockTabItem(
-                icon = if (currentScreen == AppScreen.FAVORITES) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                isSelected = currentScreen == AppScreen.FAVORITES,
-                activePillColor = NothingRed,
-                activeIconColor = Color.White,
-                onClick = { onTabSelected(AppScreen.FAVORITES) }
-            )
+                // 2. Sliding Indicator Pill Layer (Concentric 24dp radius matching 28dp outer - 4dp padding)
+                val indicatorOffset = slotWidth * continuousPage
+                Box(
+                    modifier = Modifier
+                        .offset(x = indicatorOffset)
+                        .width(slotWidth)
+                        .fillMaxHeight()
+                        .clip(RoundedCornerShape(24.dp))
+                        .background(activeIndicatorColor)
+                )
 
-            // Thin Vertical Divider Line (|)
-            Box(
-                modifier = Modifier
-                    .width(1.dp)
-                    .height(20.dp)
-                    .background(MaterialTheme.colorScheme.outline.copy(alpha = 0.6f))
-            )
+                // 3. Tab Icons & Interactive Click Targets Layer
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    // Tab 0: Home
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onTabSelected(0) }
+                    ) {
+                        val dist0 = (continuousPage - 0f).absoluteValue.coerceIn(0f, 1f)
+                        val iconTint = lerp(
+                            start = if (isDarkMode) Color.Black else MaterialTheme.colorScheme.background,
+                            stop = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                            fraction = (dist0 * 2f).coerceIn(0f, 1f)
+                        )
+                        Icon(
+                            imageVector = if (continuousPage < 0.5f) Icons.Filled.Home else Icons.Outlined.Home,
+                            contentDescription = "Home",
+                            tint = iconTint,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
 
-            // Tab 3: Settings (Blue #1E6BF1 Pill)
-            DockTabItem(
-                icon = if (currentScreen == AppScreen.SETTINGS) Icons.Filled.Settings else Icons.Outlined.Settings,
-                isSelected = currentScreen == AppScreen.SETTINGS,
-                activePillColor = NothingBlue,
-                activeIconColor = Color.White,
-                onClick = { onTabSelected(AppScreen.SETTINGS) }
-            )
+                    // Tab 1: Favorites
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onTabSelected(1) }
+                    ) {
+                        val dist1 = (continuousPage - 1f).absoluteValue.coerceIn(0f, 1f)
+                        val iconTint = lerp(
+                            start = Color.White,
+                            stop = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                            fraction = (dist1 * 2f).coerceIn(0f, 1f)
+                        )
+                        Icon(
+                            imageVector = if (continuousPage in 0.5f..1.5f) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                            contentDescription = "Favorites",
+                            tint = iconTint,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+
+                    // Tab 2: Settings
+                    Box(
+                        contentAlignment = Alignment.Center,
+                        modifier = Modifier
+                            .weight(1f)
+                            .fillMaxHeight()
+                            .clip(RoundedCornerShape(24.dp))
+                            .clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null
+                            ) { onTabSelected(2) }
+                    ) {
+                        val dist2 = (continuousPage - 2f).absoluteValue.coerceIn(0f, 1f)
+                        val iconTint = lerp(
+                            start = Color.White,
+                            stop = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
+                            fraction = (dist2 * 2f).coerceIn(0f, 1f)
+                        )
+                        Icon(
+                            imageVector = if (continuousPage > 1.5f) Icons.Filled.Settings else Icons.Outlined.Settings,
+                            contentDescription = "Settings",
+                            tint = iconTint,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+            }
         }
-    }
-}
-
-@Composable
-private fun DockTabItem(
-    icon: ImageVector,
-    isSelected: Boolean,
-    activePillColor: Color,
-    activeIconColor: Color,
-    onClick: () -> Unit
-) {
-    Box(
-        contentAlignment = Alignment.Center,
-        modifier = Modifier
-            .height(44.dp)
-            .width(if (isSelected) 58.dp else 46.dp)
-            .clip(RoundedCornerShape(22.dp))
-            .background(if (isSelected) activePillColor else Color.Transparent)
-            .clickable(onClick = onClick)
-    ) {
-        Icon(
-            imageVector = icon,
-            contentDescription = null,
-            tint = if (isSelected) activeIconColor else MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.85f),
-            modifier = Modifier.size(22.dp)
-        )
     }
 }
