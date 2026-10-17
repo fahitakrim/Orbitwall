@@ -16,3 +16,6 @@
 local.properties
 .env
 debug.keystore
+cloud_catalog/staging/
+cloud_catalog/full_res/
+cloud_catalog/new_wallpapers.json

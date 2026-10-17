@@ -416,5 +416,271 @@
         "downloads":  63800,
         "views":  529000,
         "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-obito-split-panels",
+        "title":  "Obito Split Panels",
+        "category":  "AMOLED",
+        "tags":  [
+                     "AMOLED",
+                     "Anime",
+                     "Obito",
+                     "Naruto",
+                     "Sharingan",
+                     "Dark"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-split-panels.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-split-panels.jpg",
+        "dominant_color_hex":  "#0D0D0D",
+        "downloads":  72555,
+        "views":  435330,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-itachi-crimson-smoke",
+        "title":  "Itachi Crimson Smoke",
+        "category":  "Anime",
+        "tags":  [
+                     "Anime",
+                     "Itachi",
+                     "Akatsuki",
+                     "Sharingan",
+                     "Crimson",
+                     "Dark"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crimson-smoke.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crimson-smoke.jpg",
+        "dominant_color_hex":  "#201415",
+        "downloads":  93968,
+        "views":  845712,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-itachi-crow-flock",
+        "title":  "Itachi Crow Swarm",
+        "category":  "Anime",
+        "tags":  [
+                     "Anime",
+                     "Itachi",
+                     "Crows",
+                     "Akatsuki",
+                     "Dark",
+                     "Naruto"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crow-flock.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crow-flock.jpg",
+        "dominant_color_hex":  "#151B1D",
+        "downloads":  72772,
+        "views":  436632,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-itachi-pole-silhouette",
+        "title":  "Itachi Pole Silhouette",
+        "category":  "Anime",
+        "tags":  [
+                     "Anime",
+                     "Itachi",
+                     "Silhouette",
+                     "Moon",
+                     "Naruto",
+                     "Dark"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-pole-silhouette.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-pole-silhouette.jpg",
+        "dominant_color_hex":  "#3B3A3B",
+        "downloads":  89839,
+        "views":  898390,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-kakashi-autumn-drift",
+        "title":  "Kakashi Autumn Drift",
+        "category":  "AMOLED",
+        "tags":  [
+                     "AMOLED",
+                     "Anime",
+                     "Kakashi",
+                     "Leaves",
+                     "Dark",
+                     "Naruto"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-autumn-drift.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-autumn-drift.jpg",
+        "dominant_color_hex":  "#090707",
+        "downloads":  88479,
+        "views":  884790,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-vintage-mustang-rear",
+        "title":  "Classic Mustang Muscle",
+        "category":  "AMOLED",
+        "tags":  [
+                     "AMOLED",
+                     "Car",
+                     "Mustang",
+                     "Vintage",
+                     "Minimal",
+                     "Automotive"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-vintage-mustang-rear.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-vintage-mustang-rear.jpg",
+        "dominant_color_hex":  "#282625",
+        "downloads":  61836,
+        "views":  371016,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-honey-drip-minimal",
+        "title":  "Honey Drip Minimal",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Yellow",
+                     "Drip",
+                     "Abstract",
+                     "Clean",
+                     "AMOLED"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-honey-drip-minimal.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-honey-drip-minimal.jpg",
+        "dominant_color_hex":  "#845F01",
+        "downloads":  42585,
+        "views":  298095,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-dot-matrix-dune-wave",
+        "title":  "Dot Matrix Dune Wave",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "DotMatrix",
+                     "NothingOS",
+                     "LED",
+                     "Waves",
+                     "Amber"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dot-matrix-dune-wave.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dot-matrix-dune-wave.jpg",
+        "dominant_color_hex":  "#3A120E",
+        "downloads":  57888,
+        "views":  347328,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-retro-sunset-curves",
+        "title":  "Retro Sunset Curves",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Retro",
+                     "Sunset",
+                     "Curves",
+                     "Warm",
+                     "AMOLED"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-retro-sunset-curves.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-retro-sunset-curves.jpg",
+        "dominant_color_hex":  "#8B2001",
+        "downloads":  39333,
+        "views":  235998,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-porsche-gt3rs-mountain",
+        "title":  "Porsche GT3 RS Mountain Pass",
+        "category":  "AMOLED",
+        "tags":  [
+                     "AMOLED",
+                     "Car",
+                     "Porsche",
+                     "Supercar",
+                     "Moody",
+                     "Dark"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-porsche-gt3rs-mountain.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-porsche-gt3rs-mountain.jpg",
+        "dominant_color_hex":  "#2C2C30",
+        "downloads":  59975,
+        "views":  419825,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-bauhaus-stacked-blocks",
+        "title":  "Bauhaus Stacked Blocks",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Bauhaus",
+                     "Orange",
+                     "Geometry",
+                     "Modern",
+                     "Clean"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-stacked-blocks.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-stacked-blocks.jpg",
+        "dominant_color_hex":  "#9A6749",
+        "downloads":  78793,
+        "views":  551551,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-ember-matrix-mesh",
+        "title":  "Ember Matrix Mesh",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Mesh",
+                     "LED",
+                     "Matrix",
+                     "Embers",
+                     "Red"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-ember-matrix-mesh.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-ember-matrix-mesh.jpg",
+        "dominant_color_hex":  "#6A200F",
+        "downloads":  90889,
+        "views":  908890,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-peeking-black-cat",
+        "title":  "Peeking Black Cat",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Cat",
+                     "Orange",
+                     "Cute",
+                     "Dark",
+                     "AMOLED"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-peeking-black-cat.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-peeking-black-cat.jpg",
+        "dominant_color_hex":  "#6B3B10",
+        "downloads":  79406,
+        "views":  794060,
+        "created_at":  1740000000000
+    },
+    {
+        "id":  "paper-bauhaus-dot-folder",
+        "title":  "Bauhaus Dot Folders",
+        "category":  "Minimal",
+        "tags":  [
+                     "Minimal",
+                     "Bauhaus",
+                     "DotMatrix",
+                     "DieterRams",
+                     "Red",
+                     "Yellow"
+                 ],
+        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-dot-folder.jpg",
+        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-dot-folder.jpg",
+        "dominant_color_hex":  "#ECAE82",
+        "downloads":  84669,
+        "views":  592683,
+        "created_at":  1740000000000
     }
 ]
