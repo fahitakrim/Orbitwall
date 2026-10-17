@@ -88,35 +88,58 @@ fun HomeScreen(
             .background(MaterialTheme.colorScheme.background)
             .testTag("home_screen")
     ) {
-        // --- Nothing OS Top App Bar: 4-Dot Logo | HOME | Search Icon ---
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween,
+        // --- Compact Nothing OS Header: HOME • (matching FavoritesScreen) | Blueprint Graphic | Search Icon ---
+        Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 12.dp)
+                .padding(horizontal = 20.dp, vertical = 8.dp)
         ) {
-            // Nothing 4-Dot Signature Brand Logo (with bottom-right Red dot)
-            NothingLogo4Dot(
-                boxSize = 40.dp,
-                dotSize = 5.dp,
-                backgroundColor = MaterialTheme.colorScheme.surface,
-                borderColor = MaterialTheme.colorScheme.outline,
-                contrastDotColor = MaterialTheme.colorScheme.onSurface
+            // Background Blueprint Graphic in top right
+            TechnicalCircleGraphic(
+                modifier = Modifier
+                    .size(80.dp)
+                    .align(Alignment.CenterEnd)
+                    .offset(x = 10.dp, y = (-4).dp),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
+                accentColor = NothingRed.copy(alpha = 0.35f)
             )
 
-            // Center Clean HOME Title
-            Text(
-                text = "HOME",
-                fontFamily = DotMatrixFont,
-                fontWeight = FontWeight.Bold,
-                fontSize = 17.sp,
-                letterSpacing = 2.5.sp,
-                color = MaterialTheme.colorScheme.onBackground
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceBetween,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                // Left: HOME • with clean small subtitle EXPLORE WALLS
+                Column {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "HOME",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp,
+                            letterSpacing = 2.sp,
+                            color = MaterialTheme.colorScheme.onBackground
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "•",
+                            color = NothingRed,
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(2.dp))
+                    Text(
+                        text = "EXPLORE WALLS",
+                        fontFamily = DotMatrixFont,
+                        fontWeight = FontWeight.Normal,
+                        fontSize = 11.sp,
+                        letterSpacing = 1.2.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                }
 
-            // Right: Search Toggle & Refresh Icon
-            Row(verticalAlignment = Alignment.CenterVertically) {
+                // Right: Search Toggle Icon
                 IconButton(
                     onClick = {
                         isSearchExpanded = !isSearchExpanded
@@ -131,52 +154,6 @@ fun HomeScreen(
                         modifier = Modifier.size(22.dp)
                     )
                 }
-            }
-        }
-
-        // --- Big Dot-Matrix Heading Area with Background Technical Circle Graphic ---
-        Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 20.dp, vertical = 6.dp)
-        ) {
-            // Background Technical Blueprint Circle (Nothing OS signature)
-            TechnicalCircleGraphic(
-                modifier = Modifier
-                    .size(95.dp)
-                    .align(Alignment.CenterEnd)
-                    .offset(x = 10.dp, y = (-8).dp),
-                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.08f),
-                accentColor = NothingRed.copy(alpha = 0.35f)
-            )
-
-            Column(modifier = Modifier.align(Alignment.CenterStart)) {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "EXPLORE WALLS",
-                        fontFamily = DotMatrixFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 22.sp,
-                        letterSpacing = 2.sp,
-                        color = MaterialTheme.colorScheme.onBackground
-                    )
-                    Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "•",
-                        color = NothingRed,
-                        fontSize = 26.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-                Spacer(modifier = Modifier.height(2.dp))
-                Text(
-                    text = "CURATED EVERYDAY • 4K HIGH FIDELITY",
-                    fontFamily = DotMatrixFont,
-                    fontWeight = FontWeight.Normal,
-                    fontSize = 11.sp,
-                    letterSpacing = 1.2.sp,
-                    color = MaterialTheme.colorScheme.onSurfaceVariant
-                )
             }
         }
 

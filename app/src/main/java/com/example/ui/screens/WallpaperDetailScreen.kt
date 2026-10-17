@@ -71,8 +71,9 @@ import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.model.Wallpaper
 import com.example.ui.PreviewOverlayMode
+import com.example.ui.theme.DotMatrixFont
+import com.example.ui.theme.NothingRed
 import com.example.util.WallpaperDestination
-import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
@@ -96,15 +97,7 @@ fun WallpaperDetailScreen(
 
     val context = LocalContext.current
     var showApplySheet by remember { mutableStateOf(false) }
-    var isGlassCardExpanded by remember { mutableStateOf(true) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
-
-    val formattedViews = remember(wallpaper.views) {
-        NumberFormat.getNumberInstance(Locale.US).format(wallpaper.views)
-    }
-    val formattedDownloads = remember(wallpaper.downloads) {
-        NumberFormat.getNumberInstance(Locale.US).format(wallpaper.downloads)
-    }
 
     Box(
         modifier = modifier
@@ -139,7 +132,7 @@ fun WallpaperDetailScreen(
             }
         }
 
-        // Top Bar: Circular Back Button & Circular Favorite Button (Matching Screen 3)
+        // Top Bar: Circular Back Button & Preview Mode Switcher Pill
         val statusBarPadding = WindowInsets.statusBars.asPaddingValues().calculateTopPadding()
         Row(
             verticalAlignment = Alignment.CenterVertically,
@@ -192,216 +185,125 @@ fun WallpaperDetailScreen(
                 )
             }
 
-            // Circular Heart Favorite Button
-            IconButton(
-                onClick = onToggleFavorite,
-                modifier = Modifier
-                    .size(46.dp)
-                    .background(Color.Black.copy(alpha = 0.5f), CircleShape)
-                    .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
-                    .testTag("detail_favorite_button")
-            ) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
-                    contentDescription = "Favorite",
-                    tint = if (isFavorite) Color(0xFFE11D48) else Color.White,
-                    modifier = Modifier.size(22.dp)
-                )
-            }
+            // Balancing placeholder (matches back button size to keep center switcher centered)
+            Spacer(modifier = Modifier.size(46.dp))
         }
 
-        // Bottom Frosted Glassmorphic Card (Matching Screen 3)
+        // Minimal Floating Action Dock (3 buttons: Download | Set Wallpaper | Favorite)
         val navBarPadding = WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()
-        Column(
+        Surface(
+            shape = RoundedCornerShape(28.dp),
+            color = Color(0xDD121214), // Dark translucent Nothing matte glass
+            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.22f)),
+            shadowElevation = 20.dp,
             modifier = Modifier
-                .fillMaxWidth()
                 .align(Alignment.BottomCenter)
-                .padding(start = 16.dp, end = 16.dp, bottom = navBarPadding + 16.dp)
+                .padding(bottom = navBarPadding + 20.dp)
+                .height(56.dp)
+                .width(240.dp)
+                .clip(RoundedCornerShape(28.dp))
+                .testTag("detail_bottom_dock")
         ) {
-            Surface(
-                shape = RoundedCornerShape(28.dp),
-                color = Color(0xCC181726), // Frosted dark glass
-                border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.18f)),
-                shadowElevation = 12.dp,
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.SpaceEvenly,
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .testTag("detail_glass_card")
+                    .fillMaxSize()
+                    .padding(horizontal = 8.dp)
             ) {
-                Column(
+                // 1. Download to Gallery Button
+                Box(
+                    contentAlignment = Alignment.Center,
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(18.dp)
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .clickable(enabled = !isDownloading) { onDownloadToGallery() }
+                        .testTag("detail_download_pill")
                 ) {
-                    // Wallpaper Title
-                    Text(
-                        text = wallpaper.title,
-                        color = Color.White,
-                        fontSize = 18.sp,
-                        fontWeight = FontWeight.Bold,
-                        maxLines = 1
-                    )
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    // 3 Metric Chips: Views | Downloads | Featured in Category
-                    Row(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        MetricFrostedChip(
-                            topText = formattedViews,
-                            bottomText = "Views",
-                            modifier = Modifier.weight(1f)
-                        )
-                        MetricFrostedChip(
-                            topText = formattedDownloads,
-                            bottomText = "Downloads",
-                            modifier = Modifier.weight(1f)
-                        )
-                        MetricFrostedChip(
-                            topText = wallpaper.category,
-                            bottomText = "Featured in",
-                            modifier = Modifier.weight(1.1f)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(14.dp))
-
-                    // Horizontal Scrollable Tag Pills
-                    LazyRow(
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        contentPadding = PaddingValues(horizontal = 2.dp),
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        val tagsList = if (wallpaper.tags.isNotEmpty()) wallpaper.tags else listOf("4K", "Wallpaper", "UltraHD")
-                        items(tagsList) { tag ->
-                            Surface(
-                                shape = RoundedCornerShape(16.dp),
-                                color = Color.White.copy(alpha = 0.12f),
-                                border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.White.copy(alpha = 0.25f))
-                            ) {
-                                Text(
-                                    text = tag,
-                                    color = Color.White.copy(alpha = 0.9f),
-                                    fontSize = 12.sp,
-                                    fontWeight = FontWeight.Medium,
-                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 6.dp)
-                                )
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(18.dp))
-
-                    // Bottom Action Dock: Gallery Save Button | Cycle Mode (>>>) | Apply Checkmark Button
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        // 1. Gallery Save Pill Button
-                        Surface(
-                            shape = RoundedCornerShape(22.dp),
+                    if (isDownloading) {
+                        CircularProgressIndicator(
                             color = Color.White,
-                            modifier = Modifier
-                                .height(46.dp)
-                                .clip(RoundedCornerShape(22.dp))
-                                .clickable(enabled = !isDownloading) { onDownloadToGallery() }
-                                .testTag("detail_download_pill")
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 18.dp)
-                            ) {
-                                if (isDownloading) {
-                                    CircularProgressIndicator(
-                                        color = Color.Black,
-                                        strokeWidth = 2.dp,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Default.Download,
-                                        contentDescription = "Save to Gallery",
-                                        tint = Color.Black,
-                                        modifier = Modifier.size(20.dp)
-                                    )
-                                }
-                            }
-                        }
-
-                        // 2. Cycle Mode / Arrows Indicator `> > >`
-                        Surface(
-                            shape = RoundedCornerShape(22.dp),
-                            color = Color.White.copy(alpha = 0.15f),
-                            border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.2f)),
-                            modifier = Modifier
-                                .height(46.dp)
-                                .clip(RoundedCornerShape(22.dp))
-                                .clickable {
-                                    val nextMode = when (previewMode) {
-                                        PreviewOverlayMode.LOCK_SCREEN -> PreviewOverlayMode.HOME_SCREEN
-                                        PreviewOverlayMode.HOME_SCREEN -> PreviewOverlayMode.CLEAN
-                                        PreviewOverlayMode.CLEAN -> PreviewOverlayMode.LOCK_SCREEN
-                                    }
-                                    onPreviewModeChange(nextMode)
-                                }
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 18.dp)
-                            ) {
-                                Text(
-                                    text = "> > >",
-                                    color = Color.White,
-                                    fontSize = 15.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    letterSpacing = 2.sp
-                                )
-                            }
-                        }
-
-                        // 3. Apply / Checkmark Action Pill Button
-                        Surface(
-                            shape = RoundedCornerShape(22.dp),
-                            color = Color.White.copy(alpha = 0.85f),
-                            modifier = Modifier
-                                .height(46.dp)
-                                .clip(RoundedCornerShape(22.dp))
-                                .clickable(enabled = !isApplying) { showApplySheet = true }
-                                .testTag("detail_apply_checkmark")
-                        ) {
-                            Row(
-                                verticalAlignment = Alignment.CenterVertically,
-                                modifier = Modifier.padding(horizontal = 22.dp)
-                            ) {
-                                if (isApplying) {
-                                    CircularProgressIndicator(
-                                        color = Color.Black,
-                                        strokeWidth = 2.dp,
-                                        modifier = Modifier.size(18.dp)
-                                    )
-                                } else {
-                                    Icon(
-                                        imageVector = Icons.Default.Check,
-                                        contentDescription = "Set Wallpaper",
-                                        tint = Color.Black,
-                                        modifier = Modifier.size(22.dp)
-                                    )
-                                }
-                            }
-                        }
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Download,
+                            contentDescription = "Save to Gallery",
+                            tint = Color.White,
+                            modifier = Modifier.size(22.dp)
+                        )
                     }
+                }
+
+                // Thin Vertical Divider (|)
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(20.dp)
+                        .background(Color.White.copy(alpha = 0.25f))
+                )
+
+                // 2. Direct Set / Apply Wallpaper Pill
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .height(42.dp)
+                        .width(76.dp)
+                        .clip(RoundedCornerShape(21.dp))
+                        .background(Color.White)
+                        .clickable(enabled = !isApplying) { showApplySheet = true }
+                        .testTag("detail_apply_checkmark")
+                ) {
+                    if (isApplying) {
+                        CircularProgressIndicator(
+                            color = Color.Black,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(18.dp)
+                        )
+                    } else {
+                        Icon(
+                            imageVector = Icons.Default.Check,
+                            contentDescription = "Set Wallpaper",
+                            tint = Color.Black,
+                            modifier = Modifier.size(22.dp)
+                        )
+                    }
+                }
+
+                // Thin Vertical Divider (|)
+                Box(
+                    modifier = Modifier
+                        .width(1.dp)
+                        .height(20.dp)
+                        .background(Color.White.copy(alpha = 0.25f))
+                )
+
+                // 3. Favorite Button (Heart)
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(44.dp)
+                        .clip(CircleShape)
+                        .clickable { onToggleFavorite() }
+                        .testTag("detail_favorite_button")
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) NothingRed else Color.White,
+                        modifier = Modifier.size(22.dp)
+                    )
                 }
             }
         }
 
-        // Apply Destination Modal Bottom Sheet
+        // Apply Destination Modal Bottom Sheet (Nothing OS Theme)
         if (showApplySheet) {
             ModalBottomSheet(
                 onDismissRequest = { showApplySheet = false },
                 sheetState = sheetState,
-                containerColor = Color(0xFF161524),
+                containerColor = Color(0xFF151517),
                 contentColor = Color.White
             ) {
                 Column(
@@ -409,17 +311,28 @@ fun WallpaperDetailScreen(
                         .fillMaxWidth()
                         .padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
                 ) {
-                    Text(
-                        text = "Apply 4K Wallpaper",
-                        fontSize = 19.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(
+                            text = "APPLY WALLPAPER",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.Bold,
+                            letterSpacing = 2.sp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "•",
+                            color = NothingRed,
+                            fontSize = 22.sp,
+                            fontWeight = FontWeight.Black
+                        )
+                    }
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
                         text = "Choose screen destination to set wallpaper",
                         fontSize = 13.sp,
-                        color = Color.Gray
+                        color = Color(0xFF8E8E93)
                     )
                     Spacer(modifier = Modifier.height(18.dp))
 
@@ -484,42 +397,6 @@ private fun DetailModeTab(
 }
 
 @Composable
-private fun MetricFrostedChip(
-    topText: String,
-    bottomText: String,
-    modifier: Modifier = Modifier
-) {
-    Surface(
-        shape = RoundedCornerShape(16.dp),
-        color = Color.White.copy(alpha = 0.08f),
-        border = androidx.compose.foundation.BorderStroke(0.5.dp, Color.White.copy(alpha = 0.18f)),
-        modifier = modifier
-    ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            modifier = Modifier.padding(vertical = 8.dp, horizontal = 4.dp)
-        ) {
-            Text(
-                text = topText,
-                color = Color.White,
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Bold,
-                maxLines = 1,
-                textAlign = TextAlign.Center
-            )
-            Spacer(modifier = Modifier.height(2.dp))
-            Text(
-                text = bottomText,
-                color = Color.White.copy(alpha = 0.6f),
-                fontSize = 10.sp,
-                maxLines = 1,
-                textAlign = TextAlign.Center
-            )
-        }
-    }
-}
-
-@Composable
 private fun ApplyDestinationItem(
     title: String,
     subtitle: String,
@@ -528,8 +405,8 @@ private fun ApplyDestinationItem(
 ) {
     Surface(
         shape = RoundedCornerShape(16.dp),
-        color = Color(0xFF222034),
-        border = androidx.compose.foundation.BorderStroke(1.dp, Color.White.copy(alpha = 0.1f)),
+        color = Color(0xFF1E1E22),
+        border = androidx.compose.foundation.BorderStroke(1.dp, Color(0xFF2E2E34)),
         modifier = Modifier
             .fillMaxWidth()
             .clickable(onClick = onClick)
@@ -542,7 +419,7 @@ private fun ApplyDestinationItem(
                 contentAlignment = Alignment.Center,
                 modifier = Modifier
                     .size(44.dp)
-                    .background(Color.White.copy(alpha = 0.1f), CircleShape)
+                    .background(Color.White.copy(alpha = 0.08f), CircleShape)
             ) {
                 Icon(
                     imageVector = icon,
@@ -554,7 +431,7 @@ private fun ApplyDestinationItem(
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(text = title, fontWeight = FontWeight.SemiBold, fontSize = 16.sp, color = Color.White)
-                Text(text = subtitle, fontSize = 12.sp, color = Color.Gray)
+                Text(text = subtitle, fontSize = 12.sp, color = Color(0xFF8E8E93))
             }
         }
     }
