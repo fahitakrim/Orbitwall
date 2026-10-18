@@ -22,6 +22,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
@@ -167,6 +168,7 @@ fun AdminConsoleScreen(
         modifier = modifier
             .fillMaxSize()
             .background(MaterialTheme.colorScheme.background)
+            .statusBarsPadding()
             .testTag("admin_console_screen")
     ) {
         // --- Top Header ---
@@ -216,7 +218,7 @@ fun AdminConsoleScreen(
                             )
                         }
                         Text(
-                            text = "PASSCODE: 17288 // AUTHENTICATED",
+                            text = "AUTHENTICATED // ROOT SESSION",
                             fontFamily = DotMatrixFont,
                             fontSize = 10.sp,
                             letterSpacing = 1.sp,
@@ -384,22 +386,40 @@ fun AdminConsoleScreen(
                     ) {
                         items(filterOptions) { (key, label) ->
                             val isSelected = activeFilter == key
+                            val isDup = key == "DUPLICATES"
+                            val isFeat = key == "FEATURED"
+
+                            val bg = when {
+                                isSelected && isDup -> NothingRed
+                                isSelected && isFeat -> Color(0xFFFFD700)
+                                isSelected -> MaterialTheme.colorScheme.onBackground
+                                isDup -> NothingRed.copy(alpha = 0.12f)
+                                isFeat -> Color(0xFFFFD700).copy(alpha = 0.12f)
+                                else -> MaterialTheme.colorScheme.surface
+                            }
+
+                            val textColor = when {
+                                isSelected && isDup -> Color.White
+                                isSelected && isFeat -> Color.Black
+                                isSelected -> MaterialTheme.colorScheme.background
+                                isDup -> NothingRed
+                                isFeat -> Color(0xFFFFD700)
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
+
+                            val borderColor = when {
+                                isSelected -> bg
+                                isDup -> NothingRed.copy(alpha = 0.45f)
+                                isFeat -> Color(0xFFFFD700).copy(alpha = 0.45f)
+                                else -> MaterialTheme.colorScheme.outline
+                            }
+
                             Box(
                                 contentAlignment = Alignment.Center,
                                 modifier = Modifier
                                     .clip(RoundedCornerShape(12.dp))
-                                    .background(
-                                        if (isSelected) {
-                                            if (key == "DUPLICATES") NothingRed else MaterialTheme.colorScheme.onBackground
-                                        } else {
-                                            MaterialTheme.colorScheme.surface
-                                        }
-                                    )
-                                    .border(
-                                        1.dp,
-                                        if (key == "DUPLICATES" && !isSelected) NothingRed.copy(alpha = 0.5f) else MaterialTheme.colorScheme.outline,
-                                        RoundedCornerShape(12.dp)
-                                    )
+                                    .background(bg)
+                                    .border(1.dp, borderColor, RoundedCornerShape(12.dp))
                                     .clickable { activeFilter = key }
                                     .padding(horizontal = 10.dp, vertical = 6.dp)
                             ) {
@@ -408,7 +428,7 @@ fun AdminConsoleScreen(
                                     fontFamily = DotMatrixFont,
                                     fontSize = 10.sp,
                                     fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
-                                    color = if (isSelected) Color.White else if (key == "DUPLICATES") NothingRed else MaterialTheme.colorScheme.onSurfaceVariant
+                                    color = textColor
                                 )
                             }
                         }

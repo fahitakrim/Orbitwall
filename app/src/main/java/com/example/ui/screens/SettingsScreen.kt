@@ -949,15 +949,15 @@ fun SettingsScreen(
 
                     Spacer(modifier = Modifier.height(12.dp))
 
-                    // Passcode Input (17288)
+                    // Passcode Input (Hidden)
                     OutlinedTextField(
                         value = codeInput,
                         onValueChange = {
                             codeInput = it
                             loginError = null
                         },
-                        label = { Text("Login Code", fontSize = 12.sp) },
-                        placeholder = { Text("Code: 17288") },
+                        label = { Text("Passcode", fontSize = 12.sp) },
+                        placeholder = { Text("•••••") },
                         singleLine = true,
                         visualTransformation = PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
@@ -1006,7 +1006,7 @@ fun SettingsScreen(
                                     }
                                 } else {
                                     triggerHaptic()
-                                    loginError = "Invalid Code! Passcode is 17288"
+                                    loginError = "Incorrect passcode. Access denied."
                                 }
                             },
                             colors = ButtonDefaults.buttonColors(
