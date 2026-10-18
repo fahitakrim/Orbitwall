@@ -88,7 +88,8 @@ import com.example.ui.theme.NothingRed
 
 enum class AdminTab {
     MANAGE,
-    UPLOAD
+    UPLOAD,
+    CLOUD_SYNC
 }
 
 @OptIn(ExperimentalLayoutApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
@@ -119,6 +120,13 @@ fun AdminConsoleScreen(
     onResetUploadForm: () -> Unit,
     onLogout: () -> Unit,
     onNavigateBack: () -> Unit,
+    onSyncToGitHub: (token: String, onComplete: (Result<String>) -> Unit) -> Unit = { _, _ -> },
+    onPullFromGitHub: () -> Unit = {},
+    initialGitHubToken: String = "",
+    onSaveGitHubToken: (String) -> Unit = {},
+    initialTelemetryUrl: String = "",
+    onSaveTelemetryUrl: (String) -> Unit = {},
+    onRefreshTelemetry: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     BackHandler(onBack = onNavigateBack)
@@ -129,6 +137,11 @@ fun AdminConsoleScreen(
     var wallpaperToDelete by remember { mutableStateOf<Wallpaper?>(null) }
     var wallpaperToEditDownloads by remember { mutableStateOf<Wallpaper?>(null) }
     var showGlobalTotalDialog by remember { mutableStateOf(false) }
+
+    var gitHubTokenInput by remember { mutableStateOf(initialGitHubToken) }
+    var telemetryUrlInput by remember { mutableStateOf(initialTelemetryUrl) }
+    var isSyncingToGitHub by remember { mutableStateOf(false) }
+    var syncStatusMessage by remember { mutableStateOf<String?>(null) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -363,6 +376,37 @@ fun AdminConsoleScreen(
                             fontSize = 12.sp,
                             letterSpacing = 1.sp,
                             color = if (currentTab == AdminTab.UPLOAD) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+                }
+
+                Spacer(modifier = Modifier.width(8.dp))
+
+                // Tab 3: Cloud Sync
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(14.dp))
+                        .background(if (currentTab == AdminTab.CLOUD_SYNC) MaterialTheme.colorScheme.onBackground else Color.Transparent)
+                        .clickable { currentTab = AdminTab.CLOUD_SYNC }
+                        .padding(vertical = 8.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Refresh,
+                            contentDescription = null,
+                            tint = if (currentTab == AdminTab.CLOUD_SYNC) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant,
+                            modifier = Modifier.size(15.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "SYNC",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 12.sp,
+                            letterSpacing = 1.sp,
+                            color = if (currentTab == AdminTab.CLOUD_SYNC) MaterialTheme.colorScheme.background else MaterialTheme.colorScheme.onSurfaceVariant
                         )
                     }
                 }
@@ -1258,6 +1302,221 @@ fun AdminConsoleScreen(
                             Icon(imageVector = Icons.Default.CloudUpload, contentDescription = null, modifier = Modifier.size(18.dp))
                             Spacer(modifier = Modifier.width(8.dp))
                             Text(text = "PUBLISH WALLPAPER", fontFamily = DotMatrixFont, fontSize = 12.sp, letterSpacing = 1.sp)
+                        }
+                    }
+                }
+            }
+
+            AdminTab.CLOUD_SYNC -> {
+                val syncScrollState = rememberScrollState()
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .verticalScroll(syncScrollState)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    // Section 1: GitHub Cloud Sync Card
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(18.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Refresh,
+                                    contentDescription = null,
+                                    tint = NothingRed,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "GLOBAL ADMIN CLOUD SYNC",
+                                    fontFamily = DotMatrixFont,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp,
+                                    letterSpacing = 1.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Push your featured picks, onboarding showcase, rankings, and deleted wallpapers directly to GitHub (admin_config.json). Every user's device around the world automatically fetches these settings.",
+                                fontSize = 12.sp,
+                                lineHeight = 17.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            OutlinedTextField(
+                                value = gitHubTokenInput,
+                                onValueChange = {
+                                    gitHubTokenInput = it
+                                    onSaveGitHubToken(it)
+                                },
+                                label = { Text("GitHub Personal Access Token", fontSize = 11.sp) },
+                                placeholder = { Text("ghp_xxxxxxxxxxxxxxxxxxxx", fontSize = 11.sp) },
+                                singleLine = true,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = NothingRed,
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            if (syncStatusMessage != null) {
+                                Text(
+                                    text = syncStatusMessage!!,
+                                    fontSize = 11.sp,
+                                    color = if (syncStatusMessage!!.contains("live", ignoreCase = true) || syncStatusMessage!!.contains("success", ignoreCase = true) || syncStatusMessage!!.contains("Pulled", ignoreCase = true)) Color(0xFF00E676) else NothingRed,
+                                    fontWeight = FontWeight.Medium
+                                )
+                                Spacer(modifier = Modifier.height(10.dp))
+                            }
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        onPullFromGitHub()
+                                        syncStatusMessage = "Pulled latest config from GitHub."
+                                    },
+                                    shape = RoundedCornerShape(14.dp),
+                                    modifier = Modifier.weight(1f).height(46.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("PULL CONFIG", fontFamily = DotMatrixFont, fontSize = 10.sp, letterSpacing = 1.sp)
+                                }
+
+                                Button(
+                                    onClick = {
+                                        if (gitHubTokenInput.isBlank()) {
+                                            syncStatusMessage = "Please enter your GitHub token first."
+                                            return@Button
+                                        }
+                                        isSyncingToGitHub = true
+                                        syncStatusMessage = "Syncing admin_config.json to GitHub..."
+                                        onSyncToGitHub(gitHubTokenInput) { result ->
+                                            isSyncingToGitHub = false
+                                            result.onSuccess { msg ->
+                                                syncStatusMessage = msg
+                                            }.onFailure { err ->
+                                                syncStatusMessage = "Error: ${err.message}"
+                                            }
+                                        }
+                                    },
+                                    enabled = !isSyncingToGitHub,
+                                    colors = ButtonDefaults.buttonColors(containerColor = NothingRed, contentColor = Color.White),
+                                    shape = RoundedCornerShape(14.dp),
+                                    modifier = Modifier.weight(1.2f).height(46.dp)
+                                ) {
+                                    if (isSyncingToGitHub) {
+                                        CircularProgressIndicator(color = Color.White, modifier = Modifier.size(16.dp), strokeWidth = 2.dp)
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("SYNCING...", fontFamily = DotMatrixFont, fontSize = 10.sp)
+                                    } else {
+                                        Icon(imageVector = Icons.Default.CheckCircle, contentDescription = null, modifier = Modifier.size(16.dp))
+                                        Spacer(modifier = Modifier.width(6.dp))
+                                        Text("PUSH TO CLOUD", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 10.sp, letterSpacing = 1.sp)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    // Section 2: Google Sheets Telemetry Card
+                    Surface(
+                        shape = RoundedCornerShape(20.dp),
+                        color = MaterialTheme.colorScheme.surface,
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Column(modifier = Modifier.padding(18.dp)) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.DataUsage,
+                                    contentDescription = null,
+                                    tint = Color(0xFF00E5FF),
+                                    modifier = Modifier.size(20.dp)
+                                )
+                                Spacer(modifier = Modifier.width(8.dp))
+                                Text(
+                                    text = "GOOGLE SHEETS TELEMETRY",
+                                    fontFamily = DotMatrixFont,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 13.sp,
+                                    letterSpacing = 1.sp,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            Text(
+                                text = "Track unified downloads in real time. Deploy the provided Google Apps Script in your spreadsheet, paste the Web App URL here, and every wallpaper download will be logged automatically.",
+                                fontSize = 12.sp,
+                                lineHeight = 17.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+
+                            Spacer(modifier = Modifier.height(14.dp))
+
+                            OutlinedTextField(
+                                value = telemetryUrlInput,
+                                onValueChange = {
+                                    telemetryUrlInput = it
+                                },
+                                label = { Text("Google Apps Script Webhook URL", fontSize = 11.sp) },
+                                placeholder = { Text("https://script.google.com/macros/s/.../exec", fontSize = 11.sp) },
+                                singleLine = true,
+                                shape = RoundedCornerShape(14.dp),
+                                colors = OutlinedTextFieldDefaults.colors(
+                                    focusedBorderColor = Color(0xFF00E5FF),
+                                    unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                                ),
+                                modifier = Modifier.fillMaxWidth()
+                            )
+
+                            Spacer(modifier = Modifier.height(12.dp))
+
+                            Row(
+                                modifier = Modifier.fillMaxWidth(),
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                OutlinedButton(
+                                    onClick = {
+                                        onRefreshTelemetry()
+                                    },
+                                    shape = RoundedCornerShape(14.dp),
+                                    modifier = Modifier.weight(1f).height(46.dp)
+                                ) {
+                                    Icon(imageVector = Icons.Default.Refresh, contentDescription = null, modifier = Modifier.size(16.dp))
+                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Text("REFRESH STATS", fontFamily = DotMatrixFont, fontSize = 10.sp, letterSpacing = 1.sp)
+                                }
+
+                                Button(
+                                    onClick = {
+                                        onSaveTelemetryUrl(telemetryUrlInput)
+                                    },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF), contentColor = Color.Black),
+                                    shape = RoundedCornerShape(14.dp),
+                                    modifier = Modifier.weight(1f).height(46.dp)
+                                ) {
+                                    Text("SAVE WEBHOOK", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 10.sp, letterSpacing = 1.sp)
+                                }
+                            }
                         }
                     }
                 }

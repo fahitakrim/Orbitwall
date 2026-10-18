@@ -1,0 +1,26 @@
+{
+  "featured_ids": [
+    "paper-2k-prism-smoke-cube",
+    "paper-2k-black-hole-singularity",
+    "paper-2k-cherry-blossom-maiden",
+    "paper-2k-crimson-eclipse-orbit",
+    "paper-obito-split-panels",
+    "paper-itachi-crimson-smoke"
+  ],
+  "onboarding_ids": [
+    "paper-akatsuki-moonlit-gathering",
+    "paper-minimal-capsule-stack",
+    "paper-itachi-red-moon",
+    "paper-solitary-red-boat",
+    "paper-eclipse-spheres-red-glow",
+    "paper-kakashi-sharingan-moon",
+    "paper-crimson-amber-fluid-flow",
+    "paper-cherry-blossom-black"
+  ],
+  "promoted_ids": [],
+  "demoted_ids": [],
+  "deleted_ids": [],
+  "global_total_downloads_override": null,
+  "telemetry_url": "",
+  "last_updated": "2026-10-19T04:00:00Z"
+}

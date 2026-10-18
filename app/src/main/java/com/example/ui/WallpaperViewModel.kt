@@ -216,6 +216,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         calculateCacheSize()
         loadWallpapers(category = "All")
         checkForUpdates()
+        syncAdminConfigAndTelemetry()
     }
 
     private fun applyCustomRankings(
@@ -798,6 +799,109 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         viewModelScope.launch {
             favoriteDao.deleteFavoriteById(wallpaperId)
             _userMessage.emit("Deleted '$deletedTitle' from catalog")
+        }
+    }
+
+    fun syncAdminConfigAndTelemetry() {
+        viewModelScope.launch {
+            try {
+                val config = com.example.data.AdminConfigManager.fetchAdminConfig(getApplication())
+                _uiState.update { state ->
+                    val filtered = if (config.deletedIds.isNotEmpty()) {
+                        state.wallpapers.filter { it.id !in config.deletedIds }
+                    } else state.wallpapers
+                    val ranked = applyCustomRankings(
+                        list = filtered,
+                        promoted = config.promotedIds,
+                        demoted = config.demotedIds
+                    )
+                    state.copy(
+                        featuredWallpaperIds = config.featuredIds,
+                        onboardingWallpaperIds = config.onboardingIds,
+                        promotedWallpaperIds = config.promotedIds,
+                        demotedWallpaperIds = config.demotedIds,
+                        deletedWallpaperIds = config.deletedIds,
+                        globalTotalDownloadsOverride = config.globalTotalDownloadsOverride,
+                        wallpapers = ranked
+                    )
+                }
+
+                // If telemetry URL is configured, fetch remote download stats
+                val remoteStats = com.example.data.DownloadTracker.fetchRemoteStats(getApplication())
+                if (remoteStats.isNotEmpty()) {
+                    _uiState.update { state ->
+                        val updatedList = state.wallpapers.map { w ->
+                            val srvCount = remoteStats[w.id]
+                            if (srvCount != null && srvCount > w.downloads) {
+                                w.copy(downloads = srvCount)
+                            } else w
+                        }
+                        val ranked = applyCustomRankings(
+                            list = updatedList,
+                            promoted = state.promotedWallpaperIds,
+                            demoted = state.demotedWallpaperIds
+                        )
+                        state.copy(
+                            wallpapers = ranked,
+                            totalDownloads = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
+                        )
+                    }
+                }
+            } catch (e: Exception) {
+                android.util.Log.w("WallpaperViewModel", "syncAdminConfigAndTelemetry failed: ${e.message}")
+            }
+        }
+    }
+
+    fun syncAdminConfigToCloud(
+        token: String,
+        onComplete: (Result<String>) -> Unit
+    ) {
+        viewModelScope.launch {
+            val state = _uiState.value
+            val config = com.example.data.AdminConfig(
+                featuredIds = state.featuredWallpaperIds,
+                onboardingIds = state.onboardingWallpaperIds,
+                promotedIds = state.promotedWallpaperIds,
+                demotedIds = state.demotedWallpaperIds,
+                deletedIds = state.deletedWallpaperIds,
+                globalTotalDownloadsOverride = state.globalTotalDownloadsOverride,
+                telemetryUrl = com.example.data.DownloadTracker.remoteTelemetryUrl
+            )
+            val result = com.example.data.AdminConfigManager.pushAdminConfigToGitHub(
+                token = token.trim(),
+                config = config
+            )
+            result.onSuccess { msg ->
+                _userMessage.emit(msg)
+            }.onFailure { err ->
+                _userMessage.emit("Sync failed: ${err.message}")
+            }
+            onComplete(result)
+        }
+    }
+
+    fun getAdminGitHubToken(): String {
+        return prefs.getString("admin_github_token", "") ?: ""
+    }
+
+    fun saveAdminGitHubToken(token: String) {
+        prefs.edit().putString("admin_github_token", token.trim()).apply()
+    }
+
+    fun getTelemetryUrl(): String {
+        return com.example.data.DownloadTracker.remoteTelemetryUrl.ifBlank {
+            prefs.getString("telemetry_url", "") ?: ""
+        }
+    }
+
+    fun saveTelemetryUrl(url: String) {
+        val cleanUrl = url.trim()
+        com.example.data.DownloadTracker.remoteTelemetryUrl = cleanUrl
+        prefs.edit().putString("telemetry_url", cleanUrl).apply()
+        viewModelScope.launch {
+            _userMessage.emit("Telemetry Webhook URL saved")
+            com.example.data.DownloadTracker.fetchRemoteStats(getApplication())
         }
     }
 

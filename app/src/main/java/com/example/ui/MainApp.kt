@@ -388,6 +388,23 @@ fun MainApp(
                     onResetUploadForm = { viewModel.resetUploadForm() },
                     onLogout = { viewModel.logoutAdmin() },
                     onNavigateBack = { viewModel.closeAdminConsole() },
+                    onSyncToGitHub = { token, onComplete ->
+                        viewModel.syncAdminConfigToCloud(token, onComplete)
+                    },
+                    onPullFromGitHub = {
+                        viewModel.syncAdminConfigAndTelemetry()
+                    },
+                    initialGitHubToken = viewModel.getAdminGitHubToken(),
+                    onSaveGitHubToken = { token ->
+                        viewModel.saveAdminGitHubToken(token)
+                    },
+                    initialTelemetryUrl = viewModel.getTelemetryUrl(),
+                    onSaveTelemetryUrl = { url ->
+                        viewModel.saveTelemetryUrl(url)
+                    },
+                    onRefreshTelemetry = {
+                        viewModel.syncAdminConfigAndTelemetry()
+                    },
                     modifier = Modifier.fillMaxSize()
                 )
             }
