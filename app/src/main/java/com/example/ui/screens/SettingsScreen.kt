@@ -25,10 +25,13 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AdminPanelSettings
 import androidx.compose.material.icons.filled.Campaign
 import androidx.compose.material.icons.filled.Folder
+import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SystemUpdate
 import androidx.compose.material3.AlertDialog
@@ -39,12 +42,17 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -58,6 +66,9 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.input.KeyboardType
+import androidx.compose.ui.text.input.PasswordVisualTransformation
+import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -78,6 +89,10 @@ fun SettingsScreen(
     onThemeChange: (AppThemeMode) -> Unit,
     onHapticToggle: (Boolean) -> Unit,
     onClearCache: () -> Unit,
+    isAdmin: Boolean = false,
+    onAdminLogin: (username: String, code: String) -> Boolean = { _, _ -> false },
+    onOpenAdminConsole: () -> Unit = {},
+    onAdminLogout: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -88,10 +103,24 @@ fun SettingsScreen(
     var showUpdateDialog by remember { mutableStateOf(false) }
     var isCheckingUpdates by remember { mutableStateOf(false) }
     var showAnnouncementsDialog by remember { mutableStateOf(false) }
+    var versionClickCount by remember { mutableIntStateOf(0) }
+    var showAdminLoginDialog by remember { mutableStateOf(false) }
 
     fun triggerHaptic() {
         if (isHapticEnabled) {
             view.performHapticFeedback(HapticFeedbackConstants.KEYBOARD_TAP)
+        }
+    }
+
+    fun handleVersionClick() {
+        triggerHaptic()
+        versionClickCount++
+        if (versionClickCount in 5..8) {
+            val remaining = 9 - versionClickCount
+            Toast.makeText(context, "$remaining steps to Admin Console", Toast.LENGTH_SHORT).show()
+        } else if (versionClickCount >= 9) {
+            versionClickCount = 0
+            showAdminLoginDialog = true
         }
     }
 
@@ -335,6 +364,87 @@ fun SettingsScreen(
 
         Spacer(modifier = Modifier.height(18.dp))
 
+        // --- ADMIN ACCESS CARD (Visible when admin is unlocked) ---
+        if (isAdmin) {
+            SectionHeader(title = "ADMINISTRATION")
+            Spacer(modifier = Modifier.height(6.dp))
+            Card(
+                shape = RoundedCornerShape(24.dp),
+                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface),
+                border = BorderStroke(1.dp, NothingRed.copy(alpha = 0.5f)),
+                elevation = CardDefaults.cardElevation(defaultElevation = 0.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 18.dp)
+            ) {
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp, vertical = 16.dp)
+                ) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(modifier = Modifier.size(8.dp).background(NothingRed, CircleShape))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "ADMIN CONSOLE",
+                                fontFamily = DotMatrixFont,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                letterSpacing = 1.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(2.dp))
+                        Text(
+                            text = "Catalog management, delete duplicates & feature walls",
+                            fontSize = 11.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(8.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Button(
+                            onClick = {
+                                triggerHaptic()
+                                onOpenAdminConsole()
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = NothingRed,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(14.dp),
+                            contentPadding = PaddingValues(horizontal = 14.dp, vertical = 6.dp)
+                        ) {
+                            Text("CONSOLE", fontFamily = DotMatrixFont, fontSize = 11.sp, fontWeight = FontWeight.Bold)
+                        }
+
+                        Spacer(modifier = Modifier.width(6.dp))
+
+                        IconButton(
+                            onClick = {
+                                triggerHaptic()
+                                onAdminLogout()
+                            },
+                            modifier = Modifier.size(34.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Logout,
+                                contentDescription = "Logout",
+                                tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.size(18.dp)
+                            )
+                        }
+                    }
+                }
+            }
+            Spacer(modifier = Modifier.height(18.dp))
+        }
+
         // --- 3. ABOUT • SECTION HEADER ---
         SectionHeader(title = "ABOUT")
         Spacer(modifier = Modifier.height(6.dp))
@@ -394,7 +504,8 @@ fun SettingsScreen(
                     Text(
                         text = "Version 1.0.0",
                         fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.clickable { handleVersionClick() }
                     )
                 }
 
@@ -428,7 +539,8 @@ fun SettingsScreen(
                             Text(
                                 text = "Version 1.0.0",
                                 fontSize = 12.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                modifier = Modifier.clickable { handleVersionClick() }
                             )
                         }
                     }
@@ -775,6 +887,140 @@ fun SettingsScreen(
                 }
             }
         )
+    }
+
+    // --- ADMIN LOGIN POPUP DIALOG (Triggered by 9 taps on Version) ---
+    if (showAdminLoginDialog) {
+        var usernameInput by remember { mutableStateOf("admin") }
+        var codeInput by remember { mutableStateOf("") }
+        var loginError by remember { mutableStateOf<String?>(null) }
+
+        Dialog(onDismissRequest = { showAdminLoginDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(24.dp),
+                color = MaterialTheme.colorScheme.surface,
+                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ) {
+                Column(
+                    modifier = Modifier.padding(22.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    // Title with Nothing Red Dot
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(modifier = Modifier.size(8.dp).background(NothingRed, CircleShape))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "ADMIN LOGIN",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            letterSpacing = 1.5.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                    }
+                    Spacer(modifier = Modifier.height(4.dp))
+                    Text(
+                        text = "Enter 5-digit passcode to unlock console",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    Spacer(modifier = Modifier.height(18.dp))
+
+                    // Username Input
+                    OutlinedTextField(
+                        value = usernameInput,
+                        onValueChange = {
+                            usernameInput = it
+                            loginError = null
+                        },
+                        label = { Text("Username", fontSize = 12.sp) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = NothingRed,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Spacer(modifier = Modifier.height(12.dp))
+
+                    // Passcode Input (17288)
+                    OutlinedTextField(
+                        value = codeInput,
+                        onValueChange = {
+                            codeInput = it
+                            loginError = null
+                        },
+                        label = { Text("Login Code", fontSize = 12.sp) },
+                        placeholder = { Text("Code: 17288") },
+                        singleLine = true,
+                        visualTransformation = PasswordVisualTransformation(),
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                        shape = RoundedCornerShape(16.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = NothingRed,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    if (loginError != null) {
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = loginError!!,
+                            color = NothingRed,
+                            fontSize = 12.sp,
+                            fontWeight = FontWeight.Medium
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        OutlinedButton(
+                            onClick = { showAdminLoginDialog = false },
+                            shape = RoundedCornerShape(14.dp),
+                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                        ) {
+                            Text("CANCEL", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface)
+                        }
+
+                        Spacer(modifier = Modifier.width(10.dp))
+
+                        Button(
+                            onClick = {
+                                if (codeInput.trim() == "17288") {
+                                    triggerHaptic()
+                                    showAdminLoginDialog = false
+                                    val success = onAdminLogin(usernameInput, codeInput)
+                                    if (success) {
+                                        onOpenAdminConsole()
+                                    }
+                                } else {
+                                    triggerHaptic()
+                                    loginError = "Invalid Code! Passcode is 17288"
+                                }
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = NothingRed,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(14.dp)
+                        ) {
+                            Text("LOGIN", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                        }
+                    }
+                }
+            }
+        }
     }
 }
 

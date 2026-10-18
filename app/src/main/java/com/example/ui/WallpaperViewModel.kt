@@ -64,8 +64,15 @@ data class WallpaperUiState(
     val hapticEnabled: Boolean = true,
     val cacheSizeMb: Double = 0.0,
     val visibleLimit: Int = 24,
-    val totalDownloads: Long = 0L
-)
+    val totalDownloads: Long = 0L,
+    val isAdmin: Boolean = false,
+    val isAdminConsoleOpen: Boolean = false,
+    val featuredWallpaperIds: Set<String> = emptySet(),
+    val deletedWallpaperIds: Set<String> = emptySet()
+) {
+    val featuredWallpapers: List<Wallpaper>
+        get() = wallpapers.filter { featuredWallpaperIds.contains(it.id) }
+}
 
 data class UploadUiState(
     val selectedImageUri: Uri? = null,
@@ -124,7 +131,27 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         val savedTheme = prefs.getString("theme_mode", AppThemeMode.DARK.name) ?: AppThemeMode.DARK.name
         val theme = try { AppThemeMode.valueOf(savedTheme) } catch (_: Exception) { AppThemeMode.DARK }
         val haptic = prefs.getBoolean("haptic_enabled", true)
-        _uiState.update { it.copy(themeMode = theme, hapticEnabled = haptic) }
+        val isAdmin = prefs.getBoolean("is_admin", false)
+        val savedDeleted = prefs.getStringSet("deleted_ids", emptySet()) ?: emptySet()
+        val defaultFeatured = setOf(
+            "paper-2k-prism-smoke-cube",
+            "paper-2k-black-hole-singularity",
+            "paper-2k-cherry-blossom-maiden",
+            "paper-2k-crimson-eclipse-orbit",
+            "paper-obito-split-panels",
+            "paper-itachi-crimson-smoke"
+        )
+        val savedFeatured = prefs.getStringSet("featured_ids", defaultFeatured) ?: defaultFeatured
+
+        _uiState.update {
+            it.copy(
+                themeMode = theme,
+                hapticEnabled = haptic,
+                isAdmin = isAdmin,
+                deletedWallpaperIds = savedDeleted,
+                featuredWallpaperIds = savedFeatured
+            )
+        }
 
         calculateCacheSize()
         loadWallpapers(category = "All")
@@ -141,14 +168,19 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 "All", null -> null
                 else -> category
             }
+            val deleted = _uiState.value.deletedWallpaperIds
             val result = splitRepository.fetchWallpapers(
                 category = catFilter,
                 searchQuery = query,
-                forceRefresh = forceRefresh
+                forceRefresh = forceRefresh,
+                deletedIds = deleted
             )
             result.onSuccess { rawList ->
+                // Filter out any deleted wallpapers
+                val nonDeleted = if (deleted.isNotEmpty()) rawList.filter { it.id !in deleted } else rawList
+
                 // Augment with local download tracking increments
-                val listWithLocalCounts = rawList.map { wp ->
+                val listWithLocalCounts = nonDeleted.map { wp ->
                     val localInc = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
                     if (localInc > 0) wp.copy(downloads = wp.downloads + localInc) else wp
                 }
@@ -374,5 +406,133 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun resetUploadForm() {
         _uploadState.value = UploadUiState()
+    }
+
+    // --- Admin Console & Management Handlers ---
+
+    fun loginAdmin(username: String, code: String): Boolean {
+        if (code.trim() == "17288") {
+            prefs.edit().putBoolean("is_admin", true).apply()
+            _uiState.update { it.copy(isAdmin = true, isAdminConsoleOpen = true) }
+            viewModelScope.launch {
+                val displayName = if (username.isNotBlank()) username else "Admin"
+                _userMessage.emit("Welcome $displayName! Admin mode unlocked.")
+            }
+            return true
+        }
+        return false
+    }
+
+    fun logoutAdmin() {
+        prefs.edit().putBoolean("is_admin", false).apply()
+        _uiState.update { it.copy(isAdmin = false, isAdminConsoleOpen = false) }
+        viewModelScope.launch {
+            _userMessage.emit("Logged out of Admin Mode")
+        }
+    }
+
+    fun openAdminConsole() {
+        _uiState.update { it.copy(isAdminConsoleOpen = true) }
+    }
+
+    fun closeAdminConsole() {
+        _uiState.update { it.copy(isAdminConsoleOpen = false) }
+    }
+
+    fun toggleFeaturedWallpaper(wallpaperId: String) {
+        val current = _uiState.value.featuredWallpaperIds.toMutableSet()
+        val wasFeatured = current.contains(wallpaperId)
+        if (wasFeatured) {
+            current.remove(wallpaperId)
+        } else {
+            current.add(wallpaperId)
+        }
+        prefs.edit().putStringSet("featured_ids", current).apply()
+        _uiState.update { it.copy(featuredWallpaperIds = current) }
+        viewModelScope.launch {
+            val title = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+            _userMessage.emit(if (wasFeatured) "Unpinned '$title' from Featured" else "Pinned '$title' to Featured on Home")
+        }
+    }
+
+    fun deleteWallpaper(wallpaperId: String) {
+        val currentDeleted = _uiState.value.deletedWallpaperIds.toMutableSet()
+        currentDeleted.add(wallpaperId)
+        prefs.edit().putStringSet("deleted_ids", currentDeleted).apply()
+
+        // Remove from featured if it was featured
+        val currentFeatured = _uiState.value.featuredWallpaperIds.toMutableSet()
+        currentFeatured.remove(wallpaperId)
+        prefs.edit().putStringSet("featured_ids", currentFeatured).apply()
+
+        // Remove from repository in-memory catalog
+        splitRepository.deleteWallpaper(wallpaperId)
+
+        val deletedTitle = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+
+        // If currently viewing deleted wallpaper in detail, close it
+        if (_uiState.value.selectedWallpaper?.id == wallpaperId) {
+            closeWallpaperDetail()
+        }
+
+        // Update uiState immediately
+        _uiState.update {
+            it.copy(
+                deletedWallpaperIds = currentDeleted,
+                featuredWallpaperIds = currentFeatured,
+                wallpapers = it.wallpapers.filter { wp -> wp.id != wallpaperId }
+            )
+        }
+
+        viewModelScope.launch {
+            favoriteDao.deleteFavoriteById(wallpaperId)
+            _userMessage.emit("Deleted '$deletedTitle' from catalog")
+        }
+    }
+
+    fun submitAdminUpload() {
+        val state = _uploadState.value
+        val uri = state.selectedImageUri
+        if (uri == null) {
+            _uploadState.update { it.copy(statusMessage = "Please select an image first") }
+            return
+        }
+        if (state.title.isBlank()) {
+            _uploadState.update { it.copy(statusMessage = "Please enter a wallpaper title") }
+            return
+        }
+
+        viewModelScope.launch {
+            _uploadState.update { it.copy(isUploading = true, statusMessage = "Optimizing and uploading...") }
+            val tagsList = state.tags.split(",").map { it.trim() }.filter { it.isNotEmpty() }
+            val result = splitRepository.uploadWallpaperAsAdmin(
+                context = getApplication(),
+                imageUri = uri,
+                title = state.title.trim(),
+                category = state.category,
+                tags = tagsList
+            )
+            result.onSuccess { newWp ->
+                _uploadState.update {
+                    it.copy(
+                        isUploading = false,
+                        isSuccess = true,
+                        statusMessage = "Wallpaper uploaded successfully!"
+                    )
+                }
+                _uiState.update {
+                    it.copy(wallpapers = listOf(newWp) + it.wallpapers)
+                }
+                _userMessage.emit("New wallpaper published to catalog!")
+            }.onFailure { err ->
+                _uploadState.update {
+                    it.copy(
+                        isUploading = false,
+                        isSuccess = false,
+                        statusMessage = "Upload failed: ${err.message}"
+                    )
+                }
+            }
+        }
     }
 }

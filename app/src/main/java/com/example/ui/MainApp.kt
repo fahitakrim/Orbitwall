@@ -54,6 +54,7 @@ import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ui.screens.AdminConsoleScreen
 import com.example.ui.screens.FavoritesScreen
 import com.example.ui.screens.HomeScreen
 import com.example.ui.screens.OnboardingScreen
@@ -76,6 +77,7 @@ fun MainApp(
     modifier: Modifier = Modifier
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    val uploadState by viewModel.uploadState.collectAsStateWithLifecycle()
     val favoriteWallpapers by viewModel.favoriteWallpapers.collectAsStateWithLifecycle()
     val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
     val view = LocalView.current
@@ -168,6 +170,7 @@ fun MainApp(
                                 0 -> {
                                     HomeScreen(
                                         wallpapers = uiState.wallpapers,
+                                        featuredWallpapers = uiState.featuredWallpapers,
                                         isLoading = uiState.isLoading,
                                         categories = viewModel.categories,
                                         selectedCategory = uiState.selectedCategory,
@@ -224,14 +227,24 @@ fun MainApp(
                                         cacheSizeMb = uiState.cacheSizeMb,
                                         onThemeChange = { viewModel.setThemeMode(it) },
                                         onHapticToggle = { viewModel.setHapticEnabled(it) },
-                                        onClearCache = { viewModel.clearImageCache() }
+                                        onClearCache = { viewModel.clearImageCache() },
+                                        isAdmin = uiState.isAdmin,
+                                        onAdminLogin = { username, code ->
+                                            viewModel.loginAdmin(username, code)
+                                        },
+                                        onOpenAdminConsole = {
+                                            viewModel.openAdminConsole()
+                                        },
+                                        onAdminLogout = {
+                                            viewModel.logoutAdmin()
+                                        }
                                     )
                                 }
                             }
                         }
 
                         // Floating Glassmorphic Bottom Dock (Symmetric Concentric Capsule with Gesture Swipe)
-                        if (uiState.selectedWallpaper == null) {
+                        if (uiState.selectedWallpaper == null && !uiState.isAdminConsoleOpen) {
                             NothingBottomNavDock(
                                 pagerState = pagerState,
                                 isDarkMode = uiState.themeMode == AppThemeMode.DARK,
@@ -260,6 +273,8 @@ fun MainApp(
                     previewMode = uiState.previewMode,
                     isApplying = uiState.isApplyingWallpaper,
                     isDownloading = uiState.isDownloading,
+                    isAdmin = uiState.isAdmin,
+                    featuredWallpaperIds = uiState.featuredWallpaperIds,
                     onBackClick = {
                         triggerHaptic()
                         viewModel.closeWallpaperDetail()
@@ -283,6 +298,33 @@ fun MainApp(
                     onWallpaperChanged = { wp ->
                         viewModel.setSelectedWallpaper(wp)
                     },
+                    onToggleFeatured = { wp ->
+                        viewModel.toggleFeaturedWallpaper(wp.id)
+                    },
+                    onDeleteWallpaper = { wp ->
+                        viewModel.deleteWallpaper(wp.id)
+                    },
+                    modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Full Screen Admin Console Overlay
+            if (uiState.isAdminConsoleOpen) {
+                AdminConsoleScreen(
+                    wallpapers = uiState.wallpapers,
+                    featuredWallpaperIds = uiState.featuredWallpaperIds,
+                    uploadState = uploadState,
+                    categories = viewModel.categories,
+                    onToggleFeatured = { id -> viewModel.toggleFeaturedWallpaper(id) },
+                    onDeleteWallpaper = { id -> viewModel.deleteWallpaper(id) },
+                    onImageSelected = { uri -> viewModel.onUploadImageSelected(uri) },
+                    onTitleChanged = { title -> viewModel.onUploadTitleChanged(title) },
+                    onCategoryChanged = { cat -> viewModel.onUploadCategoryChanged(cat) },
+                    onTagsChanged = { tags -> viewModel.onUploadTagsChanged(tags) },
+                    onSubmitUpload = { viewModel.submitAdminUpload() },
+                    onResetUploadForm = { viewModel.resetUploadForm() },
+                    onLogout = { viewModel.logoutAdmin() },
+                    onNavigateBack = { viewModel.closeAdminConsole() },
                     modifier = Modifier.fillMaxSize()
                 )
             }

@@ -27,12 +27,14 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.CameraAlt
 import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.FavoriteBorder
@@ -43,12 +45,18 @@ import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Phone
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Smartphone
+import androidx.compose.material.icons.filled.Star
+import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
@@ -88,18 +96,23 @@ fun WallpaperDetailScreen(
     previewMode: PreviewOverlayMode,
     isApplying: Boolean,
     isDownloading: Boolean,
+    isAdmin: Boolean = false,
+    featuredWallpaperIds: Set<String> = emptySet(),
     onBackClick: () -> Unit,
     onPreviewModeChange: (PreviewOverlayMode) -> Unit,
     onToggleFavorite: (Wallpaper) -> Unit = {},
     onApplyWallpaper: (Wallpaper, WallpaperDestination) -> Unit = { _, _ -> },
     onDownloadToGallery: (Wallpaper) -> Unit = {},
     onWallpaperChanged: (Wallpaper) -> Unit = {},
+    onToggleFeatured: ((Wallpaper) -> Unit)? = null,
+    onDeleteWallpaper: ((Wallpaper) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     BackHandler(onBack = onBackClick)
 
     val context = LocalContext.current
     var showApplySheet by remember { mutableStateOf(false) }
+    var showDeleteConfirm by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
     val displayList = remember(wallpapers, wallpaper) {
@@ -114,6 +127,7 @@ fun WallpaperDetailScreen(
     )
     val currentWallpaper = displayList.getOrNull(pagerState.currentPage) ?: wallpaper
     val isCurrentFavorite = favoriteIds.contains(currentWallpaper.id)
+    val isCurrentFeatured = featuredWallpaperIds.contains(currentWallpaper.id)
 
     LaunchedEffect(pagerState.currentPage) {
         val active = displayList.getOrNull(pagerState.currentPage)
@@ -220,8 +234,51 @@ fun WallpaperDetailScreen(
                 )
             }
 
-            // Balancing placeholder (matches back button size to keep center switcher centered)
-            Spacer(modifier = Modifier.size(46.dp))
+            // Admin Controls or Balancing Placeholder
+            if (isAdmin) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Feature on Home Toggle
+                    IconButton(
+                        onClick = { onToggleFeatured?.invoke(currentWallpaper) },
+                        modifier = Modifier
+                            .size(42.dp)
+                            .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                            .border(
+                                1.dp,
+                                if (isCurrentFeatured) Color(0xFFFFD700).copy(alpha = 0.7f) else Color.White.copy(alpha = 0.2f),
+                                CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = if (isCurrentFeatured) Icons.Default.Star else Icons.Default.StarOutline,
+                            contentDescription = "Feature on Home",
+                            tint = if (isCurrentFeatured) Color(0xFFFFD700) else Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    // Delete from Catalog
+                    IconButton(
+                        onClick = { showDeleteConfirm = true },
+                        modifier = Modifier
+                            .size(42.dp)
+                            .background(NothingRed.copy(alpha = 0.25f), CircleShape)
+                            .border(1.dp, NothingRed.copy(alpha = 0.7f), CircleShape)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Delete,
+                            contentDescription = "Delete Wallpaper",
+                            tint = NothingRed,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+                }
+            } else {
+                // Balancing placeholder (matches back button size to keep center switcher centered)
+                Spacer(modifier = Modifier.size(46.dp))
+            }
         }
 
         // Minimal Floating Action Dock (3 buttons: Download | Set Wallpaper | Favorite)
@@ -406,6 +463,66 @@ fun WallpaperDetailScreen(
                     )
                 }
             }
+        }
+
+        // Admin Delete Confirmation Dialog
+        if (showDeleteConfirm) {
+            AlertDialog(
+                onDismissRequest = { showDeleteConfirm = false },
+                title = {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(modifier = Modifier.size(8.dp).background(NothingRed, CircleShape))
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            text = "DELETE WALLPAPER?",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
+                    }
+                },
+                text = {
+                    Column {
+                        Text(
+                            text = "Permanently remove \"${currentWallpaper.title}\" (${currentWallpaper.category}) from Orbitwall feed?",
+                            fontSize = 13.sp,
+                            color = Color.White.copy(alpha = 0.85f)
+                        )
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "ID: ${currentWallpaper.id}",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 10.sp,
+                            color = Color.White.copy(alpha = 0.6f)
+                        )
+                    }
+                },
+                confirmButton = {
+                    Button(
+                        onClick = {
+                            showDeleteConfirm = false
+                            onDeleteWallpaper?.invoke(currentWallpaper)
+                            onBackClick()
+                        },
+                        colors = ButtonDefaults.buttonColors(containerColor = NothingRed, contentColor = Color.White),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("DELETE", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                    }
+                },
+                dismissButton = {
+                    OutlinedButton(
+                        onClick = { showDeleteConfirm = false },
+                        shape = RoundedCornerShape(12.dp),
+                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+                    ) {
+                        Text("CANCEL", color = Color.White, fontSize = 12.sp)
+                    }
+                },
+                shape = RoundedCornerShape(22.dp),
+                containerColor = Color(0xFF1E1E22)
+            )
         }
     }
 }
