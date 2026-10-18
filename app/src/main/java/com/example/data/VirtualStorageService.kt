@@ -78,7 +78,7 @@ class VirtualStorageService(
         category: String? = null,
         searchQuery: String? = null,
         page: Int = 0,
-        pageSize: Int = 20,
+        pageSize: Int = 500,
         forceRefresh: Boolean = false
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
@@ -303,6 +303,9 @@ class VirtualStorageService(
             }
         }
 
+        if (pageSize <= 0 || (page == 0 && pageSize >= filtered.size)) {
+            return filtered
+        }
         val fromIndex = page * pageSize
         if (fromIndex >= filtered.size) return emptyList()
         val toIndex = (fromIndex + pageSize).coerceAtMost(filtered.size)
