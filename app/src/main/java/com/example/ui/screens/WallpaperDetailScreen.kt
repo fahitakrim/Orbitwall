@@ -48,7 +48,7 @@ import androidx.compose.material.icons.filled.Smartphone
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
 import androidx.compose.material.icons.filled.Wallpaper
-import androidx.compose.material3.AlertDialog
+import com.example.ui.components.OrbitModalBottomSheet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -415,40 +415,55 @@ fun WallpaperDetailScreen(
             }
         }
 
-        // Apply Destination Modal Bottom Sheet (Nothing OS Theme)
+        // Apply Destination Modal Bottom Sheet (Orbit Bottom-Sheet-First Architecture)
         if (showApplySheet) {
-            ModalBottomSheet(
+            OrbitModalBottomSheet(
                 onDismissRequest = { showApplySheet = false },
-                sheetState = sheetState,
-                containerColor = Color(0xFF151517),
-                contentColor = Color.White
+                sheetState = sheetState
             ) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, bottom = 32.dp)
+                        .padding(horizontal = 24.dp, vertical = 6.dp)
                 ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            text = "APPLY WALLPAPER",
-                            fontFamily = DotMatrixFont,
-                            fontSize = 18.sp,
-                            fontWeight = FontWeight.Bold,
-                            letterSpacing = 2.sp,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.width(6.dp))
-                        Text(
-                            text = "•",
-                            color = NothingRed,
-                            fontSize = 22.sp,
-                            fontWeight = FontWeight.Black
-                        )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(modifier = Modifier.size(10.dp).background(NothingRed, CircleShape))
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = "APPLY WALLPAPER",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 16.sp,
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 1.6.sp,
+                                color = Color.White
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(Color(0xFF26262A))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = "DESTINATION",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFFB0B0B8)
+                            )
+                        }
                     }
+
                     Spacer(modifier = Modifier.height(4.dp))
                     Text(
-                        text = "Choose screen destination to set wallpaper",
-                        fontSize = 13.sp,
+                        text = "Choose screen target to set wallpaper",
+                        fontSize = 12.sp,
                         color = Color(0xFF8E8E93)
                     )
                     Spacer(modifier = Modifier.height(18.dp))
@@ -490,64 +505,108 @@ fun WallpaperDetailScreen(
             }
         }
 
-        // Admin Delete Confirmation Dialog
+        // Admin Delete Confirmation Bottom Sheet
         if (showDeleteConfirm) {
-            AlertDialog(
-                onDismissRequest = { showDeleteConfirm = false },
-                title = {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(8.dp).background(NothingRed, CircleShape))
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "DELETE WALLPAPER?",
-                            fontFamily = DotMatrixFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
-                            color = Color.White
-                        )
-                    }
-                },
-                text = {
-                    Column {
-                        Text(
-                            text = "Permanently remove \"${currentWallpaper.title}\" (${currentWallpaper.category}) from Orbitwall feed?",
-                            fontSize = 13.sp,
-                            color = Color.White.copy(alpha = 0.85f)
-                        )
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "ID: ${currentWallpaper.id}",
-                            fontFamily = DotMatrixFont,
-                            fontSize = 10.sp,
-                            color = Color.White.copy(alpha = 0.6f)
-                        )
-                    }
-                },
-                confirmButton = {
-                    Button(
-                        onClick = {
-                            showDeleteConfirm = false
-                            onDeleteWallpaper?.invoke(currentWallpaper)
-                            onBackClick()
-                        },
-                        colors = ButtonDefaults.buttonColors(containerColor = NothingRed, contentColor = Color.White),
-                        shape = RoundedCornerShape(12.dp)
+            OrbitModalBottomSheet(
+                onDismissRequest = { showDeleteConfirm = false }
+            ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 24.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("DELETE", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(modifier = Modifier.size(10.dp).background(NothingRed, CircleShape))
+                            Spacer(modifier = Modifier.width(10.dp))
+                            Text(
+                                text = "DELETE WALLPAPER",
+                                fontFamily = DotMatrixFont,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp,
+                                letterSpacing = 1.6.sp,
+                                color = Color.White
+                            )
+                        }
+
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(NothingRed.copy(alpha = 0.15f))
+                                .border(1.dp, NothingRed.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                                .padding(horizontal = 8.dp, vertical = 3.dp)
+                        ) {
+                            Text(
+                                text = "PERMANENT",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = NothingRed
+                            )
+                        }
                     }
-                },
-                dismissButton = {
-                    OutlinedButton(
-                        onClick = { showDeleteConfirm = false },
-                        shape = RoundedCornerShape(12.dp),
-                        border = BorderStroke(1.dp, Color.White.copy(alpha = 0.3f))
+
+                    Spacer(modifier = Modifier.height(16.dp))
+
+                    Surface(
+                        shape = RoundedCornerShape(18.dp),
+                        color = Color(0xFF141416),
+                        border = BorderStroke(1.dp, Color(0xFF26262A)),
+                        modifier = Modifier.fillMaxWidth()
                     ) {
-                        Text("CANCEL", color = Color.White, fontSize = 12.sp)
+                        Column(modifier = Modifier.padding(16.dp)) {
+                            Text(
+                                text = "Permanently remove \"${currentWallpaper.title}\" (${currentWallpaper.category}) from Orbitwall feed?",
+                                fontSize = 13.sp,
+                                color = Color(0xFFE0E0E6),
+                                lineHeight = 18.sp
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "CATALOG ID // ${currentWallpaper.id}",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.sp,
+                                color = Color(0xFF8E8E93)
+                            )
+                        }
                     }
-                },
-                shape = RoundedCornerShape(22.dp),
-                containerColor = Color(0xFF1E1E22)
-            )
+
+                    Spacer(modifier = Modifier.height(20.dp))
+
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        OutlinedButton(
+                            onClick = { showDeleteConfirm = false },
+                            shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp, topEnd = 6.dp, bottomEnd = 6.dp),
+                            border = BorderStroke(1.dp, Color(0xFF26262A)),
+                            colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                            modifier = Modifier.weight(1f).height(48.dp)
+                        ) {
+                            Text("CANCEL", fontFamily = DotMatrixFont, fontSize = 11.sp, letterSpacing = 1.sp)
+                        }
+
+                        Button(
+                            onClick = {
+                                showDeleteConfirm = false
+                                onDeleteWallpaper?.invoke(currentWallpaper)
+                                onBackClick()
+                            },
+                            colors = ButtonDefaults.buttonColors(containerColor = NothingRed, contentColor = Color.White),
+                            shape = RoundedCornerShape(topStart = 6.dp, bottomStart = 6.dp, topEnd = 16.dp, bottomEnd = 16.dp),
+                            modifier = Modifier.weight(1f).height(48.dp)
+                        ) {
+                            Text("DELETE", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 11.sp, letterSpacing = 1.sp)
+                        }
+                    }
+                }
+            }
         }
     }
 }

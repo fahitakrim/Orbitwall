@@ -108,19 +108,21 @@ fun OnboardingScreen(
                 // Column 1
                 Column(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .offset(y = (-8).dp)
                 ) {
                     for (i in 0 until 3) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
                         OnboardingCardItem(imageUrl = img)
                     }
                 }
-                // Column 2 (Subtle, balanced stagger)
+                // Column 2 (Balanced stagger)
                 Column(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .offset(y = 12.dp)
+                        .offset(y = 4.dp)
                 ) {
                     for (i in 3 until 6) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
@@ -130,7 +132,9 @@ fun OnboardingScreen(
                 // Column 3
                 Column(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
-                    modifier = Modifier.weight(1f)
+                    modifier = Modifier
+                        .weight(1f)
+                        .offset(y = 14.dp)
                 ) {
                     for (i in 6 until 9) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
@@ -148,10 +152,10 @@ fun OnboardingScreen(
                     Brush.verticalGradient(
                         colorStops = arrayOf(
                             0.0f to Color.Transparent,
-                            0.24f to Color.Transparent,
-                            0.38f to backgroundColor.copy(alpha = 0.50f),
-                            0.48f to backgroundColor.copy(alpha = 0.88f),
-                            0.56f to backgroundColor,
+                            0.22f to Color.Transparent,
+                            0.36f to backgroundColor.copy(alpha = 0.45f),
+                            0.46f to backgroundColor.copy(alpha = 0.85f),
+                            0.54f to backgroundColor,
                             1.0f to backgroundColor
                         )
                     )
@@ -198,7 +202,7 @@ fun OnboardingScreen(
             }
         }
 
-        // Lower Content: Title, Subtitle, and "Start Explore" Pill Button
+        // Lower Content: Title, Subtitle, and "ENTER ORBIT" Pill Button (Option 3 - Takrim Aesthetic)
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
             modifier = Modifier
@@ -207,7 +211,7 @@ fun OnboardingScreen(
                 .padding(horizontal = 28.dp, vertical = 40.dp)
         ) {
             Text(
-                text = "Explore 4K\nWallpapers",
+                text = "Nothing But\nPure Pixels.",
                 fontSize = 32.sp,
                 fontWeight = FontWeight.ExtraBold,
                 color = Color(0xFF14151C),
@@ -218,7 +222,7 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             Text(
-                text = "Explore, Create, Share\nUltra 4K Wallpapers Now!",
+                text = "True-black canvases, razor-sharp textures,\nand fluid cloud curation.",
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
                 color = Color(0xFF7A8092),
@@ -242,10 +246,10 @@ fun OnboardingScreen(
                     .testTag("start_explore_button")
             ) {
                 Text(
-                    text = if (isPreview) "Close Preview" else "Start Explore",
-                    fontSize = 16.sp,
+                    text = if (isPreview) "Close Preview" else "ENTER ORBIT",
+                    fontSize = 15.sp,
                     fontWeight = FontWeight.Bold,
-                    letterSpacing = 0.5.sp
+                    letterSpacing = 1.sp
                 )
             }
         }

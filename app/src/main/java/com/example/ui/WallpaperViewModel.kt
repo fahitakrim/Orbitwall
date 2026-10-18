@@ -253,11 +253,12 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 deletedIds = deleted
             )
             result.onSuccess { rawList ->
-                // Filter out any deleted wallpapers
-                val nonDeleted = if (deleted.isNotEmpty()) rawList.filter { it.id !in deleted } else rawList
+                // Filter out any deleted wallpapers using fresh deletedWallpaperIds from current state
+                val currentDeleted = _uiState.value.deletedWallpaperIds
+                val nonDeleted = if (currentDeleted.isNotEmpty()) rawList.filter { it.id !in currentDeleted } else rawList
 
                 // Augment with local download tracking increments or overrides
-                val isResetInflated = prefs.getBoolean("reset_inflated_stats", false)
+                val isResetInflated = prefs.getBoolean("reset_inflated_stats", true)
                 val listWithLocalCounts = nonDeleted.map { wp ->
                     val overrideKey = "dl_override_${wp.id}"
                     if (prefs.contains(overrideKey)) {
@@ -267,7 +268,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                         wp.copy(downloads = realDl)
                     } else {
                         val localInc = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
-                        if (localInc > 0) wp.copy(downloads = wp.downloads + localInc) else wp
+                        wp.copy(downloads = if (wp.downloads > 5000L) localInc else (wp.downloads + localInc))
                     }
                 }
 
@@ -286,7 +287,11 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 )
 
                 val totalDl = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
-                _uiState.update { it.copy(wallpapers = rankedList, isLoading = false, totalDownloads = totalDl) }
+                _uiState.update { state ->
+                    val freshDeleted = state.deletedWallpaperIds
+                    val finalFiltered = if (freshDeleted.isNotEmpty()) rankedList.filter { it.id !in freshDeleted } else rankedList
+                    state.copy(wallpapers = finalFiltered, isLoading = false, totalDownloads = totalDl)
+                }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
                 _userMessage.emit("Displaying curated Orbitwall collection.")

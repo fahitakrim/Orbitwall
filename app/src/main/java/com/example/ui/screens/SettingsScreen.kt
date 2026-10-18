@@ -34,7 +34,7 @@ import androidx.compose.material.icons.filled.Folder
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.SystemUpdate
-import androidx.compose.material3.AlertDialog
+import com.example.ui.components.OrbitModalBottomSheet
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -68,7 +68,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -82,6 +81,7 @@ import com.example.ui.theme.NothingRed
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
+@OptIn(androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun SettingsScreen(
     currentTheme: AppThemeMode,
@@ -716,107 +716,105 @@ fun SettingsScreen(
         }
     }
 
-    // --- System Update Dialog ---
+    // --- System Update Bottom Sheet (Orbit Bottom-Sheet-First Architecture) ---
     if (showUpdateDialog) {
         val hasUpdate = updateInfo?.isUpdateAvailable == true
-        AlertDialog(
-            onDismissRequest = { showUpdateDialog = false },
-            shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.SystemUpdate,
-                        contentDescription = null,
-                        tint = NothingRed,
-                        modifier = Modifier.size(22.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = if (hasUpdate) "UPDATE AVAILABLE" else "SYSTEM UPDATE",
-                        fontFamily = DotMatrixFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 17.sp,
-                        letterSpacing = 1.8.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "•",
-                        color = NothingRed,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Black
-                    )
-                }
-            },
-            text = {
-                Column {
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
+        OrbitModalBottomSheet(
+            onDismissRequest = { showUpdateDialog = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 6.dp)
+            ) {
+                // Header Row
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(NothingRed, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = if (hasUpdate) "ORBITWALL ${updateInfo?.latestVersion}" else "ORBITWALL ${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}",
+                            text = if (hasUpdate) "UPDATE AVAILABLE" else "SYSTEM UPDATE",
                             fontFamily = DotMatrixFont,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface
+                            fontSize = 16.sp,
+                            letterSpacing = 1.6.sp,
+                            color = Color.White
                         )
-                        Surface(
-                            shape = RoundedCornerShape(12.dp),
-                            color = if (hasUpdate) NothingRed else NothingRed.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, if (hasUpdate) NothingRed else NothingRed.copy(alpha = 0.4f))
-                        ) {
-                            Text(
-                                text = if (hasUpdate) "NEW VERSION" else "UP TO DATE",
-                                fontFamily = DotMatrixFont,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 10.sp,
-                                color = if (hasUpdate) Color.White else NothingRed,
-                                modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
-                            )
-                        }
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
-                    if (hasUpdate) {
+
+                    // Version Badge
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(if (hasUpdate) Color(0xFF00E5FF).copy(alpha = 0.15f) else Color(0xFF00E676).copy(alpha = 0.15f))
+                            .border(1.dp, if (hasUpdate) Color(0xFF00E5FF).copy(alpha = 0.4f) else Color(0xFF00E676).copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
                         Text(
-                            text = updateInfo?.releaseTitle ?: "New Features & Improvements",
+                            text = if (hasUpdate) (updateInfo?.latestVersion ?: "NEW") else "UP TO DATE",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 10.sp,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                        Spacer(modifier = Modifier.height(6.dp))
-                        Text(
-                            text = updateInfo?.releaseNotes ?: "Bug fixes, performance improvements, and refreshed wallpapers.",
-                            fontSize = 12.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 17.sp
-                        )
-                        if (!updateInfo?.fileSizeFormatted.isNullOrEmpty()) {
-                            Spacer(modifier = Modifier.height(8.dp))
-                            Text(
-                                text = "PACKAGE SIZE: ${updateInfo?.fileSizeFormatted}",
-                                fontFamily = DotMatrixFont,
-                                fontSize = 10.sp,
-                                letterSpacing = 1.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
-                        }
-                    } else {
-                        Text(
-                            text = "You are running the latest version of Orbitwall (${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}). All Nothing OS themes, Dot-Matrix typography, and high-speed cloud edge catalogs are up to date.",
-                            fontSize = 13.sp,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                            lineHeight = 18.sp
+                            color = if (hasUpdate) Color(0xFF00E5FF) else Color(0xFF00E676)
                         )
                     }
                 }
-            },
-            confirmButton = {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Release Card (Hardware Hairline Border #26262A)
+                Surface(
+                    shape = RoundedCornerShape(18.dp),
+                    color = Color(0xFF141416),
+                    border = BorderStroke(1.dp, Color(0xFF26262A)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        Text(
+                            text = if (hasUpdate) (updateInfo?.releaseTitle ?: "New Release") else "Orbitwall ${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 15.sp,
+                            color = Color.White
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Text(
+                            text = if (hasUpdate) {
+                                updateInfo?.releaseNotes ?: "Bug fixes, performance improvements, and refreshed wallpapers."
+                            } else {
+                                "You are running the latest version of Orbitwall (${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}). All themes, Dot-Matrix typography, and high-speed cloud edge catalogs are up to date."
+                            },
+                            fontSize = 12.sp,
+                            color = Color(0xFFB0B0B8),
+                            lineHeight = 18.sp
+                        )
+                        if (hasUpdate && !updateInfo?.fileSizeFormatted.isNullOrEmpty()) {
+                            Spacer(modifier = Modifier.height(10.dp))
+                            Text(
+                                text = "PACKAGE SIZE // ${updateInfo?.fileSizeFormatted}",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.2.sp,
+                                color = Color(0xFF8E8E93)
+                            )
+                        }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(22.dp))
+
+                // Tactile Full-Capsule Action Button
                 if (hasUpdate) {
                     Button(
                         onClick = {
+                            triggerHaptic()
                             showUpdateDialog = false
                             val url = updateInfo?.downloadUrl ?: "https://github.com/fahitakrim/Orbitwall/releases"
                             val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -826,106 +824,154 @@ fun SettingsScreen(
                             containerColor = NothingRed,
                             contentColor = Color.White
                         ),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = RoundedCornerShape(percent = 50),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
                     ) {
+                        Icon(
+                            imageVector = Icons.Default.SystemUpdate,
+                            contentDescription = null,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
                         Text(
-                            text = "DOWNLOAD & INSTALL",
+                            text = "DOWNLOAD & INSTALL UPDATE",
                             fontFamily = DotMatrixFont,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            letterSpacing = 1.sp
+                            fontSize = 12.sp,
+                            letterSpacing = 1.2.sp
                         )
                     }
                 } else {
                     Button(
-                        onClick = { showUpdateDialog = false },
+                        onClick = {
+                            triggerHaptic()
+                            showUpdateDialog = false
+                        },
                         colors = ButtonDefaults.buttonColors(
-                            containerColor = NothingRed,
-                            contentColor = Color.White
+                            containerColor = Color.White,
+                            contentColor = Color.Black
                         ),
-                        shape = RoundedCornerShape(18.dp)
+                        shape = RoundedCornerShape(percent = 50),
+                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp)
                     ) {
                         Text(
-                            text = "CLOSE",
+                            text = "DONE",
                             fontFamily = DotMatrixFont,
                             fontWeight = FontWeight.Bold,
-                            fontSize = 11.sp,
-                            letterSpacing = 1.sp
+                            fontSize = 12.sp,
+                            letterSpacing = 1.2.sp
                         )
                     }
                 }
-            },
-            dismissButton = {
-                TextButton(
-                    onClick = {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/fahitakrim/Orbitwall/releases"))
-                        context.startActivity(intent)
-                    }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(percent = 50))
+                        .clickable {
+                            triggerHaptic()
+                            if (hasUpdate) {
+                                showUpdateDialog = false
+                            } else {
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/fahitakrim/Orbitwall/releases"))
+                                context.startActivity(intent)
+                            }
+                        }
+                        .padding(vertical = 10.dp)
                 ) {
                     Text(
                         text = if (hasUpdate) "LATER" else "GITHUB RELEASES",
                         fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
-                        letterSpacing = 1.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                        letterSpacing = 1.2.sp,
+                        color = Color(0xFF8E8E93)
                     )
                 }
             }
-        )
+        }
     }
 
-    // --- Announcements Dialog ---
+    // --- Announcements Bottom Sheet (AnnouncementSheet) ---
     if (showAnnouncementsDialog) {
-        AlertDialog(
-            onDismissRequest = { showAnnouncementsDialog = false },
-            shape = RoundedCornerShape(24.dp),
-            containerColor = MaterialTheme.colorScheme.surface,
-            title = {
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        imageVector = Icons.Default.Campaign,
-                        contentDescription = null,
-                        tint = NothingRed,
-                        modifier = Modifier.size(24.dp)
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(
-                        text = "ANNOUNCEMENTS",
-                        fontFamily = DotMatrixFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        letterSpacing = 2.sp,
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Spacer(modifier = Modifier.width(4.dp))
-                    Text(
-                        text = "•",
-                        color = NothingRed,
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.Black
-                    )
+        OrbitModalBottomSheet(
+            onDismissRequest = { showAnnouncementsDialog = false }
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 6.dp)
+            ) {
+                // Header Row
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(
+                            modifier = Modifier
+                                .size(10.dp)
+                                .background(NothingRed, CircleShape)
+                        )
+                        Spacer(modifier = Modifier.width(10.dp))
+                        Text(
+                            text = "COMMUNITY RADAR",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            letterSpacing = 1.6.sp,
+                            color = Color.White
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(Color(0xFF26262A))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                    ) {
+                        Text(
+                            text = "FEED",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFB0B0B8)
+                        )
+                    }
                 }
-            },
-            text = {
+
+                Spacer(modifier = Modifier.height(16.dp))
+
                 Column(
-                    modifier = Modifier.verticalScroll(rememberScrollState()),
-                    verticalArrangement = Arrangement.spacedBy(14.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .verticalScroll(rememberScrollState()),
+                    verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     AnnouncementCard(
-                        title = "Orbitwall v1.1.1 Released",
+                        title = "Orbitwall v1.1.2 Released",
                         tag = "LATEST UPDATE",
+                        description = "Orbit Music Takrim Aesthetic: edge-to-edge Bottom-Sheet-First architecture, connected tactile controls, and pixel-precise welcome placement."
+                    )
+                    AnnouncementCard(
+                        title = "Orbitwall v1.1.1 Released",
+                        tag = "MAJOR UPDATE",
                         description = "Custom wallpaper rankings, live catalog download metrics, instant update alerts, and performance enhancements across all AMOLED themes."
                     )
                     AnnouncementCard(
                         title = "Orbitwall v1.1.0 Released",
-                        tag = "MAJOR UPDATE",
+                        tag = "CATALOG SYNC",
                         description = "High-definition catalog sync, seamless wallpaper swipe previews, enhanced memory cache, and curated home carousel."
-                    )
-                    AnnouncementCard(
-                        title = "Orbitwall v1.0 Released",
-                        tag = "OFFICIAL LAUNCH",
-                        description = "Welcome to the all-new Nothing OS design system with Dot-Matrix typography, curated AMOLED & minimal wallpapers, and smooth swipe previews."
                     )
                     AnnouncementCard(
                         title = "Virtual Cloud Catalog",
@@ -938,154 +984,219 @@ fun SettingsScreen(
                         description = "Got suggestions or wallpaper requests? Reach out directly via Facebook or X (Twitter) using the developer links."
                     )
                 }
-            },
-            confirmButton = {
+
+                Spacer(modifier = Modifier.height(18.dp))
+
                 Button(
-                    onClick = { showAnnouncementsDialog = false },
+                    onClick = {
+                        triggerHaptic()
+                        showAnnouncementsDialog = false
+                    },
                     colors = ButtonDefaults.buttonColors(
-                        containerColor = NothingRed,
-                        contentColor = Color.White
+                        containerColor = Color.White,
+                        contentColor = Color.Black
                     ),
-                    shape = RoundedCornerShape(18.dp)
+                    shape = RoundedCornerShape(percent = 50),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(48.dp)
                 ) {
                     Text(
-                        text = "CLOSE",
+                        text = "DISMISS",
                         fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
-                        letterSpacing = 1.sp
+                        letterSpacing = 1.2.sp
                     )
                 }
             }
-        )
+        }
     }
 
-    // --- ADMIN LOGIN POPUP DIALOG (Triggered by 9 taps on Version) ---
+    // --- ADMIN LOGIN BOTTOM SHEET (AdminLoginSheet) ---
     if (showAdminLoginDialog) {
         var usernameInput by remember { mutableStateOf("admin") }
         var codeInput by remember { mutableStateOf("") }
         var loginError by remember { mutableStateOf<String?>(null) }
 
-        Dialog(onDismissRequest = { showAdminLoginDialog = false }) {
-            Surface(
-                shape = RoundedCornerShape(24.dp),
-                color = MaterialTheme.colorScheme.surface,
-                border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        OrbitModalBottomSheet(
+            onDismissRequest = { showAdminLoginDialog = false }
+        ) {
+            Column(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 8.dp)
+                    .padding(horizontal = 24.dp, vertical = 6.dp)
             ) {
-                Column(
-                    modifier = Modifier.padding(22.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                // Header Row
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    // Title with Nothing Red Dot
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.size(8.dp).background(NothingRed, CircleShape))
-                        Spacer(modifier = Modifier.width(8.dp))
+                        Box(modifier = Modifier.size(10.dp).background(NothingRed, CircleShape))
+                        Spacer(modifier = Modifier.width(10.dp))
                         Text(
-                            text = "ADMIN LOGIN",
+                            text = "ADMIN AUTHENTICATION",
                             fontFamily = DotMatrixFont,
                             fontWeight = FontWeight.Bold,
                             fontSize = 16.sp,
-                            letterSpacing = 1.5.sp,
-                            color = MaterialTheme.colorScheme.onSurface
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(4.dp))
-                    Text(
-                        text = "Enter 5-digit passcode to unlock console",
-                        fontSize = 12.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                    )
-
-                    Spacer(modifier = Modifier.height(18.dp))
-
-                    // Username Input
-                    OutlinedTextField(
-                        value = usernameInput,
-                        onValueChange = {
-                            usernameInput = it
-                            loginError = null
-                        },
-                        label = { Text("Username", fontSize = 12.sp) },
-                        singleLine = true,
-                        shape = RoundedCornerShape(16.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = NothingRed,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    Spacer(modifier = Modifier.height(12.dp))
-
-                    // Passcode Input (Hidden)
-                    OutlinedTextField(
-                        value = codeInput,
-                        onValueChange = {
-                            codeInput = it
-                            loginError = null
-                        },
-                        label = { Text("Passcode", fontSize = 12.sp) },
-                        placeholder = { Text("•••••") },
-                        singleLine = true,
-                        visualTransformation = PasswordVisualTransformation(),
-                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
-                        shape = RoundedCornerShape(16.dp),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = NothingRed,
-                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
-                        ),
-                        modifier = Modifier.fillMaxWidth()
-                    )
-
-                    if (loginError != null) {
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = loginError!!,
-                            color = NothingRed,
-                            fontSize = 12.sp,
-                            fontWeight = FontWeight.Medium
+                            letterSpacing = 1.6.sp,
+                            color = Color.White
                         )
                     }
 
-                    Spacer(modifier = Modifier.height(20.dp))
-
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.End
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(8.dp))
+                            .background(NothingRed.copy(alpha = 0.15f))
+                            .border(1.dp, NothingRed.copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                            .padding(horizontal = 8.dp, vertical = 3.dp)
                     ) {
-                        OutlinedButton(
-                            onClick = { showAdminLoginDialog = false },
-                            shape = RoundedCornerShape(14.dp),
-                            border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
-                        ) {
-                            Text("CANCEL", fontSize = 11.sp, color = MaterialTheme.colorScheme.onSurface)
-                        }
+                        Text(
+                            text = "RESTRICTED",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 9.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NothingRed
+                        )
+                    }
+                }
 
-                        Spacer(modifier = Modifier.width(10.dp))
+                Spacer(modifier = Modifier.height(6.dp))
+                Text(
+                    text = "Enter developer authorization passcode to unlock management console",
+                    fontSize = 12.sp,
+                    color = Color(0xFF8E8E93)
+                )
 
-                        Button(
-                            onClick = {
-                                val success = onAdminLogin(usernameInput, codeInput)
-                                if (success) {
-                                    triggerHaptic()
-                                    showAdminLoginDialog = false
-                                    onOpenAdminConsole()
-                                } else {
-                                    triggerHaptic()
-                                    loginError = "Incorrect passcode. Access denied."
-                                }
+                Spacer(modifier = Modifier.height(18.dp))
+
+                Surface(
+                    shape = RoundedCornerShape(18.dp),
+                    color = Color(0xFF141416),
+                    border = BorderStroke(1.dp, Color(0xFF26262A)),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Column(modifier = Modifier.padding(16.dp)) {
+                        OutlinedTextField(
+                            value = usernameInput,
+                            onValueChange = {
+                                usernameInput = it
+                                loginError = null
                             },
-                            colors = ButtonDefaults.buttonColors(
-                                containerColor = NothingRed,
-                                contentColor = Color.White
+                            label = { Text("Username", fontSize = 12.sp, color = Color(0xFF8E8E93)) },
+                            singleLine = true,
+                            shape = RoundedCornerShape(14.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = NothingRed,
+                                unfocusedBorderColor = Color(0xFF26262A),
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
                             ),
-                            shape = RoundedCornerShape(14.dp)
-                        ) {
-                            Text("LOGIN", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        OutlinedTextField(
+                            value = codeInput,
+                            onValueChange = {
+                                codeInput = it
+                                loginError = null
+                            },
+                            label = { Text("Passcode", fontSize = 12.sp, color = Color(0xFF8E8E93)) },
+                            placeholder = { Text("•••••", color = Color(0xFF55555A)) },
+                            singleLine = true,
+                            visualTransformation = PasswordVisualTransformation(),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.NumberPassword),
+                            shape = RoundedCornerShape(14.dp),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = NothingRed,
+                                unfocusedBorderColor = Color(0xFF26262A),
+                                focusedTextColor = Color.White,
+                                unfocusedTextColor = Color.White
+                            ),
+                            modifier = Modifier.fillMaxWidth()
+                        )
+
+                        if (loginError != null) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = loginError!!,
+                                color = NothingRed,
+                                fontSize = 12.sp,
+                                fontWeight = FontWeight.Medium
+                            )
                         }
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                // Connected Segmented Button Group (Asymmetric corner radii)
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = {
+                            triggerHaptic()
+                            showAdminLoginDialog = false
+                        },
+                        shape = RoundedCornerShape(
+                            topStart = 16.dp,
+                            bottomStart = 16.dp,
+                            topEnd = 6.dp,
+                            bottomEnd = 6.dp
+                        ),
+                        border = BorderStroke(1.dp, Color(0xFF26262A)),
+                        colors = ButtonDefaults.outlinedButtonColors(contentColor = Color.White),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                    ) {
+                        Text(
+                            text = "CANCEL",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.sp
+                        )
+                    }
+
+                    Button(
+                        onClick = {
+                            val success = onAdminLogin(usernameInput, codeInput)
+                            if (success) {
+                                triggerHaptic()
+                                showAdminLoginDialog = false
+                                onOpenAdminConsole()
+                            } else {
+                                triggerHaptic()
+                                loginError = "Incorrect passcode. Access denied."
+                            }
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NothingRed,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(
+                            topStart = 6.dp,
+                            bottomStart = 6.dp,
+                            topEnd = 16.dp,
+                            bottomEnd = 16.dp
+                        ),
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(48.dp)
+                    ) {
+                        Text(
+                            text = "LOGIN",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.sp
+                        )
                     }
                 }
             }

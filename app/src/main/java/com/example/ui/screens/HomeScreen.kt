@@ -691,8 +691,13 @@ fun FeaturedWallpaperCard(
 
                     Spacer(modifier = Modifier.width(6.dp))
 
+                    val dlText = when {
+                        wallpaper.downloads <= 0L -> "0 DL"
+                        wallpaper.downloads < 1000L -> "${wallpaper.downloads} DL"
+                        else -> "${String.format(java.util.Locale.US, "%.1f", wallpaper.downloads / 1000f)}K DL"
+                    }
                     Text(
-                        text = "• ${(wallpaper.downloads / 1000)}K DL",
+                        text = "• $dlText",
                         fontFamily = DotMatrixFont,
                         fontSize = 9.sp,
                         color = Color.White.copy(alpha = 0.75f)

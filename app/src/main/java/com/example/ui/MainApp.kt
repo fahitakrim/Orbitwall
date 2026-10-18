@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.offset
@@ -32,10 +33,14 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.border
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.material.icons.filled.Download
+import com.example.ui.components.OrbitModalBottomSheet
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
@@ -50,8 +55,11 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.example.ui.theme.DotMatrixFont
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.remember
@@ -61,6 +69,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.platform.testTag
@@ -83,7 +92,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlin.math.absoluteValue
 
-@OptIn(ExperimentalFoundationApi::class)
+@OptIn(ExperimentalFoundationApi::class, androidx.compose.material3.ExperimentalMaterial3Api::class)
 @Composable
 fun MainApp(
     viewModel: WallpaperViewModel = viewModel(),
@@ -121,9 +130,9 @@ fun MainApp(
         pageCount = { 3 }
     )
 
-    // Sync Pager state -> ViewModel navigation state with haptic feedback
-    LaunchedEffect(pagerState.currentPage) {
-        val targetScreen = when (pagerState.currentPage) {
+    // Sync Pager state -> ViewModel navigation state with haptic feedback (only when page has settled)
+    LaunchedEffect(pagerState.settledPage) {
+        val targetScreen = when (pagerState.settledPage) {
             0 -> AppScreen.EXPLORE
             1 -> AppScreen.FAVORITES
             else -> AppScreen.SETTINGS
@@ -141,8 +150,11 @@ fun MainApp(
             AppScreen.FAVORITES -> 1
             AppScreen.SETTINGS -> 2
         }
-        if (pagerState.currentPage != targetPage) {
-            pagerState.animateScrollToPage(targetPage)
+        if (pagerState.settledPage != targetPage && !pagerState.isScrollInProgress) {
+            pagerState.animateScrollToPage(
+                page = targetPage,
+                animationSpec = tween(durationMillis = 220, easing = FastOutSlowInEasing)
+            )
         }
     }
 
@@ -188,6 +200,7 @@ fun MainApp(
                     ) {
                         HorizontalPager(
                             state = pagerState,
+                            beyondViewportPageCount = 1,
                             modifier = Modifier.fillMaxSize()
                         ) { page ->
                             when (page) {
@@ -239,7 +252,10 @@ fun MainApp(
                                         onNavigateToExplore = {
                                             triggerHaptic()
                                             coroutineScope.launch {
-                                                pagerState.animateScrollToPage(0)
+                                                pagerState.animateScrollToPage(
+                                                    page = 0,
+                                                    animationSpec = tween(durationMillis = 220, easing = FastOutSlowInEasing)
+                                                )
                                             }
                                         }
                                     )
@@ -280,7 +296,10 @@ fun MainApp(
                                 onTabSelected = { targetPage ->
                                     triggerHaptic()
                                     coroutineScope.launch {
-                                        pagerState.animateScrollToPage(targetPage)
+                                        pagerState.animateScrollToPage(
+                                            page = targetPage,
+                                            animationSpec = tween(durationMillis = 220, easing = FastOutSlowInEasing)
+                                        )
                                     }
                                 },
                                 modifier = Modifier
@@ -373,58 +392,103 @@ fun MainApp(
                 )
             }
 
-            // Global In-App Update Prompt (Triggered automatically on startup if update is available)
+            // Global In-App Update Prompt (Orbit Bottom-Sheet-First Architecture)
             if (uiState.showInAppUpdateDialog && updateInfo?.isUpdateAvailable == true) {
                 val context = LocalContext.current
                 val update = updateInfo!!
-                AlertDialog(
-                    onDismissRequest = { viewModel.dismissInAppUpdateDialog() },
-                    shape = RoundedCornerShape(24.dp),
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    title = {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Box(modifier = Modifier.size(8.dp).background(NothingRed, androidx.compose.foundation.shape.CircleShape))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Text(
-                                text = "UPDATE AVAILABLE",
-                                fontFamily = DotMatrixFont,
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 17.sp,
-                                letterSpacing = 1.5.sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                        }
-                    },
-                    text = {
-                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                text = "${update.releaseTitle} is ready to install.",
-                                fontWeight = FontWeight.Bold,
-                                fontSize = 14.sp,
-                                color = MaterialTheme.colorScheme.onSurface
-                            )
-                            if (update.releaseNotes.isNotBlank()) {
+                OrbitModalBottomSheet(
+                    onDismissRequest = { viewModel.dismissInAppUpdateDialog() }
+                ) {
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 24.dp, vertical = 6.dp)
+                    ) {
+                        // Header Row
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(10.dp)
+                                        .background(NothingRed, CircleShape)
+                                )
+                                Spacer(modifier = Modifier.width(10.dp))
                                 Text(
-                                    text = update.releaseNotes,
-                                    fontSize = 12.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    lineHeight = 16.sp
+                                    text = "UPDATE AVAILABLE",
+                                    fontFamily = DotMatrixFont,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 16.sp,
+                                    letterSpacing = 1.6.sp,
+                                    color = Color.White
                                 )
                             }
-                            if (update.fileSizeFormatted.isNotBlank()) {
+
+                            // Version Badge (Cyan Pill)
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF00E5FF).copy(alpha = 0.15f))
+                                    .border(1.dp, Color(0xFF00E5FF).copy(alpha = 0.4f), RoundedCornerShape(8.dp))
+                                    .padding(horizontal = 8.dp, vertical = 3.dp)
+                            ) {
                                 Text(
-                                    text = "PACKAGE SIZE: ${update.fileSizeFormatted}",
+                                    text = update.latestVersion,
                                     fontFamily = DotMatrixFont,
                                     fontSize = 10.sp,
-                                    letterSpacing = 1.sp,
-                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF00E5FF)
                                 )
                             }
                         }
-                    },
-                    confirmButton = {
+
+                        Spacer(modifier = Modifier.height(16.dp))
+
+                        // Release Card (Hardware Hairline Border #26262A)
+                        Surface(
+                            shape = RoundedCornerShape(18.dp),
+                            color = Color(0xFF141416),
+                            border = BorderStroke(1.dp, Color(0xFF26262A)),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(
+                                    text = update.releaseTitle,
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 15.sp,
+                                    color = Color.White
+                                )
+                                if (update.releaseNotes.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(8.dp))
+                                    Text(
+                                        text = update.releaseNotes,
+                                        fontSize = 12.sp,
+                                        color = Color(0xFFB0B0B8),
+                                        lineHeight = 18.sp
+                                    )
+                                }
+                                if (update.fileSizeFormatted.isNotBlank()) {
+                                    Spacer(modifier = Modifier.height(10.dp))
+                                    Text(
+                                        text = "PACKAGE SIZE // ${update.fileSizeFormatted}",
+                                        fontFamily = DotMatrixFont,
+                                        fontSize = 10.sp,
+                                        letterSpacing = 1.2.sp,
+                                        color = Color(0xFF8E8E93)
+                                    )
+                                }
+                            }
+                        }
+
+                        Spacer(modifier = Modifier.height(22.dp))
+
+                        // Tactile Full-Capsule Action Button (Pillar 2: RoundedCornerShape(percent = 50))
                         Button(
                             onClick = {
+                                triggerHaptic()
                                 viewModel.dismissInAppUpdateDialog()
                                 val url = update.downloadUrl.ifBlank { "https://github.com/fahitakrim/Orbitwall/releases" }
                                 val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
@@ -434,32 +498,52 @@ fun MainApp(
                                 containerColor = NothingRed,
                                 contentColor = Color.White
                             ),
-                            shape = RoundedCornerShape(18.dp)
+                            shape = RoundedCornerShape(percent = 50),
+                            elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp)
                         ) {
+                            Icon(
+                                imageVector = Icons.Default.Download,
+                                contentDescription = null,
+                                modifier = Modifier.size(18.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
                             Text(
-                                text = "DOWNLOAD & UPDATE",
+                                text = "DOWNLOAD & INSTALL UPDATE",
                                 fontFamily = DotMatrixFont,
                                 fontWeight = FontWeight.Bold,
-                                fontSize = 11.sp,
-                                letterSpacing = 1.sp
+                                fontSize = 12.sp,
+                                letterSpacing = 1.2.sp
                             )
                         }
-                    },
-                    dismissButton = {
-                        TextButton(
-                            onClick = { viewModel.dismissInAppUpdateDialog() }
+
+                        Spacer(modifier = Modifier.height(8.dp))
+
+                        // Minimalist LATER Button
+                        Box(
+                            contentAlignment = Alignment.Center,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(percent = 50))
+                                .clickable {
+                                    triggerHaptic()
+                                    viewModel.dismissInAppUpdateDialog()
+                                }
+                                .padding(vertical = 10.dp)
                         ) {
                             Text(
                                 text = "LATER",
                                 fontFamily = DotMatrixFont,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 11.sp,
-                                letterSpacing = 1.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                letterSpacing = 1.2.sp,
+                                color = Color(0xFF8E8E93)
                             )
                         }
                     }
-                )
+                }
             }
         }
     }
@@ -486,14 +570,21 @@ private fun NothingBottomNavDock(
         totalDragDelta += delta
     }
 
-    // Continuous page position: [0.0f .. 2.0f]
-    val continuousPage = (pagerState.currentPage + pagerState.currentPageOffsetFraction)
-        .coerceIn(0f, 2f)
+    // Continuous page position: [0.0f .. 2.0f] using derivedStateOf to prevent recomposition spikes
+    val continuousPage by remember {
+        derivedStateOf {
+            (pagerState.currentPage + pagerState.currentPageOffsetFraction).coerceIn(0f, 2f)
+        }
+    }
 
     val homePillColor = if (isDarkMode) Color.White else MaterialTheme.colorScheme.onBackground
-    val activeIndicatorColor = when {
-        continuousPage <= 1f -> lerp(homePillColor, NothingRed, continuousPage)
-        else -> lerp(NothingRed, NothingBlue, continuousPage - 1f)
+    val activeIndicatorColor by remember(isDarkMode) {
+        derivedStateOf {
+            when {
+                continuousPage <= 1f -> lerp(homePillColor, NothingRed, continuousPage)
+                else -> lerp(NothingRed, NothingBlue, continuousPage - 1f)
+            }
+        }
     }
 
     Surface(
@@ -556,10 +647,11 @@ private fun NothingBottomNavDock(
                 }
 
                 // 2. Sliding Indicator Pill Layer (Concentric 24dp radius matching 28dp outer - 4dp padding)
-                val indicatorOffset = slotWidth * continuousPage
                 Box(
                     modifier = Modifier
-                        .offset(x = indicatorOffset)
+                        .graphicsLayer {
+                            translationX = slotWidth.toPx() * continuousPage
+                        }
                         .width(slotWidth)
                         .fillMaxHeight()
                         .clip(RoundedCornerShape(24.dp))
