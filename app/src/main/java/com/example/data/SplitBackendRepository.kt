@@ -113,7 +113,8 @@ class SplitBackendRepository(
         searchQuery: String? = null,
         page: Int = 0,
         pageSize: Int = 500,
-        forceRefresh: Boolean = false
+        forceRefresh: Boolean = false,
+        deletedIds: Set<String> = emptySet()
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
             val primaryUrl = "https://raw.githubusercontent.com/fahitakrim/Orbitwall/main/wallpapers.json?t=${System.currentTimeMillis()}"
@@ -147,9 +148,10 @@ class SplitBackendRepository(
                 val jsonBody = response.body?.string().orEmpty()
                 val list = wallpaperListAdapter.fromJson(jsonBody)
                 if (!list.isNullOrEmpty()) {
+                    val nonDeleted = if (deletedIds.isNotEmpty()) list.filter { it.id !in deletedIds } else list
                     synchronized(localCatalog) {
                         localCatalog.clear()
-                        localCatalog.addAll(list)
+                        localCatalog.addAll(nonDeleted)
                     }
                 }
             }
@@ -157,7 +159,16 @@ class SplitBackendRepository(
             // Network fallback to local in-memory catalog
         }
 
-        Result.success(filterLocalCatalog(category, searchQuery, page, pageSize))
+        Result.success(filterLocalCatalog(category, searchQuery, page, pageSize, deletedIds))
+    }
+
+    /**
+     * Removes a wallpaper from the in-memory catalog (Admin operation).
+     */
+    fun deleteWallpaper(id: String) {
+        synchronized(localCatalog) {
+            localCatalog.removeAll { it.id == id }
+        }
     }
 
     /**
@@ -381,9 +392,12 @@ class SplitBackendRepository(
         category: String?,
         searchQuery: String?,
         page: Int,
-        pageSize: Int
+        pageSize: Int,
+        deletedIds: Set<String> = emptySet()
     ): List<Wallpaper> {
-        var filtered = localCatalog.toList()
+        var filtered = synchronized(localCatalog) {
+            localCatalog.filter { it.id !in deletedIds }
+        }
 
         if (!category.isNullOrBlank() && !category.equals("All", ignoreCase = true)) {
             filtered = filtered.filter { it.category.equals(category, ignoreCase = true) }

@@ -29,9 +29,12 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.Wallpaper
+import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.CircularProgressIndicator
@@ -45,6 +48,8 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.PullToRefreshBox
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.layout.ContentScale
+import coil.compose.AsyncImage
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -70,6 +75,7 @@ import com.example.ui.theme.NothingRed
 @Composable
 fun HomeScreen(
     wallpapers: List<Wallpaper>,
+    featuredWallpapers: List<Wallpaper> = emptyList(),
     isLoading: Boolean,
     categories: List<String>,
     selectedCategory: String,
@@ -378,6 +384,18 @@ fun HomeScreen(
                         .fillMaxSize()
                         .testTag("wallpapers_staggered_grid")
                 ) {
+                    // Featured Wallpapers Hero Carousel (Only on All category without active search)
+                    if (featuredWallpapers.isNotEmpty() && (selectedCategory.equals("All", ignoreCase = true) || selectedCategory.isBlank()) && searchQuery.isBlank()) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            FeaturedWallpapersSection(
+                                featuredWallpapers = featuredWallpapers,
+                                favoriteIds = favoriteIds,
+                                onWallpaperClick = onWallpaperClick,
+                                onFavoriteClick = onFavoriteClick
+                            )
+                        }
+                    }
+
                     items(displayedWallpapers, key = { it.id }) { item ->
                         WallpaperCard(
                             wallpaper = item,
@@ -468,3 +486,220 @@ fun HomeScreen(
         }
     }
 }
+
+@Composable
+fun FeaturedWallpapersSection(
+    featuredWallpapers: List<Wallpaper>,
+    favoriteIds: Set<String>,
+    onWallpaperClick: (Wallpaper) -> Unit,
+    onFavoriteClick: (Wallpaper) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .padding(top = 2.dp, bottom = 12.dp)
+    ) {
+        // Section Header
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween,
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 4.dp, vertical = 4.dp)
+        ) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    modifier = Modifier
+                        .size(6.dp)
+                        .background(NothingRed, CircleShape)
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "FEATURED",
+                    fontFamily = DotMatrixFont,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 13.sp,
+                    letterSpacing = 1.5.sp,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
+                Spacer(modifier = Modifier.width(6.dp))
+                Text(
+                    text = "// CURATED SELECTION",
+                    fontFamily = DotMatrixFont,
+                    fontSize = 10.sp,
+                    letterSpacing = 1.sp,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            Text(
+                text = "${featuredWallpapers.size} PICKS",
+                fontFamily = DotMatrixFont,
+                fontSize = 10.sp,
+                fontWeight = FontWeight.Bold,
+                color = NothingRed
+            )
+        }
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Horizontal Carousel
+        LazyRow(
+            contentPadding = PaddingValues(horizontal = 2.dp),
+            horizontalArrangement = Arrangement.spacedBy(12.dp),
+            modifier = Modifier.fillMaxWidth()
+        ) {
+            items(featuredWallpapers, key = { "feat_${it.id}" }) { wp ->
+                FeaturedWallpaperCard(
+                    wallpaper = wp,
+                    isFavorite = favoriteIds.contains(wp.id),
+                    onClick = { onWallpaperClick(wp) },
+                    onFavoriteClick = { onFavoriteClick(wp) }
+                )
+            }
+        }
+    }
+}
+
+@Composable
+fun FeaturedWallpaperCard(
+    wallpaper: Wallpaper,
+    isFavorite: Boolean,
+    onClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    val cardBg = try {
+        Color(android.graphics.Color.parseColor(wallpaper.dominantColorHex))
+    } catch (_: Exception) {
+        MaterialTheme.colorScheme.surface
+    }
+
+    Surface(
+        shape = RoundedCornerShape(22.dp),
+        color = cardBg,
+        border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+        modifier = modifier
+            .size(width = 158.dp, height = 240.dp)
+            .clip(RoundedCornerShape(22.dp))
+            .clickable(onClick = onClick)
+    ) {
+        Box(modifier = Modifier.fillMaxSize()) {
+            AsyncImage(
+                model = wallpaper.thumbnailUrl,
+                contentDescription = wallpaper.title,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+
+            // Top Badges
+            Row(
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(8.dp)
+            ) {
+                // Featured Star Pill
+                Box(
+                    modifier = Modifier
+                        .clip(RoundedCornerShape(8.dp))
+                        .background(Color.Black.copy(alpha = 0.65f))
+                        .border(1.dp, Color(0xFFFFD700).copy(alpha = 0.5f), RoundedCornerShape(8.dp))
+                        .padding(horizontal = 6.dp, vertical = 3.dp)
+                ) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFD700),
+                            modifier = Modifier.size(11.dp)
+                        )
+                        Spacer(modifier = Modifier.width(3.dp))
+                        Text(
+                            text = "FEATURED",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFFFFD700)
+                        )
+                    }
+                }
+
+                // Favorite Heart Button
+                Box(
+                    contentAlignment = Alignment.Center,
+                    modifier = Modifier
+                        .size(28.dp)
+                        .background(Color.Black.copy(alpha = 0.55f), CircleShape)
+                        .border(1.dp, Color.White.copy(alpha = 0.2f), CircleShape)
+                        .clickable { onFavoriteClick() }
+                ) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Default.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = "Favorite",
+                        tint = if (isFavorite) NothingRed else Color.White,
+                        modifier = Modifier.size(15.dp)
+                    )
+                }
+            }
+
+            // Bottom Gradient Scrim & Info
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(85.dp)
+                    .align(Alignment.BottomCenter)
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(Color.Transparent, Color.Black.copy(alpha = 0.88f))
+                        )
+                    )
+            )
+
+            Column(
+                modifier = Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(10.dp)
+            ) {
+                Text(
+                    text = wallpaper.title,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 12.sp,
+                    color = Color.White,
+                    maxLines = 1
+                )
+
+                Spacer(modifier = Modifier.height(2.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Box(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(6.dp))
+                            .background(Color.White.copy(alpha = 0.2f))
+                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                    ) {
+                        Text(
+                            text = wallpaper.category.uppercase(),
+                            fontFamily = DotMatrixFont,
+                            fontSize = 8.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.White
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
+                    Text(
+                        text = "• ${(wallpaper.downloads / 1000)}K DL",
+                        fontFamily = DotMatrixFont,
+                        fontSize = 9.sp,
+                        color = Color.White.copy(alpha = 0.75f)
+                    )
+                }
+            }
+        }
+    }
+}
+
