@@ -110,14 +110,17 @@ fun WallpaperCard(
                 .fillMaxSize()
                 .background(dominantColor.copy(alpha = 0.15f))
         ) {
-            // High efficiency 450px thumbnail streaming from jsDelivr CDN
+            // High efficiency crisp thumbnail streaming with high quality scaling
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(wallpaper.thumbnailUrl)
+                    .allowHardware(true)
+                    .allowRgb565(false)
                     .crossfade(true)
                     .build(),
                 contentDescription = wallpaper.title,
                 contentScale = ContentScale.Crop,
+                filterQuality = androidx.compose.ui.graphics.FilterQuality.High,
                 modifier = Modifier
                     .fillMaxSize()
                     .testTag("wallpaper_thumb_${wallpaper.id}")

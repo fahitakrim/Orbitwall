@@ -173,6 +173,7 @@ fun MainApp(
                                         selectedCategory = uiState.selectedCategory,
                                         searchQuery = uiState.searchQuery,
                                         favoriteIds = favoriteIds,
+                                        visibleLimit = uiState.visibleLimit,
                                         onSelectCategory = {
                                             triggerHaptic()
                                             viewModel.selectCategory(it)
@@ -189,6 +190,10 @@ fun MainApp(
                                         onRefresh = {
                                             triggerHaptic()
                                             viewModel.refreshWallpapers()
+                                        },
+                                        onLoadMore = {
+                                            triggerHaptic()
+                                            viewModel.loadMoreWallpapers()
                                         }
                                     )
                                 }

@@ -116,17 +116,30 @@ class SplitBackendRepository(
         forceRefresh: Boolean = false
     ): Result<List<Wallpaper>> = withContext(Dispatchers.IO) {
         try {
-            val cacheBuster = if (forceRefresh) "?t=${System.currentTimeMillis()}" else ""
-            val primaryUrl = "https://raw.githubusercontent.com/fahitakrim/Orbitwall/main/wallpapers.json$cacheBuster"
-            val fallbackUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json$cacheBuster"
+            val primaryUrl = "https://raw.githubusercontent.com/fahitakrim/Orbitwall/main/wallpapers.json?t=${System.currentTimeMillis()}"
+            val fallbackUrl = "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/wallpapers.json?t=${System.currentTimeMillis()}"
 
             var response = try {
-                okHttpClient.newCall(Request.Builder().url(primaryUrl).addHeader("Accept", "application/json").get().build()).execute()
+                okHttpClient.newCall(
+                    Request.Builder()
+                        .url(primaryUrl)
+                        .addHeader("Accept", "application/json")
+                        .addHeader("Cache-Control", "no-cache, no-store")
+                        .get()
+                        .build()
+                ).execute()
             } catch (_: Exception) { null }
 
             if (response == null || !response.isSuccessful) {
                 response = try {
-                    okHttpClient.newCall(Request.Builder().url(fallbackUrl).addHeader("Accept", "application/json").get().build()).execute()
+                    okHttpClient.newCall(
+                        Request.Builder()
+                            .url(fallbackUrl)
+                            .addHeader("Accept", "application/json")
+                            .addHeader("Cache-Control", "no-cache, no-store")
+                            .get()
+                            .build()
+                    ).execute()
                 } catch (_: Exception) { null }
             }
 

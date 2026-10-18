@@ -16,17 +16,20 @@ class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Configure Coil dedicated 150 MB disk cache and 25% memory cache for offline wallpaper streaming
+        // Configure Coil for maximum fidelity: ARGB_8888, hardware acceleration, and 250 MB disk cache
         val imageLoader = ImageLoader.Builder(this)
+            .bitmapConfig(android.graphics.Bitmap.Config.ARGB_8888)
+            .allowHardware(true)
+            .allowRgb565(false)
             .memoryCache {
                 MemoryCache.Builder(this)
-                    .maxSizePercent(0.25)
+                    .maxSizePercent(0.30)
                     .build()
             }
             .diskCache {
                 DiskCache.Builder()
                     .directory(cacheDir.resolve("orbitwall_image_cache"))
-                    .maxSizeBytes(150L * 1024 * 1024)
+                    .maxSizeBytes(250L * 1024 * 1024)
                     .build()
             }
             .respectCacheHeaders(false)

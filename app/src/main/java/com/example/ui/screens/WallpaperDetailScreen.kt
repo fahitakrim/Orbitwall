@@ -139,11 +139,15 @@ fun WallpaperDetailScreen(
             AsyncImage(
                 model = ImageRequest.Builder(context)
                     .data(pageWallpaper.fullResUrl)
+                    .allowHardware(true)
+                    .allowRgb565(false)
                     .crossfade(true)
                     .placeholder(android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor(pageWallpaper.dominantColorHex)))
+                    .error(android.graphics.drawable.ColorDrawable(android.graphics.Color.parseColor(pageWallpaper.dominantColorHex)))
                     .build(),
                 contentDescription = pageWallpaper.title,
                 contentScale = ContentScale.Crop,
+                filterQuality = androidx.compose.ui.graphics.FilterQuality.High,
                 modifier = Modifier
                     .fillMaxSize()
                     .testTag("full_res_image")

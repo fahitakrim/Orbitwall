@@ -23,6 +23,7 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
 import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridItemSpan
 import androidx.compose.foundation.lazy.staggeredgrid.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -74,11 +75,13 @@ fun HomeScreen(
     selectedCategory: String,
     searchQuery: String,
     favoriteIds: Set<String>,
+    visibleLimit: Int = 24,
     onSelectCategory: (String) -> Unit,
     onSearchQueryChanged: (String) -> Unit,
     onWallpaperClick: (Wallpaper) -> Unit,
     onFavoriteClick: (Wallpaper) -> Unit,
     onRefresh: () -> Unit,
+    onLoadMore: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     var isSearchExpanded by remember { mutableStateOf(searchQuery.isNotEmpty()) }
@@ -365,22 +368,82 @@ fun HomeScreen(
                     }
                 }
             } else {
+                val displayedWallpapers = wallpapers.take(visibleLimit)
                 LazyVerticalStaggeredGrid(
                     columns = StaggeredGridCells.Fixed(2),
-                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 100.dp),
+                    contentPadding = PaddingValues(start = 16.dp, end = 16.dp, top = 2.dp, bottom = 120.dp),
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
                     verticalItemSpacing = 12.dp,
                     modifier = Modifier
                         .fillMaxSize()
                         .testTag("wallpapers_staggered_grid")
                 ) {
-                    items(wallpapers, key = { it.id }) { item ->
+                    items(displayedWallpapers, key = { it.id }) { item ->
                         WallpaperCard(
                             wallpaper = item,
                             isFavorite = favoriteIds.contains(item.id),
                             onCardClick = { onWallpaperClick(item) },
                             onFavoriteClick = { onFavoriteClick(item) }
                         )
+                    }
+
+                    if (wallpapers.size > visibleLimit) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 14.dp, bottom = 28.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Surface(
+                                    shape = RoundedCornerShape(24.dp),
+                                    color = MaterialTheme.colorScheme.surface,
+                                    border = androidx.compose.foundation.BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(24.dp))
+                                        .clickable { onLoadMore() }
+                                        .testTag("load_more_button")
+                                ) {
+                                    Row(
+                                        verticalAlignment = Alignment.CenterVertically,
+                                        modifier = Modifier.padding(horizontal = 22.dp, vertical = 12.dp)
+                                    ) {
+                                        Text(
+                                            text = "MORE WALLPAPERS (${wallpapers.size - visibleLimit} MORE)",
+                                            fontFamily = DotMatrixFont,
+                                            fontWeight = FontWeight.Bold,
+                                            fontSize = 11.sp,
+                                            letterSpacing = 1.2.sp,
+                                            color = MaterialTheme.colorScheme.onBackground
+                                        )
+                                        Spacer(modifier = Modifier.width(8.dp))
+                                        Text(
+                                            text = "•",
+                                            color = NothingRed,
+                                            fontSize = 16.sp,
+                                            fontWeight = FontWeight.Bold
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } else if (wallpapers.isNotEmpty()) {
+                        item(span = StaggeredGridItemSpan.FullLine) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(top = 12.dp, bottom = 32.dp),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Text(
+                                    text = "• ALL ${wallpapers.size} WALLPAPERS DISPLAYED •",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.2.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.6f)
+                                )
+                            }
+                        }
                     }
                 }
             }

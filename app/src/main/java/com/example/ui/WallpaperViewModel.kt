@@ -62,7 +62,9 @@ data class WallpaperUiState(
     val isOnboardingCompleted: Boolean = false,
     val themeMode: AppThemeMode = AppThemeMode.DARK,
     val hapticEnabled: Boolean = true,
-    val cacheSizeMb: Double = 0.0
+    val cacheSizeMb: Double = 0.0,
+    val visibleLimit: Int = 24,
+    val totalDownloads: Long = 0L
 )
 
 data class UploadUiState(
@@ -144,13 +146,31 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 searchQuery = query,
                 forceRefresh = forceRefresh
             )
-            result.onSuccess { list ->
-                _uiState.update { it.copy(wallpapers = list, isLoading = false) }
+            result.onSuccess { rawList ->
+                // Augment with local download tracking increments
+                val listWithLocalCounts = rawList.map { wp ->
+                    val localInc = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
+                    if (localInc > 0) wp.copy(downloads = wp.downloads + localInc) else wp
+                }
+
+                // In the ALL page, sort by download count (Highest downloads first)
+                val sortedList = if (catFilter == null || catFilter.equals("All", ignoreCase = true)) {
+                    listWithLocalCounts.sortedByDescending { it.downloads }
+                } else {
+                    listWithLocalCounts
+                }
+
+                val totalDl = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
+                _uiState.update { it.copy(wallpapers = sortedList, isLoading = false, totalDownloads = totalDl) }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
                 _userMessage.emit("Displaying curated Orbitwall collection.")
             }
         }
+    }
+
+    fun loadMoreWallpapers() {
+        _uiState.update { it.copy(visibleLimit = it.visibleLimit + 24) }
     }
 
     fun refreshWallpapers() {
@@ -159,7 +179,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
     fun selectCategory(category: String) {
-        _uiState.update { it.copy(selectedCategory = category) }
+        _uiState.update { it.copy(selectedCategory = category, visibleLimit = 24) }
         loadWallpapers(category = category, query = _uiState.value.searchQuery)
     }
 
@@ -251,6 +271,26 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             _uiState.update { it.copy(isDownloading = false) }
 
             result.onSuccess {
+                com.example.data.DownloadTracker.recordDownload(
+                    context = getApplication(),
+                    wallpaperId = wallpaper.id,
+                    wallpaperTitle = wallpaper.title
+                )
+                // Update in-memory wallpaper downloads count & total downloads
+                _uiState.update { state ->
+                    val updatedList = state.wallpapers.map {
+                        if (it.id == wallpaper.id) it.copy(downloads = it.downloads + 1) else it
+                    }
+                    val resortList = if (state.selectedCategory.equals("All", ignoreCase = true)) {
+                        updatedList.sortedByDescending { it.downloads }
+                    } else {
+                        updatedList
+                    }
+                    state.copy(
+                        wallpapers = resortList,
+                        totalDownloads = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
+                    )
+                }
                 _userMessage.emit("Saved in 4K resolution to Pictures/Orbitwall!")
             }.onFailure { error ->
                 _userMessage.emit("Download failed: ${error.localizedMessage ?: "Storage error"}")
