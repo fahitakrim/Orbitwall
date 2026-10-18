@@ -37,6 +37,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.rotate
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
@@ -94,9 +95,10 @@ fun OnboardingScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.65f)
-                .offset(y = (-40).dp, x = 10.dp)
+                .fillMaxHeight(0.58f)
+                .offset(y = (-36).dp, x = 10.dp)
                 .rotate(-8f)
+                .clipToBounds()
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
@@ -107,7 +109,7 @@ fun OnboardingScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    for (i in 0 until 4) {
+                    for (i in 0 until 3) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
                         OnboardingCardItem(imageUrl = img)
                     }
@@ -117,9 +119,9 @@ fun OnboardingScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .offset(y = (-30).dp)
+                        .offset(y = (-24).dp)
                 ) {
-                    for (i in 4 until 8) {
+                    for (i in 3 until 6) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
                         OnboardingCardItem(imageUrl = img)
                     }
@@ -129,7 +131,7 @@ fun OnboardingScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    for (i in 3 until 7) {
+                    for (i in 5 until 8) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
                         OnboardingCardItem(imageUrl = img)
                     }
@@ -137,7 +139,7 @@ fun OnboardingScreen(
             }
         }
 
-        // Gradient Scrim overlay fading into clean background
+        // Gradient Scrim overlay fading cleanly into solid background without ghost overlaps
         Box(
             modifier = Modifier
                 .fillMaxSize()
@@ -145,9 +147,9 @@ fun OnboardingScreen(
                     Brush.verticalGradient(
                         colorStops = arrayOf(
                             0.0f to Color.Transparent,
-                            0.35f to backgroundColor.copy(alpha = 0.4f),
-                            0.55f to backgroundColor.copy(alpha = 0.95f),
-                            0.7f to backgroundColor,
+                            0.32f to Color.Transparent,
+                            0.46f to backgroundColor.copy(alpha = 0.85f),
+                            0.56f to backgroundColor,
                             1.0f to backgroundColor
                         )
                     )

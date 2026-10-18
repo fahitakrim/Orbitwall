@@ -73,8 +73,23 @@ object DownloadTracker {
         return prefs.getLong("dl_$wallpaperId", 0L)
     }
 
+    fun setLocalDownloadCount(context: Context, wallpaperId: String, count: Long) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putLong("dl_$wallpaperId", maxOf(0L, count)).apply()
+    }
+
     fun getTotalDownloads(context: Context): Long {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
         return prefs.getLong("total_downloads", 0L)
+    }
+
+    fun setTotalDownloads(context: Context, count: Long) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().putLong("total_downloads", maxOf(0L, count)).apply()
+    }
+
+    fun resetAllStats(context: Context) {
+        val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        prefs.edit().clear().apply()
     }
 }

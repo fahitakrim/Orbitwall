@@ -75,7 +75,8 @@ data class WallpaperUiState(
     val onboardingWallpaperIds: Set<String> = emptySet(),
     val promotedWallpaperIds: List<String> = emptyList(),
     val demotedWallpaperIds: List<String> = emptyList(),
-    val deletedWallpaperIds: Set<String> = emptySet()
+    val deletedWallpaperIds: Set<String> = emptySet(),
+    val globalTotalDownloadsOverride: Long? = null
 ) {
     val featuredWallpapers: List<Wallpaper>
         get() = wallpapers.filter { featuredWallpaperIds.contains(it.id) }
@@ -88,6 +89,9 @@ data class WallpaperUiState(
 
     val totalAppDownloads: Long
         get() {
+            if (globalTotalDownloadsOverride != null && globalTotalDownloadsOverride >= 0L) {
+                return globalTotalDownloadsOverride
+            }
             val catalogSum = wallpapers.sumOf { it.downloads }
             return if (catalogSum > 0L) catalogSum else totalDownloads
         }
@@ -186,6 +190,10 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         val savedDemotedStr = prefs.getString("demoted_ids", "") ?: ""
         val savedDemoted = if (savedDemotedStr.isNotBlank()) savedDemotedStr.split(",").filter { it.isNotBlank() } else emptyList()
 
+        val globalOverride = if (prefs.contains("global_total_downloads_override")) {
+            prefs.getLong("global_total_downloads_override", 0L)
+        } else null
+
         _uiState.update {
             it.copy(
                 themeMode = theme,
@@ -195,7 +203,8 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 featuredWallpaperIds = savedFeatured,
                 onboardingWallpaperIds = savedOnboarding,
                 promotedWallpaperIds = savedPromoted,
-                demotedWallpaperIds = savedDemoted
+                demotedWallpaperIds = savedDemoted,
+                globalTotalDownloadsOverride = globalOverride
             )
         }
 
@@ -242,10 +251,19 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 // Filter out any deleted wallpapers
                 val nonDeleted = if (deleted.isNotEmpty()) rawList.filter { it.id !in deleted } else rawList
 
-                // Augment with local download tracking increments
+                // Augment with local download tracking increments or overrides
+                val isResetInflated = prefs.getBoolean("reset_inflated_stats", false)
                 val listWithLocalCounts = nonDeleted.map { wp ->
-                    val localInc = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
-                    if (localInc > 0) wp.copy(downloads = wp.downloads + localInc) else wp
+                    val overrideKey = "dl_override_${wp.id}"
+                    if (prefs.contains(overrideKey)) {
+                        wp.copy(downloads = prefs.getLong(overrideKey, 0L))
+                    } else if (isResetInflated) {
+                        val realDl = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
+                        wp.copy(downloads = realDl)
+                    } else {
+                        val localInc = com.example.data.DownloadTracker.getLocalDownloadCount(getApplication(), wp.id)
+                        if (localInc > 0) wp.copy(downloads = wp.downloads + localInc) else wp
+                    }
                 }
 
                 // In the ALL page, sort by download count (Highest downloads first)
@@ -388,8 +406,17 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                     } else {
                         updatedList
                     }
+                    val rankedList = applyCustomRankings(
+                        list = resortList,
+                        promoted = state.promotedWallpaperIds,
+                        demoted = state.demotedWallpaperIds
+                    )
+                    val selected = if (state.selectedWallpaper?.id == wallpaper.id) {
+                        state.selectedWallpaper.copy(downloads = state.selectedWallpaper.downloads + 1)
+                    } else state.selectedWallpaper
                     state.copy(
-                        wallpapers = resortList,
+                        wallpapers = rankedList,
+                        selectedWallpaper = selected,
                         totalDownloads = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
                     )
                 }
@@ -643,6 +670,72 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     fun dismissUpdateDialog() {
         _uiState.update { it.copy(showInAppUpdateDialog = false) }
+    }
+
+    fun updateWallpaperDownloadCount(wallpaperId: String, newCount: Long) {
+        val cleanCount = maxOf(0L, newCount)
+        prefs.edit().putLong("dl_override_$wallpaperId", cleanCount).apply()
+        com.example.data.DownloadTracker.setLocalDownloadCount(getApplication(), wallpaperId, cleanCount)
+
+        _uiState.update { state ->
+            val updatedList = state.wallpapers.map { wp ->
+                if (wp.id == wallpaperId) wp.copy(downloads = cleanCount) else wp
+            }
+            val rankedList = applyCustomRankings(
+                list = updatedList,
+                promoted = state.promotedWallpaperIds,
+                demoted = state.demotedWallpaperIds
+            )
+            val selected = if (state.selectedWallpaper?.id == wallpaperId) {
+                state.selectedWallpaper.copy(downloads = cleanCount)
+            } else state.selectedWallpaper
+            state.copy(wallpapers = rankedList, selectedWallpaper = selected)
+        }
+
+        viewModelScope.launch {
+            val title = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+            _userMessage.emit("Updated downloads for '$title' to ${String.format(java.util.Locale.US, "%,d", cleanCount)}")
+        }
+    }
+
+    fun updateGlobalTotalDownloads(newTotal: Long?) {
+        if (newTotal == null || newTotal < 0L) {
+            prefs.edit().remove("global_total_downloads_override").apply()
+            _uiState.update { it.copy(globalTotalDownloadsOverride = null) }
+            viewModelScope.launch {
+                val current = _uiState.value.totalAppDownloads
+                _userMessage.emit("Total downloads synced to catalog sum (${String.format(java.util.Locale.US, "%,d", current)})")
+            }
+        } else {
+            prefs.edit().putLong("global_total_downloads_override", newTotal).apply()
+            com.example.data.DownloadTracker.setTotalDownloads(getApplication(), newTotal)
+            _uiState.update { it.copy(globalTotalDownloadsOverride = newTotal) }
+            viewModelScope.launch {
+                _userMessage.emit("Total app downloads set to ${String.format(java.util.Locale.US, "%,d", newTotal)}")
+            }
+        }
+    }
+
+    fun resetInflatedDownloadStats() {
+        prefs.edit().putBoolean("reset_inflated_stats", true).apply()
+        prefs.edit().remove("global_total_downloads_override").apply()
+        com.example.data.DownloadTracker.resetAllStats(getApplication())
+
+        val allPrefs = prefs.all
+        val editor = prefs.edit()
+        allPrefs.keys.forEach { key ->
+            if (key.startsWith("dl_override_")) {
+                editor.remove(key)
+            }
+        }
+        editor.apply()
+
+        _uiState.update { it.copy(globalTotalDownloadsOverride = null) }
+        loadWallpapers(forceRefresh = true)
+
+        viewModelScope.launch {
+            _userMessage.emit("All inflated download stats reset to verified real metrics (0+)")
+        }
     }
 
     fun deleteWallpaper(wallpaperId: String) {

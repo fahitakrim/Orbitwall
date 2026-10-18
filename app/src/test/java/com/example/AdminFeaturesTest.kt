@@ -195,4 +195,42 @@ class AdminFeaturesTest {
         val total = viewModel.uiState.value.totalAppDownloads
         assertTrue("Total app downloads should be non-negative", total >= 0L)
     }
+
+    @Test
+    fun `updateWallpaperDownloadCount updates downloads for a specific wallpaper`() {
+        val wallpapers = viewModel.uiState.value.wallpapers
+        if (wallpapers.isNotEmpty()) {
+            val target = wallpapers.first()
+            val newCount = 7777L
+            viewModel.updateWallpaperDownloadCount(target.id, newCount)
+
+            val updatedTarget = viewModel.uiState.value.wallpapers.find { it.id == target.id }
+            assertNotNull(updatedTarget)
+            assertEquals(newCount, updatedTarget!!.downloads)
+        }
+    }
+
+    @Test
+    fun `updateGlobalTotalDownloads sets and resets total downloads override`() {
+        val testOverride = 999999L
+        viewModel.updateGlobalTotalDownloads(testOverride)
+        assertEquals(testOverride, viewModel.uiState.value.totalAppDownloads)
+
+        // Reset to catalog sum
+        viewModel.updateGlobalTotalDownloads(null)
+        val catalogSum = viewModel.uiState.value.wallpapers.sumOf { it.downloads }
+        assertEquals(catalogSum, viewModel.uiState.value.totalAppDownloads)
+    }
+
+    @Test
+    fun `resetInflatedDownloadStats clears overrides and resets state`() {
+        viewModel.updateGlobalTotalDownloads(123456L)
+        assertEquals(123456L, viewModel.uiState.value.totalAppDownloads)
+
+        viewModel.resetInflatedDownloadStats()
+        ShadowLooper.idleMainLooper()
+
+        val updatedOverride = viewModel.uiState.value.globalTotalDownloadsOverride
+        assertEquals(null, updatedOverride)
+    }
 }

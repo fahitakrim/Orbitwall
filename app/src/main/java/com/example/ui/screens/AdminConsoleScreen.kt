@@ -107,6 +107,9 @@ fun AdminConsoleScreen(
     onToggleOnboarding: (String) -> Unit = {},
     onPromoteWallpaper: (String) -> Unit = {},
     onDemoteWallpaper: (String) -> Unit = {},
+    onUpdateWallpaperDownloads: (wallpaperId: String, newCount: Long) -> Unit = { _, _ -> },
+    onUpdateGlobalDownloads: (Long?) -> Unit = {},
+    onResetInflatedDownloads: () -> Unit = {},
     onPreviewWelcomeScreen: () -> Unit = {},
     onDeleteWallpaper: (String) -> Unit,
     onImageSelected: (Uri?) -> Unit,
@@ -125,6 +128,8 @@ fun AdminConsoleScreen(
     var searchQuery by remember { mutableStateOf("") }
     var activeFilter by remember { mutableStateOf("ALL") }
     var wallpaperToDelete by remember { mutableStateOf<Wallpaper?>(null) }
+    var wallpaperToEditDownloads by remember { mutableStateOf<Wallpaper?>(null) }
+    var showGlobalTotalDialog by remember { mutableStateOf(false) }
 
     val photoPickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.PickVisualMedia()
@@ -376,6 +381,7 @@ fun AdminConsoleScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp, vertical = 6.dp)
+                        .clickable { showGlobalTotalDialog = true }
                 ) {
                     Row(
                         modifier = Modifier
@@ -385,13 +391,30 @@ fun AdminConsoleScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Column {
-                            Text(
-                                text = "TOTAL APP DOWNLOADS",
-                                fontFamily = DotMatrixFont,
-                                fontSize = 10.sp,
-                                letterSpacing = 1.2.sp,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
-                            )
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "TOTAL APP DOWNLOADS",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.2.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(6.dp))
+                                        .background(Color(0xFF00E5FF).copy(alpha = 0.15f))
+                                        .padding(horizontal = 5.dp, vertical = 2.dp)
+                                ) {
+                                    Text(
+                                        text = "CALIBRATE ⚙",
+                                        fontFamily = DotMatrixFont,
+                                        fontSize = 8.sp,
+                                        fontWeight = FontWeight.Bold,
+                                        color = Color(0xFF00E5FF)
+                                    )
+                                }
+                            }
                             Spacer(modifier = Modifier.height(3.dp))
                             Row(verticalAlignment = Alignment.CenterVertically) {
                                 Icon(
@@ -402,7 +425,7 @@ fun AdminConsoleScreen(
                                 )
                                 Spacer(modifier = Modifier.width(6.dp))
                                 val catalogDownloads = wallpapers.sumOf { it.downloads }
-                                val displayTotal = if (catalogDownloads > 0L) catalogDownloads else totalDownloads
+                                val displayTotal = if (totalDownloads > 0L) totalDownloads else catalogDownloads
                                 Text(
                                     text = String.format(Locale.US, "%,d", displayTotal),
                                     fontSize = 18.sp,
@@ -776,6 +799,7 @@ fun AdminConsoleScreen(
                                                     modifier = Modifier
                                                         .clip(RoundedCornerShape(6.dp))
                                                         .background(Color(0xFF00E5FF).copy(alpha = 0.12f))
+                                                        .clickable { wallpaperToEditDownloads = wp }
                                                         .padding(horizontal = 6.dp, vertical = 2.dp)
                                                 ) {
                                                     Row(verticalAlignment = Alignment.CenterVertically) {
@@ -946,7 +970,33 @@ fun AdminConsoleScreen(
                                             )
                                         }
 
-                                        // 5. Delete Button (Red)
+                                        // 5. Download Count Calibration Button (Cyan Outline)
+                                        Button(
+                                            onClick = { wallpaperToEditDownloads = wp },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = MaterialTheme.colorScheme.surface,
+                                                contentColor = Color(0xFF00E5FF)
+                                            ),
+                                            border = BorderStroke(1.dp, Color(0xFF00E5FF).copy(alpha = 0.5f)),
+                                            shape = RoundedCornerShape(10.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.Download,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(11.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text(
+                                                text = "COUNT ⬇",
+                                                fontFamily = DotMatrixFont,
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
+                                        // 6. Delete Button (Red)
                                         Button(
                                             onClick = { wallpaperToDelete = wp },
                                             colors = ButtonDefaults.buttonColors(
@@ -1265,6 +1315,288 @@ fun AdminConsoleScreen(
             dismissButton = {
                 OutlinedButton(
                     onClick = { wallpaperToDelete = null },
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                ) {
+                    Text(text = "CANCEL", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
+                }
+            },
+            shape = RoundedCornerShape(22.dp),
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    }
+
+    // --- Edit Individual Wallpaper Download Count Dialog ---
+    wallpaperToEditDownloads?.let { wp ->
+        var countInput by remember(wp) { mutableStateOf(wp.downloads.toString()) }
+        AlertDialog(
+            onDismissRequest = { wallpaperToEditDownloads = null },
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Download,
+                        contentDescription = null,
+                        tint = Color(0xFF00E5FF),
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "CORRECT DOWNLOADS",
+                        fontFamily = DotMatrixFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 15.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Edit download metadata for \"${wp.title}\"",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    OutlinedTextField(
+                        value = countInput,
+                        onValueChange = { input ->
+                            if (input.all { it.isDigit() } && input.length <= 10) {
+                                countInput = input
+                            }
+                        },
+                        label = { Text("Download Count", fontSize = 11.sp) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = Color(0xFF00E5FF),
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Text(
+                        text = "QUICK PRESETS",
+                        fontFamily = DotMatrixFont,
+                        fontSize = 9.sp,
+                        letterSpacing = 1.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    val presets = listOf(0L, 100L, 500L, 1200L, 5000L, 10000L, 25000L, 50000L)
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        presets.forEach { preset ->
+                            val label = if (preset == 0L) "0 (Real)" else if (preset >= 1000) "${preset / 1000}K" else "$preset"
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF00E5FF).copy(alpha = 0.12f))
+                                    .border(1.dp, Color(0xFF00E5FF).copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+                                    .clickable { countInput = preset.toString() }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = label,
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF00E5FF)
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val newCount = countInput.toLongOrNull() ?: wp.downloads
+                        wallpaperToEditDownloads = null
+                        onUpdateWallpaperDownloads(wp.id, newCount)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00E5FF), contentColor = Color.Black),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text = "SAVE COUNT", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { wallpaperToEditDownloads = null },
+                    shape = RoundedCornerShape(12.dp),
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
+                ) {
+                    Text(text = "CANCEL", fontSize = 12.sp, color = MaterialTheme.colorScheme.onSurface)
+                }
+            },
+            shape = RoundedCornerShape(22.dp),
+            containerColor = MaterialTheme.colorScheme.surface
+        )
+    }
+
+    // --- Edit Global Total Downloads Dialog ---
+    if (showGlobalTotalDialog) {
+        val catalogSum = wallpapers.sumOf { it.downloads }
+        val currentTotal = if (totalDownloads > 0L) totalDownloads else catalogSum
+        var totalInput by remember { mutableStateOf(currentTotal.toString()) }
+
+        AlertDialog(
+            onDismissRequest = { showGlobalTotalDialog = false },
+            title = {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.DataUsage,
+                        contentDescription = null,
+                        tint = NothingRed,
+                        modifier = Modifier.size(20.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "TOTAL DOWNLOADS CALIBRATION",
+                        fontFamily = DotMatrixFont,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 14.sp,
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+                }
+            },
+            text = {
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Calibrate global app downloads metadata. Catalog sum is currently ${String.format(Locale.US, "%,d", catalogSum)}.",
+                        fontSize = 12.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    OutlinedTextField(
+                        value = totalInput,
+                        onValueChange = { input ->
+                            if (input.all { it.isDigit() } && input.length <= 12) {
+                                totalInput = input
+                            }
+                        },
+                        label = { Text("Total App Downloads", fontSize = 11.sp) },
+                        singleLine = true,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = OutlinedTextFieldDefaults.colors(
+                            focusedBorderColor = NothingRed,
+                            unfocusedBorderColor = MaterialTheme.colorScheme.outline
+                        ),
+                        modifier = Modifier.fillMaxWidth()
+                    )
+
+                    Text(
+                        text = "QUICK ACTIONS",
+                        fontFamily = DotMatrixFont,
+                        fontSize = 9.sp,
+                        letterSpacing = 1.sp,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+
+                    FlowRow(
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        // Action 1: Sync with catalog sum
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(8.dp))
+                                .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+                                .border(1.dp, MaterialTheme.colorScheme.outline, RoundedCornerShape(8.dp))
+                                .clickable { totalInput = catalogSum.toString() }
+                                .padding(horizontal = 8.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                text = "CATALOG SUM (${String.format(Locale.US, "%,d", catalogSum)})",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 9.sp,
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+
+                        // Preset chips
+                        listOf(1000L, 5000L, 10000L, 50000L, 100000L).forEach { p ->
+                            Box(
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(8.dp))
+                                    .background(Color(0xFF00E5FF).copy(alpha = 0.12f))
+                                    .border(1.dp, Color(0xFF00E5FF).copy(alpha = 0.35f), RoundedCornerShape(8.dp))
+                                    .clickable { totalInput = p.toString() }
+                                    .padding(horizontal = 8.dp, vertical = 4.dp)
+                            ) {
+                                Text(
+                                    text = "${p / 1000}K",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 9.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF00E5FF)
+                                )
+                            }
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    // Prominent Reset Button for Inflated Stats
+                    Surface(
+                        shape = RoundedCornerShape(12.dp),
+                        color = NothingRed.copy(alpha = 0.12f),
+                        border = BorderStroke(1.dp, NothingRed.copy(alpha = 0.4f)),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable {
+                                showGlobalTotalDialog = false
+                                onResetInflatedDownloads()
+                            }
+                    ) {
+                        Row(
+                            modifier = Modifier.padding(10.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.Refresh,
+                                contentDescription = null,
+                                tint = NothingRed,
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Column {
+                                Text(
+                                    text = "RESET INFLATED STATS TO REAL (0+)",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 10.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = NothingRed
+                                )
+                                Text(
+                                    text = "Wipes synthetic mock metrics. Only real downloads tracked.",
+                                    fontSize = 9.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                Button(
+                    onClick = {
+                        val newTotal = totalInput.toLongOrNull()
+                        showGlobalTotalDialog = false
+                        onUpdateGlobalDownloads(newTotal)
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = NothingRed, contentColor = Color.White),
+                    shape = RoundedCornerShape(12.dp)
+                ) {
+                    Text(text = "APPLY TOTAL", fontFamily = DotMatrixFont, fontWeight = FontWeight.Bold, fontSize = 12.sp)
+                }
+            },
+            dismissButton = {
+                OutlinedButton(
+                    onClick = { showGlobalTotalDialog = false },
                     shape = RoundedCornerShape(12.dp),
                     border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline)
                 ) {
