@@ -139,13 +139,22 @@ fun MainApp(
                 .fillMaxSize()
                 .background(MaterialTheme.colorScheme.background)
         ) {
-            if (!uiState.isOnboardingCompleted) {
+            if (!uiState.isOnboardingCompleted || uiState.isPreviewingOnboarding) {
                 // Screen 1: Welcome / Onboarding Screen
                 OnboardingScreen(
-                    wallpapers = uiState.wallpapers,
+                    wallpapers = uiState.onboardingWallpapers,
                     onStartExplore = {
                         triggerHaptic()
-                        viewModel.completeOnboarding()
+                        if (uiState.isPreviewingOnboarding) {
+                            viewModel.setPreviewingOnboarding(false)
+                        } else {
+                            viewModel.completeOnboarding()
+                        }
+                    },
+                    isPreview = uiState.isPreviewingOnboarding,
+                    onExitPreview = {
+                        triggerHaptic()
+                        viewModel.setPreviewingOnboarding(false)
                     }
                 )
             } else {
@@ -282,6 +291,7 @@ fun MainApp(
                     isDownloading = uiState.isDownloading,
                     isAdmin = uiState.isAdmin,
                     featuredWallpaperIds = uiState.featuredWallpaperIds,
+                    onboardingWallpaperIds = uiState.onboardingWallpaperIds,
                     onBackClick = {
                         triggerHaptic()
                         viewModel.closeWallpaperDetail()
@@ -308,6 +318,9 @@ fun MainApp(
                     onToggleFeatured = { wp ->
                         viewModel.toggleFeaturedWallpaper(wp.id)
                     },
+                    onToggleOnboarding = { wp ->
+                        viewModel.toggleOnboardingWallpaper(wp.id)
+                    },
                     onDeleteWallpaper = { wp ->
                         viewModel.deleteWallpaper(wp.id)
                     },
@@ -320,9 +333,12 @@ fun MainApp(
                 AdminConsoleScreen(
                     wallpapers = uiState.wallpapers,
                     featuredWallpaperIds = uiState.featuredWallpaperIds,
+                    onboardingWallpaperIds = uiState.onboardingWallpaperIds,
                     uploadState = uploadState,
                     categories = viewModel.categories,
                     onToggleFeatured = { id -> viewModel.toggleFeaturedWallpaper(id) },
+                    onToggleOnboarding = { id -> viewModel.toggleOnboardingWallpaper(id) },
+                    onPreviewWelcomeScreen = { viewModel.setPreviewingOnboarding(true) },
                     onDeleteWallpaper = { id -> viewModel.deleteWallpaper(id) },
                     onImageSelected = { uri -> viewModel.onUploadImageSelected(uri) },
                     onTitleChanged = { title -> viewModel.onUploadTitleChanged(title) },

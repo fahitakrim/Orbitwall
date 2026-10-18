@@ -1,7 +1,9 @@
 package com.example.ui.screens
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,11 +18,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,11 +50,14 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.example.model.Wallpaper
+import com.example.ui.theme.DotMatrixFont
 
 @Composable
 fun OnboardingScreen(
     wallpapers: List<Wallpaper>,
     onStartExplore: () -> Unit,
+    isPreview: Boolean = false,
+    onExitPreview: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -69,6 +77,12 @@ fun OnboardingScreen(
     }
 
     val backgroundColor = Color(0xFFF7F8FC)
+
+    if (isPreview) {
+        BackHandler(enabled = true) {
+            onExitPreview()
+        }
+    }
 
     Box(
         modifier = modifier
@@ -140,6 +154,46 @@ fun OnboardingScreen(
                 )
         )
 
+        // Top Floating Pill for Preview Mode
+        if (isPreview) {
+            Box(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .align(Alignment.TopCenter)
+                    .padding(top = 16.dp)
+                    .clip(RoundedCornerShape(24.dp))
+                    .background(Color(0xEE161720))
+                    .border(1.dp, Color(0xFF00E676).copy(alpha = 0.8f), RoundedCornerShape(24.dp))
+                    .clickable { onExitPreview() }
+                    .padding(horizontal = 18.dp, vertical = 9.dp)
+            ) {
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Visibility,
+                        contentDescription = null,
+                        tint = Color(0xFF00E676),
+                        modifier = Modifier.size(15.dp)
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text(
+                        text = "PREVIEW MODE // TAP TO EXIT",
+                        fontFamily = DotMatrixFont,
+                        color = Color.White,
+                        fontSize = 11.sp,
+                        fontWeight = FontWeight.Bold,
+                        letterSpacing = 1.sp
+                    )
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(
+                        imageVector = Icons.Default.Close,
+                        contentDescription = "Close",
+                        tint = Color(0xFF00E676),
+                        modifier = Modifier.size(14.dp)
+                    )
+                }
+            }
+        }
+
         // Lower Content: Title, Subtitle, and "Start Explore" Pill Button
         Column(
             horizontalAlignment = Alignment.CenterHorizontally,
@@ -171,7 +225,7 @@ fun OnboardingScreen(
             Spacer(modifier = Modifier.height(32.dp))
 
             Button(
-                onClick = onStartExplore,
+                onClick = if (isPreview) onExitPreview else onStartExplore,
                 shape = RoundedCornerShape(28.dp),
                 colors = ButtonDefaults.buttonColors(
                     containerColor = Color(0xFF161720),
@@ -184,7 +238,7 @@ fun OnboardingScreen(
                     .testTag("start_explore_button")
             ) {
                 Text(
-                    text = "Start Explore",
+                    text = if (isPreview) "Close Preview" else "Start Explore",
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 0.5.sp

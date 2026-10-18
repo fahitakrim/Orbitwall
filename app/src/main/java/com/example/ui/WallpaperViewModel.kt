@@ -62,6 +62,7 @@ data class WallpaperUiState(
     val isDownloading: Boolean = false,
     val currentScreen: AppScreen = AppScreen.EXPLORE,
     val isOnboardingCompleted: Boolean = false,
+    val isPreviewingOnboarding: Boolean = false,
     val themeMode: AppThemeMode = AppThemeMode.DARK,
     val hapticEnabled: Boolean = true,
     val cacheSizeMb: Double = 0.0,
@@ -70,10 +71,17 @@ data class WallpaperUiState(
     val isAdmin: Boolean = false,
     val isAdminConsoleOpen: Boolean = false,
     val featuredWallpaperIds: Set<String> = emptySet(),
+    val onboardingWallpaperIds: Set<String> = emptySet(),
     val deletedWallpaperIds: Set<String> = emptySet()
 ) {
     val featuredWallpapers: List<Wallpaper>
         get() = wallpapers.filter { featuredWallpaperIds.contains(it.id) }
+
+    val onboardingWallpapers: List<Wallpaper>
+        get() {
+            val selected = wallpapers.filter { onboardingWallpaperIds.contains(it.id) }
+            return if (selected.isNotEmpty()) selected else wallpapers.take(8)
+        }
 }
 
 data class UploadUiState(
@@ -151,13 +159,26 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         )
         val savedFeatured = prefs.getStringSet("featured_ids", defaultFeatured) ?: defaultFeatured
 
+        val defaultOnboarding = setOf(
+            "paper-akatsuki-moonlit-gathering",
+            "paper-minimal-capsule-stack",
+            "paper-itachi-red-moon",
+            "paper-solitary-red-boat",
+            "paper-eclipse-spheres-red-glow",
+            "paper-kakashi-sharingan-moon",
+            "paper-crimson-amber-fluid-flow",
+            "paper-cherry-blossom-black"
+        )
+        val savedOnboarding = prefs.getStringSet("onboarding_ids", defaultOnboarding) ?: defaultOnboarding
+
         _uiState.update {
             it.copy(
                 themeMode = theme,
                 hapticEnabled = haptic,
                 isAdmin = isAdmin,
                 deletedWallpaperIds = savedDeleted,
-                featuredWallpaperIds = savedFeatured
+                featuredWallpaperIds = savedFeatured,
+                onboardingWallpaperIds = savedOnboarding
             )
         }
 
@@ -463,6 +484,29 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         }
     }
 
+    fun toggleOnboardingWallpaper(wallpaperId: String) {
+        val current = _uiState.value.onboardingWallpaperIds.toMutableSet()
+        val wasOnboarding = current.contains(wallpaperId)
+        if (wasOnboarding) {
+            current.remove(wallpaperId)
+        } else {
+            current.add(wallpaperId)
+        }
+        prefs.edit().putStringSet("onboarding_ids", current).apply()
+        _uiState.update { it.copy(onboardingWallpaperIds = current) }
+        viewModelScope.launch {
+            val title = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+            _userMessage.emit(
+                if (wasOnboarding) "Removed '$title' from Welcome Screen"
+                else "Added '$title' to Welcome Screen (${current.size} active)"
+            )
+        }
+    }
+
+    fun setPreviewingOnboarding(previewing: Boolean) {
+        _uiState.update { it.copy(isPreviewingOnboarding = previewing) }
+    }
+
     fun deleteWallpaper(wallpaperId: String) {
         val currentDeleted = _uiState.value.deletedWallpaperIds.toMutableSet()
         currentDeleted.add(wallpaperId)
@@ -472,6 +516,11 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         val currentFeatured = _uiState.value.featuredWallpaperIds.toMutableSet()
         currentFeatured.remove(wallpaperId)
         prefs.edit().putStringSet("featured_ids", currentFeatured).apply()
+
+        // Remove from onboarding if it was in onboarding
+        val currentOnboarding = _uiState.value.onboardingWallpaperIds.toMutableSet()
+        currentOnboarding.remove(wallpaperId)
+        prefs.edit().putStringSet("onboarding_ids", currentOnboarding).apply()
 
         // Remove from repository in-memory catalog
         splitRepository.deleteWallpaper(wallpaperId)
@@ -488,6 +537,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             it.copy(
                 deletedWallpaperIds = currentDeleted,
                 featuredWallpaperIds = currentFeatured,
+                onboardingWallpaperIds = currentOnboarding,
                 wallpapers = it.wallpapers.filter { wp -> wp.id != wallpaperId }
             )
         }

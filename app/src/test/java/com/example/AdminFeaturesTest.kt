@@ -111,4 +111,48 @@ class AdminFeaturesTest {
         assertFalse("Deleted wallpaper should not be in featured list", updatedState.featuredWallpaperIds.contains(targetId))
         assertFalse("Deleted wallpaper should not be in computed featuredWallpapers", updatedState.featuredWallpapers.any { it.id == targetId })
     }
+
+    @Test
+    fun `toggle onboarding wallpaper updates onboarding list and onboardingWallpapers`() {
+        val testWallpaperId = "paper-minimal-capsule-stack"
+        val initialOnboarding = viewModel.uiState.value.onboardingWallpaperIds.contains(testWallpaperId)
+
+        viewModel.toggleOnboardingWallpaper(testWallpaperId)
+        val afterFirstToggle = viewModel.uiState.value.onboardingWallpaperIds.contains(testWallpaperId)
+        assertEquals(!initialOnboarding, afterFirstToggle)
+
+        // Toggle back
+        viewModel.toggleOnboardingWallpaper(testWallpaperId)
+        val afterSecondToggle = viewModel.uiState.value.onboardingWallpaperIds.contains(testWallpaperId)
+        assertEquals(initialOnboarding, afterSecondToggle)
+    }
+
+    @Test
+    fun `delete wallpaper removes it from onboarding list as well`() {
+        val targetId = "paper-itachi-red-moon"
+
+        // Make sure it is in onboarding set first
+        if (!viewModel.uiState.value.onboardingWallpaperIds.contains(targetId)) {
+            viewModel.toggleOnboardingWallpaper(targetId)
+        }
+        assertTrue(viewModel.uiState.value.onboardingWallpaperIds.contains(targetId))
+
+        // Delete the wallpaper
+        viewModel.deleteWallpaper(targetId)
+
+        val updatedState = viewModel.uiState.value
+        assertTrue("Deleted ID should be in deletedWallpaperIds", updatedState.deletedWallpaperIds.contains(targetId))
+        assertFalse("Wallpaper should be removed from wallpapers list", updatedState.wallpapers.any { it.id == targetId })
+        assertFalse("Deleted wallpaper should not be in onboarding list", updatedState.onboardingWallpaperIds.contains(targetId))
+        assertFalse("Deleted wallpaper should not be in computed onboardingWallpapers", updatedState.onboardingWallpapers.any { it.id == targetId })
+    }
+
+    @Test
+    fun `previewing onboarding flag toggles correctly`() {
+        assertFalse(viewModel.uiState.value.isPreviewingOnboarding)
+        viewModel.setPreviewingOnboarding(true)
+        assertTrue(viewModel.uiState.value.isPreviewingOnboarding)
+        viewModel.setPreviewingOnboarding(false)
+        assertFalse(viewModel.uiState.value.isPreviewingOnboarding)
+    }
 }

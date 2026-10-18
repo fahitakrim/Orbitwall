@@ -47,6 +47,8 @@ import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Star
 import androidx.compose.material.icons.filled.StarOutline
+import androidx.compose.material.icons.filled.Visibility
+import androidx.compose.material.icons.filled.Wallpaper
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
@@ -90,9 +92,12 @@ enum class AdminTab {
 fun AdminConsoleScreen(
     wallpapers: List<Wallpaper>,
     featuredWallpaperIds: Set<String>,
+    onboardingWallpaperIds: Set<String> = emptySet(),
     uploadState: UploadUiState,
     categories: List<String>,
     onToggleFeatured: (String) -> Unit,
+    onToggleOnboarding: (String) -> Unit = {},
+    onPreviewWelcomeScreen: () -> Unit = {},
     onDeleteWallpaper: (String) -> Unit,
     onImageSelected: (Uri?) -> Unit,
     onTitleChanged: (String) -> Unit,
@@ -145,10 +150,11 @@ fun AdminConsoleScreen(
     }
 
     // Filter wallpapers based on filter tab and search query
-    val filteredWallpapers = remember(wallpapers, activeFilter, searchQuery, featuredWallpaperIds) {
+    val filteredWallpapers = remember(wallpapers, activeFilter, searchQuery, featuredWallpaperIds, onboardingWallpaperIds) {
         wallpapers.filter { wp ->
             val matchesFilter = when (activeFilter) {
                 "ALL" -> true
+                "WELCOME" -> onboardingWallpaperIds.contains(wp.id)
                 "FEATURED" -> featuredWallpaperIds.contains(wp.id)
                 "DUPLICATES" -> candidateDuplicateIds.contains(wp.id)
                 else -> wp.category.equals(activeFilter, ignoreCase = true)
@@ -227,27 +233,57 @@ fun AdminConsoleScreen(
                     }
                 }
 
-                // Logout Button
-                OutlinedButton(
-                    onClick = onLogout,
-                    shape = RoundedCornerShape(14.dp),
-                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
-                    contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.Logout,
-                        contentDescription = "Logout",
-                        tint = NothingRed,
-                        modifier = Modifier.size(14.dp)
-                    )
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Preview Welcome Screen Button
+                    OutlinedButton(
+                        onClick = onPreviewWelcomeScreen,
+                        shape = RoundedCornerShape(14.dp),
+                        border = BorderStroke(1.dp, Color(0xFF00E676).copy(alpha = 0.7f)),
+                        colors = ButtonDefaults.outlinedButtonColors(
+                            contentColor = Color(0xFF00E676)
+                        ),
+                        contentPadding = PaddingValues(horizontal = 9.dp, vertical = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Visibility,
+                            contentDescription = "Preview Welcome",
+                            tint = Color(0xFF00E676),
+                            modifier = Modifier.size(13.dp)
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = "PREVIEW",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = Color(0xFF00E676)
+                        )
+                    }
+
                     Spacer(modifier = Modifier.width(6.dp))
-                    Text(
-                        text = "LOGOUT",
-                        fontFamily = DotMatrixFont,
-                        fontSize = 11.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = NothingRed
-                    )
+
+                    // Logout Button
+                    OutlinedButton(
+                        onClick = onLogout,
+                        shape = RoundedCornerShape(14.dp),
+                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                        contentPadding = PaddingValues(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Logout,
+                            contentDescription = "Logout",
+                            tint = NothingRed,
+                            modifier = Modifier.size(14.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = "LOGOUT",
+                            fontFamily = DotMatrixFont,
+                            fontSize = 11.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = NothingRed
+                        )
+                    }
                 }
             }
         }
@@ -371,6 +407,7 @@ fun AdminConsoleScreen(
                     // Filter Chips Row
                     val filterOptions = listOf(
                         "ALL" to "ALL (${wallpapers.size})",
+                        "WELCOME" to "🚀 WELCOME (${onboardingWallpaperIds.size})",
                         "DUPLICATES" to "⚠️ DUPLICATES (${candidateDuplicateIds.size})",
                         "FEATURED" to "⭐ FEATURED (${featuredWallpaperIds.size})",
                         "AMOLED" to "AMOLED",
@@ -388,22 +425,27 @@ fun AdminConsoleScreen(
                             val isSelected = activeFilter == key
                             val isDup = key == "DUPLICATES"
                             val isFeat = key == "FEATURED"
+                            val isWelcome = key == "WELCOME"
 
                             val bg = when {
                                 isSelected && isDup -> NothingRed
                                 isSelected && isFeat -> Color(0xFFFFD700)
+                                isSelected && isWelcome -> Color(0xFF00E676)
                                 isSelected -> MaterialTheme.colorScheme.onBackground
                                 isDup -> NothingRed.copy(alpha = 0.12f)
                                 isFeat -> Color(0xFFFFD700).copy(alpha = 0.12f)
+                                isWelcome -> Color(0xFF00E676).copy(alpha = 0.14f)
                                 else -> MaterialTheme.colorScheme.surface
                             }
 
                             val textColor = when {
                                 isSelected && isDup -> Color.White
                                 isSelected && isFeat -> Color.Black
+                                isSelected && isWelcome -> Color.Black
                                 isSelected -> MaterialTheme.colorScheme.background
                                 isDup -> NothingRed
                                 isFeat -> Color(0xFFFFD700)
+                                isWelcome -> Color(0xFF00E676)
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant
                             }
 
@@ -411,6 +453,7 @@ fun AdminConsoleScreen(
                                 isSelected -> bg
                                 isDup -> NothingRed.copy(alpha = 0.45f)
                                 isFeat -> Color(0xFFFFD700).copy(alpha = 0.45f)
+                                isWelcome -> Color(0xFF00E676).copy(alpha = 0.5f)
                                 else -> MaterialTheme.colorScheme.outline
                             }
 
@@ -460,6 +503,7 @@ fun AdminConsoleScreen(
                     ) {
                         items(filteredWallpapers, key = { it.id }) { wp ->
                             val isFeatured = featuredWallpaperIds.contains(wp.id)
+                            val isOnboarding = onboardingWallpaperIds.contains(wp.id)
                             val isCandidateDuplicate = candidateDuplicateIds.contains(wp.id)
 
                             Surface(
@@ -488,6 +532,24 @@ fun AdminConsoleScreen(
                                             contentScale = ContentScale.Crop,
                                             modifier = Modifier.fillMaxSize()
                                         )
+
+                                        if (isOnboarding) {
+                                            Box(
+                                                modifier = Modifier
+                                                    .align(Alignment.TopStart)
+                                                    .padding(4.dp)
+                                                    .size(16.dp)
+                                                    .background(Color(0xFF00E676), CircleShape),
+                                                contentAlignment = Alignment.Center
+                                            ) {
+                                                Icon(
+                                                    imageVector = Icons.Default.Check,
+                                                    contentDescription = null,
+                                                    tint = Color.Black,
+                                                    modifier = Modifier.size(10.dp)
+                                                )
+                                            }
+                                        }
 
                                         if (isFeatured) {
                                             Box(
@@ -547,7 +609,7 @@ fun AdminConsoleScreen(
                                                     .size(8.dp)
                                                     .background(
                                                         try {
-                                                            Color(android.graphics.Color.parseColor(wp.dominantColorHex))
+                                                             Color(android.graphics.Color.parseColor(wp.dominantColorHex))
                                                         } catch (_: Exception) { Color.Gray },
                                                         CircleShape
                                                     )
@@ -577,11 +639,37 @@ fun AdminConsoleScreen(
 
                                     Spacer(modifier = Modifier.width(6.dp))
 
-                                    // Action Buttons: Feature & Delete
+                                    // Action Buttons: Welcome, Feature & Delete
                                     Column(
                                         horizontalAlignment = Alignment.End,
-                                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                                        verticalArrangement = Arrangement.spacedBy(4.dp)
                                     ) {
+                                        // Welcome Screen Toggle Button
+                                        Button(
+                                            onClick = { onToggleOnboarding(wp.id) },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (isOnboarding) Color(0xFF00E676) else MaterialTheme.colorScheme.surface,
+                                                contentColor = if (isOnboarding) Color.Black else MaterialTheme.colorScheme.onSurface
+                                            ),
+                                            border = if (!isOnboarding) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
+                                            shape = RoundedCornerShape(10.dp),
+                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = if (isOnboarding) Icons.Default.CheckCircle else Icons.Default.Wallpaper,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(12.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text(
+                                                text = if (isOnboarding) "WELCOME ✓" else "+ WELCOME",
+                                                fontFamily = DotMatrixFont,
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
                                         // Feature Toggle Button
                                         Button(
                                             onClick = { onToggleFeatured(wp.id) },
@@ -591,15 +679,15 @@ fun AdminConsoleScreen(
                                             ),
                                             border = if (!isFeatured) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
                                             shape = RoundedCornerShape(10.dp),
-                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                                            modifier = Modifier.height(30.dp)
+                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
                                         ) {
                                             Icon(
                                                 imageVector = if (isFeatured) Icons.Default.Star else Icons.Default.StarOutline,
                                                 contentDescription = null,
-                                                modifier = Modifier.size(13.dp)
+                                                modifier = Modifier.size(12.dp)
                                             )
-                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Spacer(modifier = Modifier.width(3.dp))
                                             Text(
                                                 text = if (isFeatured) "FEATURED" else "PIN",
                                                 fontFamily = DotMatrixFont,
@@ -617,15 +705,15 @@ fun AdminConsoleScreen(
                                             ),
                                             border = BorderStroke(1.dp, NothingRed.copy(alpha = 0.35f)),
                                             shape = RoundedCornerShape(10.dp),
-                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 4.dp),
-                                            modifier = Modifier.height(30.dp)
+                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete",
-                                                modifier = Modifier.size(13.dp)
+                                                modifier = Modifier.size(12.dp)
                                             )
-                                            Spacer(modifier = Modifier.width(4.dp))
+                                            Spacer(modifier = Modifier.width(3.dp))
                                             Text(
                                                 text = "DELETE",
                                                 fontFamily = DotMatrixFont,

@@ -98,6 +98,7 @@ fun WallpaperDetailScreen(
     isDownloading: Boolean,
     isAdmin: Boolean = false,
     featuredWallpaperIds: Set<String> = emptySet(),
+    onboardingWallpaperIds: Set<String> = emptySet(),
     onBackClick: () -> Unit,
     onPreviewModeChange: (PreviewOverlayMode) -> Unit,
     onToggleFavorite: (Wallpaper) -> Unit = {},
@@ -105,6 +106,7 @@ fun WallpaperDetailScreen(
     onDownloadToGallery: (Wallpaper) -> Unit = {},
     onWallpaperChanged: (Wallpaper) -> Unit = {},
     onToggleFeatured: ((Wallpaper) -> Unit)? = null,
+    onToggleOnboarding: ((Wallpaper) -> Unit)? = null,
     onDeleteWallpaper: ((Wallpaper) -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -128,6 +130,7 @@ fun WallpaperDetailScreen(
     val currentWallpaper = displayList.getOrNull(pagerState.currentPage) ?: wallpaper
     val isCurrentFavorite = favoriteIds.contains(currentWallpaper.id)
     val isCurrentFeatured = featuredWallpaperIds.contains(currentWallpaper.id)
+    val isCurrentOnboarding = onboardingWallpaperIds.contains(currentWallpaper.id)
 
     LaunchedEffect(pagerState.currentPage) {
         val active = displayList.getOrNull(pagerState.currentPage)
@@ -237,6 +240,28 @@ fun WallpaperDetailScreen(
             // Admin Controls or Balancing Placeholder
             if (isAdmin) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
+                    // Welcome Screen Toggle
+                    IconButton(
+                        onClick = { onToggleOnboarding?.invoke(currentWallpaper) },
+                        modifier = Modifier
+                            .size(42.dp)
+                            .background(Color.Black.copy(alpha = 0.5f), CircleShape)
+                            .border(
+                                1.dp,
+                                if (isCurrentOnboarding) Color(0xFF00E676).copy(alpha = 0.8f) else Color.White.copy(alpha = 0.2f),
+                                CircleShape
+                            )
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Wallpaper,
+                            contentDescription = "Toggle Welcome Screen",
+                            tint = if (isCurrentOnboarding) Color(0xFF00E676) else Color.White,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.width(6.dp))
+
                     // Feature on Home Toggle
                     IconButton(
                         onClick = { onToggleFeatured?.invoke(currentWallpaper) },
