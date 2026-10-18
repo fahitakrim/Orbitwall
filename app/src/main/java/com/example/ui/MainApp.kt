@@ -1,5 +1,7 @@
 package com.example.ui
 
+import android.content.Intent
+import android.net.Uri
 import android.view.HapticFeedbackConstants
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -8,8 +10,10 @@ import androidx.compose.foundation.gestures.Orientation
 import androidx.compose.foundation.gestures.draggable
 import androidx.compose.foundation.gestures.rememberDraggableState
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
@@ -31,12 +35,21 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Settings
+import androidx.compose.material3.AlertDialog
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.sp
+import com.example.ui.theme.DotMatrixFont
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -334,10 +347,15 @@ fun MainApp(
                     wallpapers = uiState.wallpapers,
                     featuredWallpaperIds = uiState.featuredWallpaperIds,
                     onboardingWallpaperIds = uiState.onboardingWallpaperIds,
+                    promotedWallpaperIds = uiState.promotedWallpaperIds,
+                    demotedWallpaperIds = uiState.demotedWallpaperIds,
+                    totalDownloads = uiState.totalAppDownloads,
                     uploadState = uploadState,
                     categories = viewModel.categories,
                     onToggleFeatured = { id -> viewModel.toggleFeaturedWallpaper(id) },
                     onToggleOnboarding = { id -> viewModel.toggleOnboardingWallpaper(id) },
+                    onPromoteWallpaper = { id -> viewModel.promoteWallpaper(id) },
+                    onDemoteWallpaper = { id -> viewModel.demoteWallpaper(id) },
                     onPreviewWelcomeScreen = { viewModel.setPreviewingOnboarding(true) },
                     onDeleteWallpaper = { id -> viewModel.deleteWallpaper(id) },
                     onImageSelected = { uri -> viewModel.onUploadImageSelected(uri) },
@@ -349,6 +367,95 @@ fun MainApp(
                     onLogout = { viewModel.logoutAdmin() },
                     onNavigateBack = { viewModel.closeAdminConsole() },
                     modifier = Modifier.fillMaxSize()
+                )
+            }
+
+            // Global In-App Update Prompt (Triggered automatically on startup if update is available)
+            if (uiState.showInAppUpdateDialog && updateInfo?.isUpdateAvailable == true) {
+                val context = LocalContext.current
+                val update = updateInfo!!
+                AlertDialog(
+                    onDismissRequest = { viewModel.dismissInAppUpdateDialog() },
+                    shape = RoundedCornerShape(24.dp),
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    title = {
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Box(modifier = Modifier.size(8.dp).background(NothingRed, androidx.compose.foundation.shape.CircleShape))
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(
+                                text = "UPDATE AVAILABLE",
+                                fontFamily = DotMatrixFont,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 17.sp,
+                                letterSpacing = 1.5.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                        }
+                    },
+                    text = {
+                        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                            Text(
+                                text = "${update.releaseTitle} is ready to install.",
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 14.sp,
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            if (update.releaseNotes.isNotBlank()) {
+                                Text(
+                                    text = update.releaseNotes,
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                    lineHeight = 16.sp
+                                )
+                            }
+                            if (update.fileSizeFormatted.isNotBlank()) {
+                                Text(
+                                    text = "PACKAGE SIZE: ${update.fileSizeFormatted}",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 10.sp,
+                                    letterSpacing = 1.sp,
+                                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                                )
+                            }
+                        }
+                    },
+                    confirmButton = {
+                        Button(
+                            onClick = {
+                                viewModel.dismissInAppUpdateDialog()
+                                val url = update.downloadUrl.ifBlank { "https://github.com/fahitakrim/Orbitwall/releases" }
+                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                                context.startActivity(intent)
+                            },
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = NothingRed,
+                                contentColor = Color.White
+                            ),
+                            shape = RoundedCornerShape(18.dp)
+                        ) {
+                            Text(
+                                text = "DOWNLOAD & UPDATE",
+                                fontFamily = DotMatrixFont,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp,
+                                letterSpacing = 1.sp
+                            )
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(
+                            onClick = { viewModel.dismissInAppUpdateDialog() }
+                        ) {
+                            Text(
+                                text = "LATER",
+                                fontFamily = DotMatrixFont,
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 11.sp,
+                                letterSpacing = 1.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    }
                 )
             }
         }

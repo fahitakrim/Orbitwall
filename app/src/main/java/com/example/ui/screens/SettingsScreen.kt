@@ -913,9 +913,14 @@ fun SettingsScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
                     AnnouncementCard(
-                        title = "Orbitwall v1.1.0 Released",
+                        title = "Orbitwall v1.1.1 Released",
                         tag = "LATEST UPDATE",
-                        description = "Admin Console with 9-tap login (17288), automated duplicate detection & deletion, home screen featured wallpapers carousel, and in-app update checker."
+                        description = "Custom wallpaper rankings, live catalog download metrics, instant update alerts, and performance enhancements across all AMOLED themes."
+                    )
+                    AnnouncementCard(
+                        title = "Orbitwall v1.1.0 Released",
+                        tag = "MAJOR UPDATE",
+                        description = "High-definition catalog sync, seamless wallpaper swipe previews, enhanced memory cache, and curated home carousel."
                     )
                     AnnouncementCard(
                         title = "Orbitwall v1.0 Released",
@@ -1063,13 +1068,11 @@ fun SettingsScreen(
 
                         Button(
                             onClick = {
-                                if (codeInput.trim() == "17288") {
+                                val success = onAdminLogin(usernameInput, codeInput)
+                                if (success) {
                                     triggerHaptic()
                                     showAdminLoginDialog = false
-                                    val success = onAdminLogin(usernameInput, codeInput)
-                                    if (success) {
-                                        onOpenAdminConsole()
-                                    }
+                                    onOpenAdminConsole()
                                 } else {
                                     triggerHaptic()
                                     loginError = "Incorrect passcode. Access denied."

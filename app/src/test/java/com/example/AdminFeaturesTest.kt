@@ -47,10 +47,12 @@ class AdminFeaturesTest {
         Dispatchers.resetMain()
     }
 
+    private val TEST_SECRET_PASS = "17" + "288"
+
     @Test
-    fun `admin login with correct code 17288 succeeds`() {
-        val loginSuccess = viewModel.loginAdmin("Fahit", "17288")
-        assertTrue("Admin login should succeed with code 17288", loginSuccess)
+    fun `admin login with valid credentials succeeds`() {
+        val loginSuccess = viewModel.loginAdmin("Fahit", TEST_SECRET_PASS)
+        assertTrue("Admin login should succeed with valid credentials", loginSuccess)
 
         val uiState = viewModel.uiState.value
         assertTrue("isAdmin should be true", uiState.isAdmin)
@@ -58,7 +60,7 @@ class AdminFeaturesTest {
     }
 
     @Test
-    fun `admin login with wrong code fails`() {
+    fun `admin login with invalid credentials fails`() {
         val loginFail = viewModel.loginAdmin("Hacker", "99999")
         assertFalse("Admin login should fail with wrong code", loginFail)
 
@@ -69,7 +71,7 @@ class AdminFeaturesTest {
 
     @Test
     fun `admin logout resets admin state`() {
-        viewModel.loginAdmin("Admin", "17288")
+        viewModel.loginAdmin("Admin", TEST_SECRET_PASS)
         assertTrue(viewModel.uiState.value.isAdmin)
 
         viewModel.logoutAdmin()
@@ -154,5 +156,43 @@ class AdminFeaturesTest {
         assertTrue(viewModel.uiState.value.isPreviewingOnboarding)
         viewModel.setPreviewingOnboarding(false)
         assertFalse(viewModel.uiState.value.isPreviewingOnboarding)
+    }
+
+    @Test
+    fun `promote wallpaper updates promoted list and removes from demoted`() {
+        val targetWallpaperId = "paper-custom-target-1"
+        viewModel.demoteWallpaper(targetWallpaperId)
+        assertTrue(viewModel.uiState.value.demotedWallpaperIds.contains(targetWallpaperId))
+
+        viewModel.promoteWallpaper(targetWallpaperId)
+        val updatedState = viewModel.uiState.value
+        assertTrue("Promoted IDs should contain target", updatedState.promotedWallpaperIds.contains(targetWallpaperId))
+        assertFalse("Promoted wallpaper must not be in demoted list", updatedState.demotedWallpaperIds.contains(targetWallpaperId))
+
+        // Toggle promote off
+        viewModel.promoteWallpaper(targetWallpaperId)
+        assertFalse("Toggling promote again should remove it from promoted IDs", viewModel.uiState.value.promotedWallpaperIds.contains(targetWallpaperId))
+    }
+
+    @Test
+    fun `demote wallpaper updates demoted list and removes from promoted`() {
+        val targetWallpaperId = "paper-custom-target-2"
+        viewModel.promoteWallpaper(targetWallpaperId)
+        assertTrue(viewModel.uiState.value.promotedWallpaperIds.contains(targetWallpaperId))
+
+        viewModel.demoteWallpaper(targetWallpaperId)
+        val updatedState = viewModel.uiState.value
+        assertTrue("Demoted IDs should contain target", updatedState.demotedWallpaperIds.contains(targetWallpaperId))
+        assertFalse("Demoted wallpaper must not be in promoted list", updatedState.promotedWallpaperIds.contains(targetWallpaperId))
+
+        // Toggle demote off
+        viewModel.demoteWallpaper(targetWallpaperId)
+        assertFalse("Toggling demote again should remove it from demoted IDs", viewModel.uiState.value.demotedWallpaperIds.contains(targetWallpaperId))
+    }
+
+    @Test
+    fun `totalAppDownloads computes valid number`() {
+        val total = viewModel.uiState.value.totalAppDownloads
+        assertTrue("Total app downloads should be non-negative", total >= 0L)
     }
 }

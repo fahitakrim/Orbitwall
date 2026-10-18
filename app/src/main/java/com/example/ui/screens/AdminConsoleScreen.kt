@@ -9,6 +9,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -34,6 +35,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AddPhotoAlternate
+import androidx.compose.material.icons.filled.ArrowDownward
+import androidx.compose.material.icons.filled.ArrowUpward
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.CheckCircle
@@ -42,6 +45,7 @@ import androidx.compose.material.icons.filled.CloudUpload
 import androidx.compose.material.icons.filled.ContentCopy
 import androidx.compose.material.icons.filled.DataUsage
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Logout
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
@@ -63,6 +67,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import java.util.Locale
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -93,10 +98,15 @@ fun AdminConsoleScreen(
     wallpapers: List<Wallpaper>,
     featuredWallpaperIds: Set<String>,
     onboardingWallpaperIds: Set<String> = emptySet(),
+    promotedWallpaperIds: List<String> = emptyList(),
+    demotedWallpaperIds: List<String> = emptyList(),
+    totalDownloads: Long = 0L,
     uploadState: UploadUiState,
     categories: List<String>,
     onToggleFeatured: (String) -> Unit,
     onToggleOnboarding: (String) -> Unit = {},
+    onPromoteWallpaper: (String) -> Unit = {},
+    onDemoteWallpaper: (String) -> Unit = {},
     onPreviewWelcomeScreen: () -> Unit = {},
     onDeleteWallpaper: (String) -> Unit,
     onImageSelected: (Uri?) -> Unit,
@@ -150,10 +160,12 @@ fun AdminConsoleScreen(
     }
 
     // Filter wallpapers based on filter tab and search query
-    val filteredWallpapers = remember(wallpapers, activeFilter, searchQuery, featuredWallpaperIds, onboardingWallpaperIds) {
+    val filteredWallpapers = remember(wallpapers, activeFilter, searchQuery, featuredWallpaperIds, onboardingWallpaperIds, promotedWallpaperIds, demotedWallpaperIds) {
         wallpapers.filter { wp ->
             val matchesFilter = when (activeFilter) {
                 "ALL" -> true
+                "PROMOTED" -> promotedWallpaperIds.contains(wp.id)
+                "DEMOTED" -> demotedWallpaperIds.contains(wp.id)
                 "WELCOME" -> onboardingWallpaperIds.contains(wp.id)
                 "FEATURED" -> featuredWallpaperIds.contains(wp.id)
                 "DUPLICATES" -> candidateDuplicateIds.contains(wp.id)
@@ -356,11 +368,106 @@ fun AdminConsoleScreen(
         // --- Content View ---
         when (currentTab) {
             AdminTab.MANAGE -> {
+                // 1. App Downloads & Catalog Metrics Card
+                Surface(
+                    shape = RoundedCornerShape(16.dp),
+                    color = MaterialTheme.colorScheme.surface,
+                    border = BorderStroke(1.dp, MaterialTheme.colorScheme.outline),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 10.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "TOTAL APP DOWNLOADS",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.2.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Icon(
+                                    imageVector = Icons.Default.Download,
+                                    contentDescription = null,
+                                    tint = NothingRed,
+                                    modifier = Modifier.size(16.dp)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                val catalogDownloads = wallpapers.sumOf { it.downloads }
+                                val displayTotal = if (catalogDownloads > 0L) catalogDownloads else totalDownloads
+                                Text(
+                                    text = String.format(Locale.US, "%,d", displayTotal),
+                                    fontSize = 18.sp,
+                                    fontWeight = FontWeight.ExtraBold,
+                                    fontFamily = DotMatrixFont,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+
+                        Column(horizontalAlignment = Alignment.End) {
+                            Text(
+                                text = "RANKING & CATALOG",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.2.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                            Spacer(modifier = Modifier.height(3.dp))
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                Text(
+                                    text = "▲ ${promotedWallpaperIds.size}",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF00E5FF)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "•",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "▼ ${demotedWallpaperIds.size}",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFFFF9100)
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "•",
+                                    fontSize = 12.sp,
+                                    color = MaterialTheme.colorScheme.outline
+                                )
+                                Spacer(modifier = Modifier.width(6.dp))
+                                Text(
+                                    text = "${wallpapers.size} WALLS",
+                                    fontFamily = DotMatrixFont,
+                                    fontSize = 12.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = MaterialTheme.colorScheme.onSurface
+                                )
+                            }
+                        }
+                    }
+                }
+
                 // Search & Filter Row
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
+                        .padding(horizontal = 16.dp, vertical = 6.dp)
                 ) {
                     // Search Bar
                     OutlinedTextField(
@@ -407,6 +514,8 @@ fun AdminConsoleScreen(
                     // Filter Chips Row
                     val filterOptions = listOf(
                         "ALL" to "ALL (${wallpapers.size})",
+                        "PROMOTED" to "▲ PROMOTED (${promotedWallpaperIds.size})",
+                        "DEMOTED" to "▼ DEMOTED (${demotedWallpaperIds.size})",
                         "WELCOME" to "🚀 WELCOME (${onboardingWallpaperIds.size})",
                         "DUPLICATES" to "⚠️ DUPLICATES (${candidateDuplicateIds.size})",
                         "FEATURED" to "⭐ FEATURED (${featuredWallpaperIds.size})",
@@ -426,15 +535,21 @@ fun AdminConsoleScreen(
                             val isDup = key == "DUPLICATES"
                             val isFeat = key == "FEATURED"
                             val isWelcome = key == "WELCOME"
+                            val isProm = key == "PROMOTED"
+                            val isDem = key == "DEMOTED"
 
                             val bg = when {
                                 isSelected && isDup -> NothingRed
                                 isSelected && isFeat -> Color(0xFFFFD700)
                                 isSelected && isWelcome -> Color(0xFF00E676)
+                                isSelected && isProm -> Color(0xFF00E5FF)
+                                isSelected && isDem -> Color(0xFFFF9100)
                                 isSelected -> MaterialTheme.colorScheme.onBackground
                                 isDup -> NothingRed.copy(alpha = 0.12f)
                                 isFeat -> Color(0xFFFFD700).copy(alpha = 0.12f)
                                 isWelcome -> Color(0xFF00E676).copy(alpha = 0.14f)
+                                isProm -> Color(0xFF00E5FF).copy(alpha = 0.14f)
+                                isDem -> Color(0xFFFF9100).copy(alpha = 0.14f)
                                 else -> MaterialTheme.colorScheme.surface
                             }
 
@@ -442,10 +557,14 @@ fun AdminConsoleScreen(
                                 isSelected && isDup -> Color.White
                                 isSelected && isFeat -> Color.Black
                                 isSelected && isWelcome -> Color.Black
+                                isSelected && isProm -> Color.Black
+                                isSelected && isDem -> Color.Black
                                 isSelected -> MaterialTheme.colorScheme.background
                                 isDup -> NothingRed
                                 isFeat -> Color(0xFFFFD700)
                                 isWelcome -> Color(0xFF00E676)
+                                isProm -> Color(0xFF00E5FF)
+                                isDem -> Color(0xFFFF9100)
                                 else -> MaterialTheme.colorScheme.onSurfaceVariant
                             }
 
@@ -454,6 +573,8 @@ fun AdminConsoleScreen(
                                 isDup -> NothingRed.copy(alpha = 0.45f)
                                 isFeat -> Color(0xFFFFD700).copy(alpha = 0.45f)
                                 isWelcome -> Color(0xFF00E676).copy(alpha = 0.5f)
+                                isProm -> Color(0xFF00E5FF).copy(alpha = 0.5f)
+                                isDem -> Color(0xFFFF9100).copy(alpha = 0.5f)
                                 else -> MaterialTheme.colorScheme.outline
                             }
 
@@ -504,147 +625,276 @@ fun AdminConsoleScreen(
                         items(filteredWallpapers, key = { it.id }) { wp ->
                             val isFeatured = featuredWallpaperIds.contains(wp.id)
                             val isOnboarding = onboardingWallpaperIds.contains(wp.id)
+                            val isPromoted = promotedWallpaperIds.contains(wp.id)
+                            val isDemoted = demotedWallpaperIds.contains(wp.id)
                             val isCandidateDuplicate = candidateDuplicateIds.contains(wp.id)
 
                             Surface(
                                 shape = RoundedCornerShape(18.dp),
                                 color = MaterialTheme.colorScheme.surface,
                                 border = BorderStroke(
-                                    1.dp,
-                                    if (isCandidateDuplicate) NothingRed.copy(alpha = 0.45f) else MaterialTheme.colorScheme.outline
+                                    if (isPromoted || isDemoted) 1.5.dp else 1.dp,
+                                    when {
+                                        isPromoted -> Color(0xFF00E5FF).copy(alpha = 0.7f)
+                                        isDemoted -> Color(0xFFFF9100).copy(alpha = 0.7f)
+                                        isCandidateDuplicate -> NothingRed.copy(alpha = 0.45f)
+                                        else -> MaterialTheme.colorScheme.outline
+                                    }
                                 ),
                                 modifier = Modifier.fillMaxWidth()
                             ) {
-                                Row(
-                                    modifier = Modifier.padding(10.dp),
-                                    verticalAlignment = Alignment.CenterVertically
+                                Column(
+                                    modifier = Modifier.padding(12.dp)
                                 ) {
-                                    // Wallpaper Thumbnail
-                                    Box(
-                                        modifier = Modifier
-                                            .size(width = 68.dp, height = 96.dp)
-                                            .clip(RoundedCornerShape(12.dp))
-                                            .background(Color.DarkGray)
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        verticalAlignment = Alignment.CenterVertically
                                     ) {
-                                        AsyncImage(
-                                            model = wp.thumbnailUrl,
-                                            contentDescription = wp.title,
-                                            contentScale = ContentScale.Crop,
-                                            modifier = Modifier.fillMaxSize()
-                                        )
+                                        // Wallpaper Thumbnail with Badges
+                                        Box(
+                                            modifier = Modifier
+                                                .size(width = 68.dp, height = 96.dp)
+                                                .clip(RoundedCornerShape(12.dp))
+                                                .background(Color.DarkGray)
+                                        ) {
+                                            AsyncImage(
+                                                model = wp.thumbnailUrl,
+                                                contentDescription = wp.title,
+                                                contentScale = ContentScale.Crop,
+                                                modifier = Modifier.fillMaxSize()
+                                            )
 
-                                        if (isOnboarding) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .align(Alignment.TopStart)
-                                                    .padding(4.dp)
-                                                    .size(16.dp)
-                                                    .background(Color(0xFF00E676), CircleShape),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Check,
-                                                    contentDescription = null,
-                                                    tint = Color.Black,
-                                                    modifier = Modifier.size(10.dp)
-                                                )
+                                            // Status Badge: Promoted (Cyan ▲) or Demoted (Orange ▼)
+                                            if (isPromoted) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .align(Alignment.TopStart)
+                                                        .padding(4.dp)
+                                                        .size(18.dp)
+                                                        .background(Color(0xFF00E5FF), CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.ArrowUpward,
+                                                        contentDescription = "Promoted",
+                                                        tint = Color.Black,
+                                                        modifier = Modifier.size(11.dp)
+                                                    )
+                                                }
+                                            } else if (isDemoted) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .align(Alignment.TopStart)
+                                                        .padding(4.dp)
+                                                        .size(18.dp)
+                                                        .background(Color(0xFFFF9100), CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.ArrowDownward,
+                                                        contentDescription = "Demoted",
+                                                        tint = Color.Black,
+                                                        modifier = Modifier.size(11.dp)
+                                                    )
+                                                }
+                                            }
+
+                                            // Status Badge: Featured (Gold ★)
+                                            if (isFeatured) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .align(Alignment.TopEnd)
+                                                        .padding(4.dp)
+                                                        .size(18.dp)
+                                                        .background(Color(0xFFFFD700), CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Star,
+                                                        contentDescription = "Featured",
+                                                        tint = Color.Black,
+                                                        modifier = Modifier.size(11.dp)
+                                                    )
+                                                }
+                                            }
+
+                                            // Status Badge: Onboarding Welcome (Green ✓)
+                                            if (isOnboarding) {
+                                                Box(
+                                                    modifier = Modifier
+                                                        .align(Alignment.BottomStart)
+                                                        .padding(4.dp)
+                                                        .size(18.dp)
+                                                        .background(Color(0xFF00E676), CircleShape),
+                                                    contentAlignment = Alignment.Center
+                                                ) {
+                                                    Icon(
+                                                        imageVector = Icons.Default.Check,
+                                                        contentDescription = "Welcome Screen",
+                                                        tint = Color.Black,
+                                                        modifier = Modifier.size(11.dp)
+                                                    )
+                                                }
                                             }
                                         }
 
-                                        if (isFeatured) {
-                                            Box(
-                                                modifier = Modifier
-                                                    .align(Alignment.TopEnd)
-                                                    .padding(4.dp)
-                                                    .size(16.dp)
-                                                    .background(Color(0xFFFFD700), CircleShape),
-                                                contentAlignment = Alignment.Center
-                                            ) {
-                                                Icon(
-                                                    imageVector = Icons.Default.Star,
-                                                    contentDescription = null,
-                                                    tint = Color.Black,
-                                                    modifier = Modifier.size(10.dp)
+                                        Spacer(modifier = Modifier.width(12.dp))
+
+                                        // Wallpaper Info & Metrics
+                                        Column(modifier = Modifier.weight(1f)) {
+                                            Text(
+                                                text = wp.title,
+                                                fontWeight = FontWeight.Bold,
+                                                fontSize = 14.sp,
+                                                maxLines = 1,
+                                                color = MaterialTheme.colorScheme.onSurface
+                                            )
+
+                                            Spacer(modifier = Modifier.height(4.dp))
+
+                                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                                // Category Chip
+                                                Box(
+                                                    modifier = Modifier
+                                                        .clip(RoundedCornerShape(6.dp))
+                                                        .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
+                                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                                ) {
+                                                    Text(
+                                                        text = wp.category.uppercase(),
+                                                        fontFamily = DotMatrixFont,
+                                                        fontSize = 9.sp,
+                                                        fontWeight = FontWeight.Bold,
+                                                        color = MaterialTheme.colorScheme.onSurface
+                                                    )
+                                                }
+
+                                                Spacer(modifier = Modifier.width(6.dp))
+
+                                                // Download Count Chip
+                                                Box(
+                                                    modifier = Modifier
+                                                        .clip(RoundedCornerShape(6.dp))
+                                                        .background(Color(0xFF00E5FF).copy(alpha = 0.12f))
+                                                        .padding(horizontal = 6.dp, vertical = 2.dp)
+                                                ) {
+                                                    Row(verticalAlignment = Alignment.CenterVertically) {
+                                                        Icon(
+                                                            imageVector = Icons.Default.Download,
+                                                            contentDescription = null,
+                                                            tint = Color(0xFF00E5FF),
+                                                            modifier = Modifier.size(10.dp)
+                                                        )
+                                                        Spacer(modifier = Modifier.width(3.dp))
+                                                        Text(
+                                                            text = String.format(Locale.US, "%,d", wp.downloads),
+                                                            fontFamily = DotMatrixFont,
+                                                            fontSize = 9.sp,
+                                                            fontWeight = FontWeight.Bold,
+                                                            color = Color(0xFF00E5FF)
+                                                        )
+                                                    }
+                                                }
+
+                                                Spacer(modifier = Modifier.width(6.dp))
+
+                                                // Dominant Color Dot
+                                                Box(
+                                                    modifier = Modifier
+                                                        .size(8.dp)
+                                                        .background(
+                                                            try {
+                                                                Color(android.graphics.Color.parseColor(wp.dominantColorHex))
+                                                            } catch (_: Exception) { Color.Gray },
+                                                            CircleShape
+                                                        )
                                                 )
                                             }
-                                        }
-                                    }
 
-                                    Spacer(modifier = Modifier.width(12.dp))
+                                            Spacer(modifier = Modifier.height(4.dp))
 
-                                    // Wallpaper Info
-                                    Column(modifier = Modifier.weight(1f)) {
-                                        Text(
-                                            text = wp.title,
-                                            fontWeight = FontWeight.Bold,
-                                            fontSize = 14.sp,
-                                            maxLines = 1,
-                                            color = MaterialTheme.colorScheme.onSurface
-                                        )
+                                            Text(
+                                                text = wp.id,
+                                                fontSize = 10.sp,
+                                                maxLines = 1,
+                                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                            )
 
-                                        Spacer(modifier = Modifier.height(2.dp))
-
-                                        Row(verticalAlignment = Alignment.CenterVertically) {
-                                            // Category Chip
-                                            Box(
-                                                modifier = Modifier
-                                                    .clip(RoundedCornerShape(6.dp))
-                                                    .background(MaterialTheme.colorScheme.onSurface.copy(alpha = 0.08f))
-                                                    .padding(horizontal = 6.dp, vertical = 2.dp)
-                                            ) {
+                                            if (isCandidateDuplicate) {
+                                                Spacer(modifier = Modifier.height(2.dp))
                                                 Text(
-                                                    text = wp.category.uppercase(),
+                                                    text = "⚠️ POSSIBLE DUPLICATE",
                                                     fontFamily = DotMatrixFont,
                                                     fontSize = 9.sp,
                                                     fontWeight = FontWeight.Bold,
-                                                    color = MaterialTheme.colorScheme.onSurface
+                                                    color = NothingRed
                                                 )
                                             }
-
-                                            Spacer(modifier = Modifier.width(6.dp))
-
-                                            // Dominant Color Dot
-                                            Box(
-                                                modifier = Modifier
-                                                    .size(8.dp)
-                                                    .background(
-                                                        try {
-                                                             Color(android.graphics.Color.parseColor(wp.dominantColorHex))
-                                                        } catch (_: Exception) { Color.Gray },
-                                                        CircleShape
-                                                    )
-                                            )
-                                        }
-
-                                        Spacer(modifier = Modifier.height(3.dp))
-
-                                        Text(
-                                            text = wp.id,
-                                            fontSize = 10.sp,
-                                            maxLines = 1,
-                                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                                        )
-
-                                        if (isCandidateDuplicate) {
-                                            Spacer(modifier = Modifier.height(2.dp))
-                                            Text(
-                                                text = "⚠️ POSSIBLE DUPLICATE",
-                                                fontFamily = DotMatrixFont,
-                                                fontSize = 9.sp,
-                                                fontWeight = FontWeight.Bold,
-                                                color = NothingRed
-                                            )
                                         }
                                     }
 
-                                    Spacer(modifier = Modifier.width(6.dp))
+                                    Spacer(modifier = Modifier.height(10.dp))
 
-                                    // Action Buttons: Welcome, Feature & Delete
-                                    Column(
-                                        horizontalAlignment = Alignment.End,
-                                        verticalArrangement = Arrangement.spacedBy(4.dp)
+                                    // Action Bar: Promote, Demote, Welcome, Pin, Delete
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .horizontalScroll(rememberScrollState()),
+                                        horizontalArrangement = Arrangement.spacedBy(6.dp)
                                     ) {
-                                        // Welcome Screen Toggle Button
+                                        // 1. Promote Button (Cyan)
+                                        Button(
+                                            onClick = { onPromoteWallpaper(wp.id) },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (isPromoted) Color(0xFF00E5FF) else MaterialTheme.colorScheme.surface,
+                                                contentColor = if (isPromoted) Color.Black else Color(0xFF00E5FF)
+                                            ),
+                                            border = BorderStroke(1.dp, if (isPromoted) Color(0xFF00E5FF) else MaterialTheme.colorScheme.outline),
+                                            shape = RoundedCornerShape(10.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowUpward,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(11.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text(
+                                                text = if (isPromoted) "TOP ✓" else "PROMOTE",
+                                                fontFamily = DotMatrixFont,
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
+                                        // 2. Demote Button (Orange)
+                                        Button(
+                                            onClick = { onDemoteWallpaper(wp.id) },
+                                            colors = ButtonDefaults.buttonColors(
+                                                containerColor = if (isDemoted) Color(0xFFFF9100) else MaterialTheme.colorScheme.surface,
+                                                contentColor = if (isDemoted) Color.Black else Color(0xFFFF9100)
+                                            ),
+                                            border = BorderStroke(1.dp, if (isDemoted) Color(0xFFFF9100) else MaterialTheme.colorScheme.outline),
+                                            shape = RoundedCornerShape(10.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
+                                            modifier = Modifier.height(28.dp)
+                                        ) {
+                                            Icon(
+                                                imageVector = Icons.Default.ArrowDownward,
+                                                contentDescription = null,
+                                                modifier = Modifier.size(11.dp)
+                                            )
+                                            Spacer(modifier = Modifier.width(3.dp))
+                                            Text(
+                                                text = if (isDemoted) "LOW ✓" else "DEMOTE",
+                                                fontFamily = DotMatrixFont,
+                                                fontSize = 9.sp,
+                                                fontWeight = FontWeight.Bold
+                                            )
+                                        }
+
+                                        // 3. Welcome Screen Toggle Button (Green)
                                         Button(
                                             onClick = { onToggleOnboarding(wp.id) },
                                             colors = ButtonDefaults.buttonColors(
@@ -653,13 +903,13 @@ fun AdminConsoleScreen(
                                             ),
                                             border = if (!isOnboarding) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
                                             shape = RoundedCornerShape(10.dp),
-                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
                                             modifier = Modifier.height(28.dp)
                                         ) {
                                             Icon(
                                                 imageVector = if (isOnboarding) Icons.Default.CheckCircle else Icons.Default.Wallpaper,
                                                 contentDescription = null,
-                                                modifier = Modifier.size(12.dp)
+                                                modifier = Modifier.size(11.dp)
                                             )
                                             Spacer(modifier = Modifier.width(3.dp))
                                             Text(
@@ -670,7 +920,7 @@ fun AdminConsoleScreen(
                                             )
                                         }
 
-                                        // Feature Toggle Button
+                                        // 4. Feature Toggle Button (Gold)
                                         Button(
                                             onClick = { onToggleFeatured(wp.id) },
                                             colors = ButtonDefaults.buttonColors(
@@ -679,13 +929,13 @@ fun AdminConsoleScreen(
                                             ),
                                             border = if (!isFeatured) BorderStroke(1.dp, MaterialTheme.colorScheme.outline) else null,
                                             shape = RoundedCornerShape(10.dp),
-                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
                                             modifier = Modifier.height(28.dp)
                                         ) {
                                             Icon(
                                                 imageVector = if (isFeatured) Icons.Default.Star else Icons.Default.StarOutline,
                                                 contentDescription = null,
-                                                modifier = Modifier.size(12.dp)
+                                                modifier = Modifier.size(11.dp)
                                             )
                                             Spacer(modifier = Modifier.width(3.dp))
                                             Text(
@@ -696,7 +946,7 @@ fun AdminConsoleScreen(
                                             )
                                         }
 
-                                        // Delete Button
+                                        // 5. Delete Button (Red)
                                         Button(
                                             onClick = { wallpaperToDelete = wp },
                                             colors = ButtonDefaults.buttonColors(
@@ -705,13 +955,13 @@ fun AdminConsoleScreen(
                                             ),
                                             border = BorderStroke(1.dp, NothingRed.copy(alpha = 0.35f)),
                                             shape = RoundedCornerShape(10.dp),
-                                            contentPadding = PaddingValues(horizontal = 7.dp, vertical = 2.dp),
+                                            contentPadding = PaddingValues(horizontal = 8.dp, vertical = 2.dp),
                                             modifier = Modifier.height(28.dp)
                                         ) {
                                             Icon(
                                                 imageVector = Icons.Default.Delete,
                                                 contentDescription = "Delete",
-                                                modifier = Modifier.size(12.dp)
+                                                modifier = Modifier.size(11.dp)
                                             )
                                             Spacer(modifier = Modifier.width(3.dp))
                                             Text(

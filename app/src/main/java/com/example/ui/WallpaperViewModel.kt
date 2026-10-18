@@ -63,6 +63,7 @@ data class WallpaperUiState(
     val currentScreen: AppScreen = AppScreen.EXPLORE,
     val isOnboardingCompleted: Boolean = false,
     val isPreviewingOnboarding: Boolean = false,
+    val showInAppUpdateDialog: Boolean = false,
     val themeMode: AppThemeMode = AppThemeMode.DARK,
     val hapticEnabled: Boolean = true,
     val cacheSizeMb: Double = 0.0,
@@ -72,6 +73,8 @@ data class WallpaperUiState(
     val isAdminConsoleOpen: Boolean = false,
     val featuredWallpaperIds: Set<String> = emptySet(),
     val onboardingWallpaperIds: Set<String> = emptySet(),
+    val promotedWallpaperIds: List<String> = emptyList(),
+    val demotedWallpaperIds: List<String> = emptyList(),
     val deletedWallpaperIds: Set<String> = emptySet()
 ) {
     val featuredWallpapers: List<Wallpaper>
@@ -81,6 +84,12 @@ data class WallpaperUiState(
         get() {
             val selected = wallpapers.filter { onboardingWallpaperIds.contains(it.id) }
             return if (selected.isNotEmpty()) selected else wallpapers.take(8)
+        }
+
+    val totalAppDownloads: Long
+        get() {
+            val catalogSum = wallpapers.sumOf { it.downloads }
+            return if (catalogSum > 0L) catalogSum else totalDownloads
         }
 }
 
@@ -171,6 +180,12 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         )
         val savedOnboarding = prefs.getStringSet("onboarding_ids", defaultOnboarding) ?: defaultOnboarding
 
+        val savedPromotedStr = prefs.getString("promoted_ids", "") ?: ""
+        val savedPromoted = if (savedPromotedStr.isNotBlank()) savedPromotedStr.split(",").filter { it.isNotBlank() } else emptyList()
+
+        val savedDemotedStr = prefs.getString("demoted_ids", "") ?: ""
+        val savedDemoted = if (savedDemotedStr.isNotBlank()) savedDemotedStr.split(",").filter { it.isNotBlank() } else emptyList()
+
         _uiState.update {
             it.copy(
                 themeMode = theme,
@@ -178,12 +193,31 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 isAdmin = isAdmin,
                 deletedWallpaperIds = savedDeleted,
                 featuredWallpaperIds = savedFeatured,
-                onboardingWallpaperIds = savedOnboarding
+                onboardingWallpaperIds = savedOnboarding,
+                promotedWallpaperIds = savedPromoted,
+                demotedWallpaperIds = savedDemoted
             )
         }
 
         calculateCacheSize()
         loadWallpapers(category = "All")
+        checkForUpdates()
+    }
+
+    private fun applyCustomRankings(
+        list: List<Wallpaper>,
+        promoted: List<String>,
+        demoted: List<String>
+    ): List<Wallpaper> {
+        if (promoted.isEmpty() && demoted.isEmpty()) return list
+        val promotedSet = promoted.toSet()
+        val demotedSet = demoted.toSet()
+
+        val promotedItems = promoted.mapNotNull { id -> list.find { it.id == id } }
+        val demotedItems = demoted.mapNotNull { id -> list.find { it.id == id } }
+        val middleItems = list.filter { it.id !in promotedSet && it.id !in demotedSet }
+
+        return promotedItems + middleItems + demotedItems
     }
 
     fun loadWallpapers(
@@ -221,8 +255,15 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                     listWithLocalCounts
                 }
 
+                // Apply custom rankings (Promoted to top, Demoted to bottom)
+                val rankedList = applyCustomRankings(
+                    list = sortedList,
+                    promoted = _uiState.value.promotedWallpaperIds,
+                    demoted = _uiState.value.demotedWallpaperIds
+                )
+
                 val totalDl = com.example.data.DownloadTracker.getTotalDownloads(getApplication())
-                _uiState.update { it.copy(wallpapers = sortedList, isLoading = false, totalDownloads = totalDl) }
+                _uiState.update { it.copy(wallpapers = rankedList, isLoading = false, totalDownloads = totalDl) }
             }.onFailure {
                 _uiState.update { it.copy(isLoading = false) }
                 _userMessage.emit("Displaying curated Orbitwall collection.")
@@ -440,7 +481,7 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
     // --- Admin Console & Management Handlers ---
 
     fun loginAdmin(username: String, code: String): Boolean {
-        if (code.trim() == "17288") {
+        if (verifyAdminCode(code)) {
             prefs.edit().putBoolean("is_admin", true).apply()
             _uiState.update { it.copy(isAdmin = true, isAdminConsoleOpen = true) }
             viewModelScope.launch {
@@ -450,6 +491,17 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             return true
         }
         return false
+    }
+
+    private fun verifyAdminCode(code: String): Boolean {
+        return try {
+            val md = java.security.MessageDigest.getInstance("SHA-256")
+            val digest = md.digest(code.trim().toByteArray(Charsets.UTF_8))
+            val hex = digest.joinToString("") { "%02x".format(it) }
+            hex.equals("1e64cf2187204083be72d32fd5d3d99319e9927d42591ce983a33342e084e539", ignoreCase = true)
+        } catch (_: Exception) {
+            false
+        }
     }
 
     fun logoutAdmin() {
@@ -507,6 +559,92 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         _uiState.update { it.copy(isPreviewingOnboarding = previewing) }
     }
 
+    fun promoteWallpaper(wallpaperId: String) {
+        val currentPromoted = _uiState.value.promotedWallpaperIds.toMutableList()
+        val currentDemoted = _uiState.value.demotedWallpaperIds.toMutableList()
+        currentDemoted.remove(wallpaperId)
+
+        val wasPromoted = currentPromoted.contains(wallpaperId)
+        if (wasPromoted) {
+            currentPromoted.remove(wallpaperId)
+        } else {
+            currentPromoted.remove(wallpaperId)
+            currentPromoted.add(0, wallpaperId)
+        }
+
+        prefs.edit()
+            .putString("promoted_ids", currentPromoted.joinToString(","))
+            .putString("demoted_ids", currentDemoted.joinToString(","))
+            .apply()
+
+        val reordered = applyCustomRankings(
+            list = _uiState.value.wallpapers,
+            promoted = currentPromoted,
+            demoted = currentDemoted
+        )
+
+        _uiState.update {
+            it.copy(
+                promotedWallpaperIds = currentPromoted,
+                demotedWallpaperIds = currentDemoted,
+                wallpapers = reordered
+            )
+        }
+
+        viewModelScope.launch {
+            val title = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+            _userMessage.emit(
+                if (wasPromoted) "Reset position for '$title'"
+                else "Promoted '$title' to the top of the feed ▲"
+            )
+        }
+    }
+
+    fun demoteWallpaper(wallpaperId: String) {
+        val currentPromoted = _uiState.value.promotedWallpaperIds.toMutableList()
+        val currentDemoted = _uiState.value.demotedWallpaperIds.toMutableList()
+        currentPromoted.remove(wallpaperId)
+
+        val wasDemoted = currentDemoted.contains(wallpaperId)
+        if (wasDemoted) {
+            currentDemoted.remove(wallpaperId)
+        } else {
+            currentDemoted.remove(wallpaperId)
+            currentDemoted.add(wallpaperId)
+        }
+
+        prefs.edit()
+            .putString("promoted_ids", currentPromoted.joinToString(","))
+            .putString("demoted_ids", currentDemoted.joinToString(","))
+            .apply()
+
+        val reordered = applyCustomRankings(
+            list = _uiState.value.wallpapers,
+            promoted = currentPromoted,
+            demoted = currentDemoted
+        )
+
+        _uiState.update {
+            it.copy(
+                promotedWallpaperIds = currentPromoted,
+                demotedWallpaperIds = currentDemoted,
+                wallpapers = reordered
+            )
+        }
+
+        viewModelScope.launch {
+            val title = _uiState.value.wallpapers.find { it.id == wallpaperId }?.title ?: "Wallpaper"
+            _userMessage.emit(
+                if (wasDemoted) "Reset position for '$title'"
+                else "Demoted '$title' to the bottom of the feed ▼"
+            )
+        }
+    }
+
+    fun dismissUpdateDialog() {
+        _uiState.update { it.copy(showInAppUpdateDialog = false) }
+    }
+
     fun deleteWallpaper(wallpaperId: String) {
         val currentDeleted = _uiState.value.deletedWallpaperIds.toMutableSet()
         currentDeleted.add(wallpaperId)
@@ -521,6 +659,16 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
         val currentOnboarding = _uiState.value.onboardingWallpaperIds.toMutableSet()
         currentOnboarding.remove(wallpaperId)
         prefs.edit().putStringSet("onboarding_ids", currentOnboarding).apply()
+
+        // Remove from promoted/demoted rankings
+        val currentPromoted = _uiState.value.promotedWallpaperIds.toMutableList()
+        currentPromoted.remove(wallpaperId)
+        val currentDemoted = _uiState.value.demotedWallpaperIds.toMutableList()
+        currentDemoted.remove(wallpaperId)
+        prefs.edit()
+            .putString("promoted_ids", currentPromoted.joinToString(","))
+            .putString("demoted_ids", currentDemoted.joinToString(","))
+            .apply()
 
         // Remove from repository in-memory catalog
         splitRepository.deleteWallpaper(wallpaperId)
@@ -538,6 +686,8 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                 deletedWallpaperIds = currentDeleted,
                 featuredWallpaperIds = currentFeatured,
                 onboardingWallpaperIds = currentOnboarding,
+                promotedWallpaperIds = currentPromoted,
+                demotedWallpaperIds = currentDemoted,
                 wallpapers = it.wallpapers.filter { wp -> wp.id != wallpaperId }
             )
         }
@@ -604,17 +754,26 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             }
             _isCheckingUpdates.value = false
             _updateInfo.value = update
+            if (update.isUpdateAvailable) {
+                _uiState.update { it.copy(showInAppUpdateDialog = true) }
+            }
             onComplete?.invoke(update)
         }
     }
 
+    fun dismissInAppUpdateDialog() {
+        _uiState.update { it.copy(showInAppUpdateDialog = false) }
+    }
+
     private fun fetchLatestReleaseFromGitHub(): AppUpdateInfo {
         val currentVersion = com.example.BuildConfig.VERSION_NAME.removePrefix("v").trim()
-        return try {
-            val client = okhttp3.OkHttpClient.Builder()
-                .connectTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
-                .readTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
-                .build()
+        val client = okhttp3.OkHttpClient.Builder()
+            .connectTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
+            .readTimeout(6, java.util.concurrent.TimeUnit.SECONDS)
+            .build()
+
+        // 1. Primary: Official GitHub Releases API
+        try {
             val request = okhttp3.Request.Builder()
                 .url("https://api.github.com/repos/fahitakrim/Orbitwall/releases/latest")
                 .header("Accept", "application/vnd.github.v3+json")
@@ -642,16 +801,13 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                                 break
                             }
                         }
-                        if (downloadUrl.isEmpty() && assets.length() > 0) {
-                            downloadUrl = assets.getJSONObject(0).optString("browser_download_url", "")
-                        }
                     }
                     if (downloadUrl.isEmpty()) {
-                        downloadUrl = json.optString("html_url", "https://github.com/fahitakrim/Orbitwall/releases")
+                        downloadUrl = "https://github.com/fahitakrim/Orbitwall/releases/download/v$tagName/Orbitwall-v$tagName.apk"
                     }
 
                     val isNewer = isVersionNewer(latest = tagName, current = currentVersion)
-                    AppUpdateInfo(
+                    return AppUpdateInfo(
                         isUpdateAvailable = isNewer,
                         latestVersion = "v$tagName",
                         currentVersion = "v$currentVersion",
@@ -660,13 +816,38 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
                         downloadUrl = downloadUrl,
                         fileSizeFormatted = fileSizeFormatted
                     )
-                } else {
-                    fallbackUpdateInfo(currentVersion)
                 }
             }
-        } catch (e: Exception) {
-            fallbackUpdateInfo(currentVersion)
-        }
+        } catch (_: Exception) {}
+
+        // 2. Secondary fallback: High-speed CDN version.json (Rate-limit immune)
+        try {
+            val cdnRequest = okhttp3.Request.Builder()
+                .url("https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/version.json")
+                .build()
+            client.newCall(cdnRequest).execute().use { res ->
+                if (res.isSuccessful) {
+                    val json = org.json.JSONObject(res.body?.string() ?: "{}")
+                    val tagName = json.optString("version", currentVersion).removePrefix("v").trim()
+                    val title = json.optString("title", "Orbitwall v$tagName")
+                    val body = json.optString("body", "Bug fixes and improvements.")
+                    val dlUrl = json.optString("download_url", "https://github.com/fahitakrim/Orbitwall/releases/download/v$tagName/Orbitwall-v$tagName.apk")
+                    val size = json.optString("file_size", "")
+                    val isNewer = isVersionNewer(latest = tagName, current = currentVersion)
+                    return AppUpdateInfo(
+                        isUpdateAvailable = isNewer,
+                        latestVersion = "v$tagName",
+                        currentVersion = "v$currentVersion",
+                        releaseTitle = title,
+                        releaseNotes = body,
+                        downloadUrl = dlUrl,
+                        fileSizeFormatted = size
+                    )
+                }
+            }
+        } catch (_: Exception) {}
+
+        return fallbackUpdateInfo(currentVersion)
     }
 
     private fun fallbackUpdateInfo(currentVersion: String): AppUpdateInfo {
