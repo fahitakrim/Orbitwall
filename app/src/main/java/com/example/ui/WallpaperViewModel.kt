@@ -84,7 +84,12 @@ data class WallpaperUiState(
     val onboardingWallpapers: List<Wallpaper>
         get() {
             val selected = wallpapers.filter { onboardingWallpaperIds.contains(it.id) }
-            return if (selected.isNotEmpty()) selected else wallpapers.take(8)
+            return if (selected.isNotEmpty()) {
+                if (selected.size < 9) {
+                    val remaining = wallpapers.filter { it.id !in onboardingWallpaperIds }
+                    selected + remaining.take(9 - selected.size)
+                } else selected
+            } else wallpapers.take(12)
         }
 
     val totalAppDownloads: Long

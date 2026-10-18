@@ -95,14 +95,15 @@ fun OnboardingScreen(
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.58f)
-                .offset(y = (-36).dp, x = 10.dp)
-                .rotate(-8f)
-                .clipToBounds()
+                .fillMaxHeight(0.65f)
+                .offset(y = (-16).dp, x = 6.dp)
+                .rotate(-6f)
         ) {
             Row(
                 horizontalArrangement = Arrangement.spacedBy(14.dp),
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 14.dp)
             ) {
                 // Column 1
                 Column(
@@ -114,12 +115,12 @@ fun OnboardingScreen(
                         OnboardingCardItem(imageUrl = img)
                     }
                 }
-                // Column 2
+                // Column 2 (Subtle, balanced stagger)
                 Column(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier
                         .weight(1f)
-                        .offset(y = (-24).dp)
+                        .offset(y = 12.dp)
                 ) {
                     for (i in 3 until 6) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
@@ -131,7 +132,7 @@ fun OnboardingScreen(
                     verticalArrangement = Arrangement.spacedBy(14.dp),
                     modifier = Modifier.weight(1f)
                 ) {
-                    for (i in 5 until 8) {
+                    for (i in 6 until 9) {
                         val img = if (userWallpapers.isNotEmpty()) userWallpapers[i % userWallpapers.size] else null
                         OnboardingCardItem(imageUrl = img)
                     }
@@ -147,8 +148,9 @@ fun OnboardingScreen(
                     Brush.verticalGradient(
                         colorStops = arrayOf(
                             0.0f to Color.Transparent,
-                            0.32f to Color.Transparent,
-                            0.46f to backgroundColor.copy(alpha = 0.85f),
+                            0.24f to Color.Transparent,
+                            0.38f to backgroundColor.copy(alpha = 0.50f),
+                            0.48f to backgroundColor.copy(alpha = 0.88f),
                             0.56f to backgroundColor,
                             1.0f to backgroundColor
                         )
@@ -258,7 +260,7 @@ private fun OnboardingCardItem(imageUrl: String?) {
         elevation = CardDefaults.cardElevation(defaultElevation = 3.dp),
         modifier = Modifier
             .fillMaxWidth()
-            .aspectRatio(0.72f)
+            .aspectRatio(0.68f)
             .clip(RoundedCornerShape(22.dp))
     ) {
         if (!imageUrl.isNullOrBlank()) {

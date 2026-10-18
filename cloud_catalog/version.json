@@ -1,9 +1,9 @@
 {
-  "tag_name": "v1.1.1",
-  "version": "1.1.1",
-  "version_code": 3,
-  "title": "Orbitwall v1.1.1 - Smart Rankings & In-App Updates",
-  "body": "• Curated wallpaper rankings and high-priority showcase\n• Real-time catalog download metrics\n• Automatic in-app update notifications\n• AMOLED performance optimizations and bug fixes",
-  "download_url": "https://github.com/fahitakrim/Orbitwall/releases/download/v1.1.1/Orbitwall-v1.1.1.apk",
+  "tag_name": "v1.1.2",
+  "version": "1.1.2",
+  "version_code": 4,
+  "title": "Orbitwall v1.1.2 - Refined Visuals & Polish",
+  "body": "• Enhanced welcome screen with seamless visual fade\n• Distinct 9-card onboarding showcase\n• Full download metadata calibration\n• Bug fixes and stability improvements",
+  "download_url": "https://github.com/fahitakrim/Orbitwall/releases/download/v1.1.2/Orbitwall-v1.1.2.apk",
   "file_size": "20.5 MB"
 }
