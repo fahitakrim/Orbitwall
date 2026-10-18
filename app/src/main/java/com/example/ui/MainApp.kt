@@ -78,6 +78,8 @@ fun MainApp(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     val uploadState by viewModel.uploadState.collectAsStateWithLifecycle()
+    val updateInfo by viewModel.updateInfo.collectAsStateWithLifecycle()
+    val isCheckingUpdates by viewModel.isCheckingUpdates.collectAsStateWithLifecycle()
     val favoriteWallpapers by viewModel.favoriteWallpapers.collectAsStateWithLifecycle()
     val favoriteIds by viewModel.favoriteIds.collectAsStateWithLifecycle()
     val view = LocalView.current
@@ -225,6 +227,11 @@ fun MainApp(
                                         currentTheme = uiState.themeMode,
                                         isHapticEnabled = uiState.hapticEnabled,
                                         cacheSizeMb = uiState.cacheSizeMb,
+                                        updateInfo = updateInfo,
+                                        isCheckingUpdates = isCheckingUpdates,
+                                        onCheckForUpdates = { onComplete ->
+                                            viewModel.checkForUpdates(onComplete)
+                                        },
                                         onThemeChange = { viewModel.setThemeMode(it) },
                                         onHapticToggle = { viewModel.setHapticEnabled(it) },
                                         onClearCache = { viewModel.clearImageCache() },
