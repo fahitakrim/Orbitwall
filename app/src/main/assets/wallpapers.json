@@ -1,1408 +1,2074 @@
-﻿[
-    {
-        "id":  "paper-2k-prism-smoke-cube",
-        "title":  "Prism Smoke Geometric Cube",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Abstract",
-                     "Smoke",
-                     "Cube",
-                     "Geometry",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-prism-smoke-cube.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-prism-smoke-cube.jpg",
-        "dominant_color_hex":  "#151618",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270060000
-    },
-    {
-        "id":  "paper-2k-neon-sign-aesthetics",
-        "title":  "Neon Glow Sign Aesthetics",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Neon",
-                     "Cyberpunk",
-                     "Typography",
-                     "Glow",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-sign-aesthetics.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-sign-aesthetics.jpg",
-        "dominant_color_hex":  "#0F0F11",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270120000
-    },
-    {
-        "id":  "paper-2k-black-hole-singularity",
-        "title":  "Black Hole Singularity Void",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Space",
-                     "BlackHole",
-                     "Cosmic",
-                     "Astronomy",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-black-hole-singularity.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-black-hole-singularity.jpg",
-        "dominant_color_hex":  "#2D2A29",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270180000
-    },
-    {
-        "id":  "paper-2k-geometric-deer-crest",
-        "title":  "Geometric Magenta Deer Crest",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Geometric",
-                     "Deer",
-                     "Vector",
-                     "Magenta",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-geometric-deer-crest.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-geometric-deer-crest.jpg",
-        "dominant_color_hex":  "#25031C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270240000
-    },
-    {
-        "id":  "paper-2k-monochrome-granite-peaks",
-        "title":  "Monochrome Granite Peaks",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Mountains",
-                     "Monochrome",
-                     "Fog",
-                     "Landscape",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-monochrome-granite-peaks.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-monochrome-granite-peaks.jpg",
-        "dominant_color_hex":  "#0B0B0B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270300000
-    },
-    {
-        "id":  "paper-2k-deep-blue-paper-layers",
-        "title":  "Deep Blue Paper Layers",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "PaperCraft",
-                     "Layers",
-                     "Blue",
-                     "Abstract",
-                     "Depth"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-deep-blue-paper-layers.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-deep-blue-paper-layers.jpg",
-        "dominant_color_hex":  "#131721",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270360000
-    },
-    {
-        "id":  "paper-2k-crimson-eclipse-orbit",
-        "title":  "Crimson Eclipse Orbit",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Space",
-                     "Eclipse",
-                     "Crimson",
-                     "Planets",
-                     "Orbit"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-eclipse-orbit.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-eclipse-orbit.jpg",
-        "dominant_color_hex":  "#270808",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270420000
-    },
-    {
-        "id":  "paper-2k-dark-fluid-sand-dunes",
-        "title":  "Dark Fluid Sand Dunes",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Dunes",
-                     "Fluid",
-                     "Monochrome",
-                     "Waves",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-dark-fluid-sand-dunes.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-dark-fluid-sand-dunes.jpg",
-        "dominant_color_hex":  "#5C5C5C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270480000
-    },
-    {
-        "id":  "paper-2k-minimal-waveforms",
-        "title":  "Minimal Monochrome Waveforms",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Waveforms",
-                     "Audio",
-                     "Curves",
-                     "Lines",
-                     "Abstract"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-minimal-waveforms.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-minimal-waveforms.jpg",
-        "dominant_color_hex":  "#0E0E0E",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270540000
-    },
-    {
-        "id":  "paper-2k-mystic-anime-gaze",
-        "title":  "Mystic Anime Gaze",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Eyes",
-                     "Mystic",
-                     "Illustration",
-                     "Dark",
-                     "Portrait"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-mystic-anime-gaze.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-mystic-anime-gaze.jpg",
-        "dominant_color_hex":  "#0C0C0C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270600000
-    },
-    {
-        "id":  "paper-2k-cherry-blossom-maiden",
-        "title":  "Cherry Blossom Maiden",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Sakura",
-                     "Maiden",
-                     "Portrait",
-                     "Aesthetic",
-                     "Soft"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cherry-blossom-maiden.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cherry-blossom-maiden.jpg",
-        "dominant_color_hex":  "#FCA1A0",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270660000
-    },
-    {
-        "id":  "paper-2k-neon-night-anime",
-        "title":  "Neon Night Anime Silhouette",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Cyberpunk",
-                     "Silhouette",
-                     "Night",
-                     "Glow",
-                     "City"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-night-anime.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-night-anime.jpg",
-        "dominant_color_hex":  "#100E1B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270720000
-    },
-    {
-        "id":  "paper-2k-cosmic-astronaut-visor",
-        "title":  "Cosmic Astronaut Visor",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Astronaut",
-                     "Space",
-                     "Cosmic",
-                     "Visor",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cosmic-astronaut-visor.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cosmic-astronaut-visor.jpg",
-        "dominant_color_hex":  "#272727",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270780000
-    },
-    {
-        "id":  "paper-2k-binary-skull-core",
-        "title":  "Matrix Binary Skull Core",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Matrix",
-                     "Skull",
-                     "Binary",
-                     "Cyberpunk",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-binary-skull-core.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-binary-skull-core.jpg",
-        "dominant_color_hex":  "#081009",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270840000
-    },
-    {
-        "id":  "paper-2k-shadow-feline-eyes",
-        "title":  "Shadow Feline Golden Eyes",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Cat",
-                     "Feline",
-                     "GoldenEyes",
-                     "Shadow",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-shadow-feline-eyes.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-shadow-feline-eyes.jpg",
-        "dominant_color_hex":  "#161618",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270900000
-    },
-    {
-        "id":  "paper-2k-hypercar-drift-smoke",
-        "title":  "Shadow Hypercar Drift Smoke",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Car",
-                     "Supercar",
-                     "Drift",
-                     "Smoke",
-                     "Stealth"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-hypercar-drift-smoke.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-hypercar-drift-smoke.jpg",
-        "dominant_color_hex":  "#0E0E10",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729270960000
-    },
-    {
-        "id":  "paper-2k-stealth-supercar-burnout",
-        "title":  "Stealth Supercar Night Burnout",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Car",
-                     "Burnout",
-                     "Night",
-                     "Automotive",
-                     "Speed"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-stealth-supercar-burnout.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-stealth-supercar-burnout.jpg",
-        "dominant_color_hex":  "#0C0B0D",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271020000
-    },
-    {
-        "id":  "paper-2k-neon-highway-rearview",
-        "title":  "Neon Highway Rearview",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Car",
-                     "Highway",
-                     "Neon",
-                     "Reflection",
-                     "Night"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-highway-rearview.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-highway-rearview.jpg",
-        "dominant_color_hex":  "#060D19",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271080000
-    },
-    {
-        "id":  "paper-2k-playful-pocket-sprites",
-        "title":  "Playful Pocket Sprites",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Sprites",
-                     "Cartoon",
-                     "Cute",
-                     "Creatures",
-                     "Playful"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-playful-pocket-sprites.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-playful-pocket-sprites.jpg",
-        "dominant_color_hex":  "#988779",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271140000
-    },
-    {
-        "id":  "paper-2k-winter-cat-snow",
-        "title":  "Snow Flake Winter Cat",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Cat",
-                     "Winter",
-                     "Snow",
-                     "Cozy",
-                     "Wildlife"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-winter-cat-snow.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-winter-cat-snow.jpg",
-        "dominant_color_hex":  "#CBDDEB",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271200000
-    },
-    {
-        "id":  "paper-2k-golden-hour-cat",
-        "title":  "Golden Hour Strolling Cat",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Cat",
-                     "GoldenHour",
-                     "Sunset",
-                     "Warm",
-                     "Illustration"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-golden-hour-cat.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-golden-hour-cat.jpg",
-        "dominant_color_hex":  "#CBC574",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271260000
-    },
-    {
-        "id":  "paper-2k-neon-audio-fidelity",
-        "title":  "Neon Audio Fidelity",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Audio",
-                     "Headphones",
-                     "Music",
-                     "Neon",
-                     "Purple"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-audio-fidelity.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-audio-fidelity.jpg",
-        "dominant_color_hex":  "#2D030A",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271320000
-    },
-    {
-        "id":  "paper-2k-dapper-ducks",
-        "title":  "Distinguished Dapper Ducks",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Ducks",
-                     "Dapper",
-                     "Whimsical",
-                     "Animals",
-                     "Cute"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-dapper-ducks.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-dapper-ducks.jpg",
-        "dominant_color_hex":  "#0C0B0A",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271380000
-    },
-    {
-        "id":  "paper-2k-misty-pine-ridge",
-        "title":  "Misty Obsidian Pine Ridge",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Forest",
-                     "Pine",
-                     "Fog",
-                     "Misty",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-misty-pine-ridge.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-misty-pine-ridge.jpg",
-        "dominant_color_hex":  "#0A0B0B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271440000
-    },
-    {
-        "id":  "paper-2k-phantom-cheshire-grin",
-        "title":  "Phantom Glowing Cheshire Grin",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Glow",
-                     "Smile",
-                     "Minimal",
-                     "TrueBlack",
-                     "Mysterious"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-phantom-cheshire-grin.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-phantom-cheshire-grin.jpg",
-        "dominant_color_hex":  "#0A0A0C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271500000
-    },
-    {
-        "id":  "paper-2k-velvet-grey-cat",
-        "title":  "Velvet Grey Whisker Portrait",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Cat",
-                     "Grey",
-                     "Portrait",
-                     "Eyes",
-                     "Moody"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-velvet-grey-cat.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-velvet-grey-cat.jpg",
-        "dominant_color_hex":  "#0C0B13",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271560000
-    },
-    {
-        "id":  "paper-2k-lone-wanderer-twilight",
-        "title":  "Lone Wanderer Twilight Peak",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Hiker",
-                     "Mountains",
-                     "Sunset",
-                     "Solitude",
-                     "Twilight"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-lone-wanderer-twilight.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-lone-wanderer-twilight.jpg",
-        "dominant_color_hex":  "#0C0C0C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271620000
-    },
-    {
-        "id":  "paper-2k-prismatic-rubik-void",
-        "title":  "Prismatic Floating Rubik Void",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Cube",
-                     "Rubik",
-                     "Geometry",
-                     "Color",
-                     "Abstract"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-prismatic-rubik-void.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-prismatic-rubik-void.jpg",
-        "dominant_color_hex":  "#150E03",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271680000
-    },
-    {
-        "id":  "paper-2k-keyhole-mountain-horizon",
-        "title":  "Pastel Keyhole Mountain Horizon",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Mountains",
-                     "Pastel",
-                     "Horizon",
-                     "Keyhole",
-                     "Art"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-keyhole-mountain-horizon.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-keyhole-mountain-horizon.jpg",
-        "dominant_color_hex":  "#F1C8BF",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271740000
-    },
-    {
-        "id":  "paper-2k-paper-sculptures",
-        "title":  "Architectural Paper Sculptures",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "PaperCraft",
-                     "Sculpture",
-                     "Architecture",
-                     "White",
-                     "Clean"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-paper-sculptures.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-paper-sculptures.jpg",
-        "dominant_color_hex":  "#161921",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271800000
-    },
-    {
-        "id":  "paper-2k-retro-synthwave-lines",
-        "title":  "Retro Synthwave Geometry",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Retro",
-                     "Synthwave",
-                     "Geometric",
-                     "Lines",
-                     "Abstract"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-retro-synthwave-lines.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-retro-synthwave-lines.jpg",
-        "dominant_color_hex":  "#350F10",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271860000
-    },
-    {
-        "id":  "paper-2k-crimson-spectral-skull",
-        "title":  "Crimson Spectral Skull",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Skull",
-                     "Crimson",
-                     "Spectral",
-                     "Dark",
-                     "Glow"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-spectral-skull.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-spectral-skull.jpg",
-        "dominant_color_hex":  "#8C1926",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271920000
-    },
-    {
-        "id":  "paper-2k-brutalist-tower-a",
-        "title":  "Brutalist Monolith Tower A",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Architecture",
-                     "Skyscraper",
-                     "Brutalist",
-                     "Monochrome",
-                     "Facade"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-brutalist-tower-a.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-brutalist-tower-a.jpg",
-        "dominant_color_hex":  "#0B0B0C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729271980000
-    },
-    {
-        "id":  "paper-2k-brutalist-tower-b",
-        "title":  "Brutalist Monolith Tower B",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Architecture",
-                     "Skyscraper",
-                     "Geometry",
-                     "Urban",
-                     "Tower"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-brutalist-tower-b.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-brutalist-tower-b.jpg",
-        "dominant_color_hex":  "#0F0F0F",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729272040000
-    },
-    {
-        "id":  "paper-2k-modular-terraces",
-        "title":  "Monochrome Modular Terraces",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Bauhaus",
-                     "Modular",
-                     "Plates",
-                     "Squares",
-                     "Terraces"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-modular-terraces.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-modular-terraces.jpg",
-        "dominant_color_hex":  "#0B0B0B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729272100000
-    },
-    {
-        "id":  "paper-2k-ceremonial-blade-sakura",
-        "title":  "Ceremonial Blade \u0026 Sakura",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Katana",
-                     "Sword",
-                     "Sakura",
-                     "Flowers",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-ceremonial-blade-sakura.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-ceremonial-blade-sakura.jpg",
-        "dominant_color_hex":  "#272727",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729272160000
-    },
-    {
-        "id":  "paper-2k-alpine-lake-cabin",
-        "title":  "Midnight Alpine Lake Cabin",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Cabin",
-                     "Lake",
-                     "Alpine",
-                     "Night",
-                     "Stars"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-alpine-lake-cabin.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-alpine-lake-cabin.jpg",
-        "dominant_color_hex":  "#020E18",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729272220000
-    },
-    {
-        "id":  "paper-2k-saturn-celestial-rings",
-        "title":  "Saturn Celestial Rings Void",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Saturn",
-                     "Space",
-                     "Cosmic",
-                     "Rings",
-                     "Planets"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-saturn-celestial-rings.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-saturn-celestial-rings.jpg",
-        "dominant_color_hex":  "#5D4B3A",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1729272280000
-    },
-    {
-        "id":  "paper-obito-split-panels",
-        "title":  "Obito Split Panels",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Anime",
-                     "Obito",
-                     "Naruto",
-                     "Sharingan",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-split-panels.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-split-panels.jpg",
-        "dominant_color_hex":  "#0D0D0D",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-itachi-crimson-smoke",
-        "title":  "Itachi Crimson Smoke",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Itachi",
-                     "Akatsuki",
-                     "Sharingan",
-                     "Crimson",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crimson-smoke.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crimson-smoke.jpg",
-        "dominant_color_hex":  "#201415",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-itachi-crow-flock",
-        "title":  "Itachi Crow Swarm",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Itachi",
-                     "Crows",
-                     "Akatsuki",
-                     "Dark",
-                     "Naruto"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crow-flock.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crow-flock.jpg",
-        "dominant_color_hex":  "#151B1D",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-itachi-pole-silhouette",
-        "title":  "Itachi Pole Silhouette",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Itachi",
-                     "Silhouette",
-                     "Moon",
-                     "Naruto",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-pole-silhouette.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-pole-silhouette.jpg",
-        "dominant_color_hex":  "#3B3A3B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-kakashi-autumn-drift",
-        "title":  "Kakashi Autumn Drift",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Anime",
-                     "Kakashi",
-                     "Leaves",
-                     "Dark",
-                     "Naruto"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-autumn-drift.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-autumn-drift.jpg",
-        "dominant_color_hex":  "#090707",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-vintage-mustang-rear",
-        "title":  "Classic Mustang Muscle",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Car",
-                     "Mustang",
-                     "Vintage",
-                     "Minimal",
-                     "Automotive"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-vintage-mustang-rear.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-vintage-mustang-rear.jpg",
-        "dominant_color_hex":  "#282625",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-honey-drip-minimal",
-        "title":  "Honey Drip Minimal",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Yellow",
-                     "Drip",
-                     "Abstract",
-                     "Clean",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-honey-drip-minimal.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-honey-drip-minimal.jpg",
-        "dominant_color_hex":  "#845F01",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-dot-matrix-dune-wave",
-        "title":  "Dot Matrix Dune Wave",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "DotMatrix",
-                     "NothingOS",
-                     "LED",
-                     "Waves",
-                     "Amber"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dot-matrix-dune-wave.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dot-matrix-dune-wave.jpg",
-        "dominant_color_hex":  "#3A120E",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-retro-sunset-curves",
-        "title":  "Retro Sunset Curves",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Retro",
-                     "Sunset",
-                     "Curves",
-                     "Warm",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-retro-sunset-curves.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-retro-sunset-curves.jpg",
-        "dominant_color_hex":  "#8B2001",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-porsche-gt3rs-mountain",
-        "title":  "Porsche GT3 RS Mountain Pass",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Car",
-                     "Porsche",
-                     "Supercar",
-                     "Moody",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-porsche-gt3rs-mountain.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-porsche-gt3rs-mountain.jpg",
-        "dominant_color_hex":  "#2C2C30",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-bauhaus-stacked-blocks",
-        "title":  "Bauhaus Stacked Blocks",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Bauhaus",
-                     "Orange",
-                     "Geometry",
-                     "Modern",
-                     "Clean"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-stacked-blocks.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-stacked-blocks.jpg",
-        "dominant_color_hex":  "#9A6749",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-ember-matrix-mesh",
-        "title":  "Ember Matrix Mesh",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Mesh",
-                     "LED",
-                     "Matrix",
-                     "Embers",
-                     "Red"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-ember-matrix-mesh.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-ember-matrix-mesh.jpg",
-        "dominant_color_hex":  "#6A200F",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-peeking-black-cat",
-        "title":  "Peeking Black Cat",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Cat",
-                     "Orange",
-                     "Cute",
-                     "Dark",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-peeking-black-cat.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-peeking-black-cat.jpg",
-        "dominant_color_hex":  "#6B3B10",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-bauhaus-dot-folder",
-        "title":  "Bauhaus Dot Folders",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Bauhaus",
-                     "DotMatrix",
-                     "DieterRams",
-                     "Red",
-                     "Yellow"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-dot-folder.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-dot-folder.jpg",
-        "dominant_color_hex":  "#ECAE82",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-akatsuki-moonlit-gathering",
-        "title":  "Akatsuki Moonlit Gathering",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Akatsuki",
-                     "Red Moon",
-                     "Dark",
-                     "Clouds",
-                     "Naruto"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-akatsuki-moonlit-gathering.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-akatsuki-moonlit-gathering.png",
-        "dominant_color_hex":  "#403E3E",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-itachi-red-moon",
-        "title":  "Itachi Uchiha Red Moon",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Itachi",
-                     "Sharingan",
-                     "Red Moon",
-                     "Uchiha",
-                     "Crow"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-red-moon.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-red-moon.png",
-        "dominant_color_hex":  "#231B19",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-kakashi-sharingan-moon",
-        "title":  "Kakashi Hatake Sharingan Moon",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Kakashi",
-                     "Sharingan",
-                     "Moon",
-                     "Ninja",
-                     "Chidori"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-sharingan-moon.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-sharingan-moon.png",
-        "dominant_color_hex":  "#47413F",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-obito-spiral-mask",
-        "title":  "Obito Uchiha Spiral Mask",
-        "category":  "Anime",
-        "tags":  [
-                     "Anime",
-                     "Obito",
-                     "Spiral Mask",
-                     "Kamui",
-                     "Moon",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-spiral-mask.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-spiral-mask.png",
-        "dominant_color_hex":  "#2E2C2B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-minimal-capsule-stack",
-        "title":  "Minimal Pill Capsule Stack",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Pills",
-                     "Capsule",
-                     "Red Accent",
-                     "3D",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-minimal-capsule-stack.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-minimal-capsule-stack.png",
-        "dominant_color_hex":  "#6B4649",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-solitary-red-boat",
-        "title":  "Solitary Red Boat in Dark Ocean",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Ocean",
-                     "Waves",
-                     "Red Boat",
-                     "Aerial",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-solitary-red-boat.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-solitary-red-boat.png",
-        "dominant_color_hex":  "#1F2022",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-cherry-blossom-black",
-        "title":  "Cherry Blossom Crimson Buds",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Sakura",
-                     "Cherry Blossom",
-                     "Branch",
-                     "Minimal",
-                     "AMOLED"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-cherry-blossom-black.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-cherry-blossom-black.png",
-        "dominant_color_hex":  "#131010",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-black-feather-red-spine",
-        "title":  "Black Feather Red Spine",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Feather",
-                     "Crimson Spine",
-                     "Minimal",
-                     "Filigree",
-                     "Dark"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-black-feather-red-spine.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-black-feather-red-spine.png",
-        "dominant_color_hex":  "#110F0F",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-eclipse-spheres-red-glow",
-        "title":  "Eclipse Spheres Neon Red Glow",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Spheres",
-                     "Eclipse",
-                     "Red Glow",
-                     "Geometry",
-                     "Curvature"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-red-glow.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-red-glow.png",
-        "dominant_color_hex":  "#281B1B",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-eclipse-spheres-amber-glow",
-        "title":  "Eclipse Spheres Amber Glow",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Spheres",
-                     "Eclipse",
-                     "Amber Glow",
-                     "Geometry",
-                     "Warm"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-amber-glow.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-amber-glow.png",
-        "dominant_color_hex":  "#5A3325",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-crimson-amber-fluid-flow",
-        "title":  "Crimson \u0026 Amber Fluid Petals",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Fluid Flow",
-                     "Crimson",
-                     "Amber",
-                     "3D Flow",
-                     "Abstract"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crimson-amber-fluid-flow.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crimson-amber-fluid-flow.png",
-        "dominant_color_hex":  "#7B2513",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-monochrome-crimson-petal",
-        "title":  "Monochrome Wave Crimson Petal",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Monochrome",
-                     "Wave",
-                     "Crimson Petal",
-                     "Minimal",
-                     "Abstract"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-monochrome-crimson-petal.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-monochrome-crimson-petal.png",
-        "dominant_color_hex":  "#4A2C2E",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-red-solar-eclipse",
-        "title":  "Red Solar Eclipse Minimal",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Eclipse",
-                     "Solar",
-                     "Corona",
-                     "Red Sun",
-                     "Space"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-solar-eclipse.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-solar-eclipse.png",
-        "dominant_color_hex":  "#190303",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-crescent-moon-minimal-orbit",
-        "title":  "Crescent Moon Minimal Orbit",
-        "category":  "AMOLED",
-        "tags":  [
-                     "AMOLED",
-                     "Moon",
-                     "Crescent",
-                     "Orbit",
-                     "Space",
-                     "Minimal"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crescent-moon-minimal-orbit.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crescent-moon-minimal-orbit.png",
-        "dominant_color_hex":  "#181818",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-red-moon-misty-forest",
-        "title":  "Red Moon Misty Forest",
-        "category":  "Nature",
-        "tags":  [
-                     "Nature",
-                     "Red Moon",
-                     "Forest",
-                     "Fog",
-                     "Mountains",
-                     "Dark Pines"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-moon-misty-forest.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-moon-misty-forest.png",
-        "dominant_color_hex":  "#292222",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-circular-speaker-grille",
-        "title":  "Circular Speaker Grille",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Audio",
-                     "Acoustic",
-                     "Speaker",
-                     "Grille",
-                     "Hardware"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-circular-speaker-grille.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-circular-speaker-grille.png",
-        "dominant_color_hex":  "#1C1C1C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-concentric-metallic-rings",
-        "title":  "Concentric Metallic Rings",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Aperture",
-                     "Concentric",
-                     "Rings",
-                     "Precision",
-                     "Optics"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-concentric-metallic-rings.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-concentric-metallic-rings.png",
-        "dominant_color_hex":  "#080808",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-dotted-sound-wave",
-        "title":  "Dotted Sound Wave Minimal",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Sound Wave",
-                     "Dots",
-                     "Audio",
-                     "AMOLED",
-                     "Digital"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dotted-sound-wave.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dotted-sound-wave.png",
-        "dominant_color_hex":  "#000000",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-geometric-circles-diagram",
-        "title":  "Geometric Circles Diagram",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Geometry",
-                     "Diagram",
-                     "Concentric",
-                     "Circles",
-                     "Linear"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-geometric-circles-diagram.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-geometric-circles-diagram.png",
-        "dominant_color_hex":  "#060606",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-transparent-cassette",
-        "title":  "Transparent Audio Cassette",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Cassette",
-                     "Retro",
-                     "Transparent",
-                     "Audio",
-                     "Vintage"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-transparent-cassette.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-transparent-cassette.png",
-        "dominant_color_hex":  "#1A1919",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-bauhaus-geometry-ochre-red",
-        "title":  "Bauhaus Geometry Ochre \u0026 Red",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Bauhaus",
-                     "Geometric",
-                     "Dotted",
-                     "Pill",
-                     "Modern"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-ochre-red.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-ochre-red.png",
-        "dominant_color_hex":  "#AC775C",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
-    },
-    {
-        "id":  "paper-bauhaus-geometry-monochrome-red",
-        "title":  "Bauhaus Geometry Monochrome \u0026 Red",
-        "category":  "Minimal",
-        "tags":  [
-                     "Minimal",
-                     "Bauhaus",
-                     "Geometric",
-                     "Monochrome",
-                     "Red Accent",
-                     "Dotted"
-                 ],
-        "thumbnail_url":  "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-monochrome-red.jpg",
-        "full_res_url":  "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-monochrome-red.png",
-        "dominant_color_hex":  "#8B6564",
-        "downloads":  0,
-        "views":  0,
-        "created_at":  1740000000000
+[
+    {
+        "id": "paper-2k-crimson-glyph-core",
+        "title": "Crimson Glyph Core",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Cyberpunk",
+            "Red",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-glyph-core.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-glyph-core.jpg",
+        "dominant_color_hex": "#0E0E15",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300060000
+    },
+    {
+        "id": "paper-2k-sage-minimalist-horizon",
+        "title": "Sage Minimalist Horizon",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Nature",
+            "Sage",
+            "Aesthetic"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-sage-minimalist-horizon.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-sage-minimalist-horizon.jpg",
+        "dominant_color_hex": "#BCC2B4",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300120000
+    },
+    {
+        "id": "paper-2k-deep-spectrum-mesh",
+        "title": "Deep Spectrum Mesh Flow",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Gradient",
+            "Spectrum",
+            "Modern"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-deep-spectrum-mesh.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-deep-spectrum-mesh.jpg",
+        "dominant_color_hex": "#0E0A08",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300180000
+    },
+    {
+        "id": "paper-2k-aurora-colored-waves",
+        "title": "Aurora Colored Waves",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Waves",
+            "Fluid",
+            "Vibrant"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-aurora-colored-waves.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-aurora-colored-waves.jpg",
+        "dominant_color_hex": "#121212",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300240000
+    },
+    {
+        "id": "paper-2k-brutalist-diagonal-stripes",
+        "title": "Brutalist Diagonal Stripes",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Architecture",
+            "Stripes",
+            "Brutalist",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-brutalist-diagonal-stripes.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-brutalist-diagonal-stripes.jpg",
+        "dominant_color_hex": "#1B242D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300300000
+    },
+    {
+        "id": "paper-2k-dark-geometric-tessellation",
+        "title": "Dark Geometric Tessellation",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Geometric",
+            "Dark",
+            "Tessellation",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-dark-geometric-tessellation.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-dark-geometric-tessellation.jpg",
+        "dominant_color_hex": "#0C0C0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300360000
+    },
+    {
+        "id": "paper-2k-crimson-isometric-cubes",
+        "title": "Crimson Isometric Cubes",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Geometric",
+            "Crimson",
+            "Cubes",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-isometric-cubes.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-isometric-cubes.jpg",
+        "dominant_color_hex": "#1B0609",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300420000
+    },
+    {
+        "id": "paper-2k-crimson-slate-monolith",
+        "title": "Crimson Slate Monolith",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Geometric",
+            "Monolith",
+            "Red",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-slate-monolith.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-slate-monolith.jpg",
+        "dominant_color_hex": "#1C0206",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300480000
+    },
+    {
+        "id": "paper-2k-abstract-bauhaus-forms",
+        "title": "Abstract Bauhaus Forms",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Shapes",
+            "Design",
+            "Modern"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-abstract-bauhaus-forms.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-abstract-bauhaus-forms.jpg",
+        "dominant_color_hex": "#100E0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300540000
+    },
+    {
+        "id": "paper-2k-solar-flare-sunset",
+        "title": "Solar Flare Sunset Glow",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Sunset",
+            "Glow",
+            "Warm",
+            "Gradient"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-solar-flare-sunset.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-solar-flare-sunset.jpg",
+        "dominant_color_hex": "#FC6717",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300600000
+    },
+    {
+        "id": "paper-2k-pastel-radiance-aura",
+        "title": "Pastel Radiance Aura",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Pastel",
+            "Aura",
+            "Glow",
+            "Soft"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-pastel-radiance-aura.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-pastel-radiance-aura.jpg",
+        "dominant_color_hex": "#300000",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300660000
+    },
+    {
+        "id": "paper-2k-emerald-matrix-lines",
+        "title": "Emerald Matrix Lines",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Green",
+            "Stripes",
+            "Minimal",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-emerald-matrix-lines.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-emerald-matrix-lines.jpg",
+        "dominant_color_hex": "#05191A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300720000
+    },
+    {
+        "id": "paper-2k-cyber-honeycomb-mesh",
+        "title": "Cyber Honeycomb Mesh",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Cyberpunk",
+            "Honeycomb",
+            "Geometry",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cyber-honeycomb-mesh.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cyber-honeycomb-mesh.jpg",
+        "dominant_color_hex": "#140E0E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300780000
+    },
+    {
+        "id": "paper-2k-duotone-kinetic-stripes",
+        "title": "Duotone Kinetic Stripes",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Stripes",
+            "Duotone",
+            "Modern",
+            "Dynamic"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-duotone-kinetic-stripes.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-duotone-kinetic-stripes.jpg",
+        "dominant_color_hex": "#01140A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300840000
+    },
+    {
+        "id": "paper-2k-minimal-red-shard",
+        "title": "Minimal Red Shard",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Red",
+            "Shapes",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-minimal-red-shard.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-minimal-red-shard.jpg",
+        "dominant_color_hex": "#C6162A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300900000
+    },
+    {
+        "id": "paper-2k-crimson-polygonal-drift",
+        "title": "Crimson Polygonal Drift",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Geometric",
+            "Red",
+            "Dark",
+            "Polygon"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-polygonal-drift.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-polygonal-drift.jpg",
+        "dominant_color_hex": "#242424",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729300960000
+    },
+    {
+        "id": "paper-2k-celestial-deep-nebula",
+        "title": "Celestial Deep Nebula",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Space",
+            "Nebula",
+            "Cosmic",
+            "Astronomy"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-celestial-deep-nebula.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-celestial-deep-nebula.jpg",
+        "dominant_color_hex": "#071923",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301020000
+    },
+    {
+        "id": "paper-2k-amber-vertical-prism",
+        "title": "Amber Vertical Prism",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Amber",
+            "Prism",
+            "Stripes",
+            "Warm"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-amber-vertical-prism.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-amber-vertical-prism.jpg",
+        "dominant_color_hex": "#31262D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301080000
+    },
+    {
+        "id": "paper-2k-spectral-fluid-waves",
+        "title": "Spectral Fluid Waves",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Fluid",
+            "Waves",
+            "Spectral",
+            "Neon"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-spectral-fluid-waves.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-spectral-fluid-waves.jpg",
+        "dominant_color_hex": "#03162A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301140000
+    },
+    {
+        "id": "paper-2k-shadow-shinobi-silhouette",
+        "title": "Shadow Shinobi Silhouette",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "AMOLED",
+            "Shadow",
+            "Samurai",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-shadow-shinobi-silhouette.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-shadow-shinobi-silhouette.jpg",
+        "dominant_color_hex": "#14161B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301200000
+    },
+    {
+        "id": "paper-2k-midnight-noir-feline",
+        "title": "Midnight Noir Feline",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Animals",
+            "Cat",
+            "Noir",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-midnight-noir-feline.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-midnight-noir-feline.jpg",
+        "dominant_color_hex": "#0B0B0B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301260000
+    },
+    {
+        "id": "paper-2k-terracotta-dune-gradient",
+        "title": "Terracotta Dune Gradient",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Gradient",
+            "Earth",
+            "Warm",
+            "Texture"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-terracotta-dune-gradient.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-terracotta-dune-gradient.jpg",
+        "dominant_color_hex": "#15100D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301320000
+    },
+    {
+        "id": "paper-2k-cosmic-orbital-arcs",
+        "title": "Cosmic Orbital Arcs",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Cosmic",
+            "Orbit",
+            "Abstract",
+            "Glow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cosmic-orbital-arcs.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cosmic-orbital-arcs.jpg",
+        "dominant_color_hex": "#010523",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301380000
+    },
+    {
+        "id": "paper-2k-crimson-carbon-weave",
+        "title": "Crimson Carbon Weave",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Texture",
+            "Carbon",
+            "Red",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-carbon-weave.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-carbon-weave.jpg",
+        "dominant_color_hex": "#161313",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301440000
+    },
+    {
+        "id": "paper-2k-stealth-hex-grid",
+        "title": "Stealth Hexagonal Grid",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Geometric",
+            "Hexagon",
+            "Grid",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-stealth-hex-grid.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-stealth-hex-grid.jpg",
+        "dominant_color_hex": "#2C2928",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301500000
+    },
+    {
+        "id": "paper-2k-gold-accent-monolith",
+        "title": "Gold Accent Monolith",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Gold",
+            "Geometric",
+            "Luxury",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-gold-accent-monolith.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-gold-accent-monolith.jpg",
+        "dominant_color_hex": "#131313",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301560000
+    },
+    {
+        "id": "paper-2k-cybernetic-glitch-portrait",
+        "title": "Cybernetic Glitch Portrait",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Cyberpunk",
+            "Glitch",
+            "Portrait",
+            "Futuristic"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cybernetic-glitch-portrait.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cybernetic-glitch-portrait.jpg",
+        "dominant_color_hex": "#D8D3CF",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301620000
+    },
+    {
+        "id": "paper-2k-lone-wanderer-ridge",
+        "title": "Lone Wanderer Ridge",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Hiker",
+            "Mountains",
+            "Sunset",
+            "Silhouette"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-lone-wanderer-ridge.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-lone-wanderer-ridge.jpg",
+        "dominant_color_hex": "#121212",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301680000
+    },
+    {
+        "id": "paper-2k-katana-sacred-clover",
+        "title": "Katana & Sacred Clover",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Katana",
+            "Clover",
+            "AMOLED",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-katana-sacred-clover.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-katana-sacred-clover.jpg",
+        "dominant_color_hex": "#171717",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301740000
+    },
+    {
+        "id": "paper-2k-minimalist-endurance-racer",
+        "title": "Minimalist Endurance Racer",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cars",
+            "Racing",
+            "Cyberpunk",
+            "Modern"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-minimalist-endurance-racer.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-minimalist-endurance-racer.jpg",
+        "dominant_color_hex": "#296FB1",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301800000
+    },
+    {
+        "id": "paper-2k-neon-duality-split",
+        "title": "Neon Duality Split",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Neon",
+            "Orange",
+            "Cyan",
+            "Gradient"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-duality-split.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-duality-split.jpg",
+        "dominant_color_hex": "#481701",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301860000
+    },
+    {
+        "id": "paper-2k-crimson-cobalt-eclipse",
+        "title": "Crimson Cobalt Eclipse",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Eclipse",
+            "Red",
+            "Blue",
+            "Gradient"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-cobalt-eclipse.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-cobalt-eclipse.jpg",
+        "dominant_color_hex": "#022178",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301920000
+    },
+    {
+        "id": "paper-2k-minimalist-orbital-rings",
+        "title": "Minimalist Orbital Rings",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Circles",
+            "Red",
+            "Geometric",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-minimalist-orbital-rings.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-minimalist-orbital-rings.jpg",
+        "dominant_color_hex": "#161616",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729301980000
+    },
+    {
+        "id": "paper-2k-crimson-filament-glow",
+        "title": "Crimson Filament Glow",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Glow",
+            "Bulb",
+            "Filament",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-filament-glow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-filament-glow.jpg",
+        "dominant_color_hex": "#8899A0",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729302040000
+    },
+    {
+        "id": "paper-2k-ethereal-spiderweb-void",
+        "title": "Ethereal Spiderweb Void",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Spiderweb",
+            "Gothic",
+            "Monochrome",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-ethereal-spiderweb-void.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-ethereal-spiderweb-void.jpg",
+        "dominant_color_hex": "#0B0B0B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729302100000
+    },
+    {
+        "id": "paper-2k-cyber-lime-matrix",
+        "title": "Cyber Lime Matrix",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Cyberpunk",
+            "Lime",
+            "Dark",
+            "Geometry"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cyber-lime-matrix.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cyber-lime-matrix.jpg",
+        "dominant_color_hex": "#292929",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729302160000
+    },
+    {
+        "id": "paper-2k-stealth-slate-void",
+        "title": "Stealth Slate Void",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Slate",
+            "Dark",
+            "Texture"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-stealth-slate-void.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-stealth-slate-void.jpg",
+        "dominant_color_hex": "#1C1C1E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729302220000
+    },
+    {
+        "id": "paper-2k-prism-smoke-cube",
+        "title": "Prism Smoke Geometric Cube",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Abstract",
+            "Smoke",
+            "Cube",
+            "Geometry",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-prism-smoke-cube.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-prism-smoke-cube.jpg",
+        "dominant_color_hex": "#151618",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270060000
+    },
+    {
+        "id": "paper-2k-neon-sign-aesthetics",
+        "title": "Neon Glow Sign Aesthetics",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Neon",
+            "Cyberpunk",
+            "Typography",
+            "Glow",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-sign-aesthetics.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-sign-aesthetics.jpg",
+        "dominant_color_hex": "#0F0F11",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270120000
+    },
+    {
+        "id": "paper-2k-black-hole-singularity",
+        "title": "Black Hole Singularity Void",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Space",
+            "BlackHole",
+            "Cosmic",
+            "Astronomy",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-black-hole-singularity.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-black-hole-singularity.jpg",
+        "dominant_color_hex": "#2D2A29",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270180000
+    },
+    {
+        "id": "paper-2k-geometric-deer-crest",
+        "title": "Geometric Magenta Deer Crest",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Geometric",
+            "Deer",
+            "Vector",
+            "Magenta",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-geometric-deer-crest.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-geometric-deer-crest.jpg",
+        "dominant_color_hex": "#25031C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270240000
+    },
+    {
+        "id": "paper-2k-monochrome-granite-peaks",
+        "title": "Monochrome Granite Peaks",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Mountains",
+            "Monochrome",
+            "Fog",
+            "Landscape",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-monochrome-granite-peaks.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-monochrome-granite-peaks.jpg",
+        "dominant_color_hex": "#0B0B0B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270300000
+    },
+    {
+        "id": "paper-2k-deep-blue-paper-layers",
+        "title": "Deep Blue Paper Layers",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "PaperCraft",
+            "Layers",
+            "Blue",
+            "Abstract",
+            "Depth"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-deep-blue-paper-layers.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-deep-blue-paper-layers.jpg",
+        "dominant_color_hex": "#131721",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270360000
+    },
+    {
+        "id": "paper-2k-crimson-eclipse-orbit",
+        "title": "Crimson Eclipse Orbit",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Space",
+            "Eclipse",
+            "Crimson",
+            "Planets",
+            "Orbit"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-eclipse-orbit.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-eclipse-orbit.jpg",
+        "dominant_color_hex": "#270808",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270420000
+    },
+    {
+        "id": "paper-2k-dark-fluid-sand-dunes",
+        "title": "Dark Fluid Sand Dunes",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Dunes",
+            "Fluid",
+            "Monochrome",
+            "Waves",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-dark-fluid-sand-dunes.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-dark-fluid-sand-dunes.jpg",
+        "dominant_color_hex": "#5C5C5C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270480000
+    },
+    {
+        "id": "paper-2k-minimal-waveforms",
+        "title": "Minimal Monochrome Waveforms",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Waveforms",
+            "Audio",
+            "Curves",
+            "Lines",
+            "Abstract"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-minimal-waveforms.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-minimal-waveforms.jpg",
+        "dominant_color_hex": "#0E0E0E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270540000
+    },
+    {
+        "id": "paper-2k-mystic-anime-gaze",
+        "title": "Mystic Anime Gaze",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Eyes",
+            "Mystic",
+            "Illustration",
+            "Dark",
+            "Portrait"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-mystic-anime-gaze.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-mystic-anime-gaze.jpg",
+        "dominant_color_hex": "#0C0C0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270600000
+    },
+    {
+        "id": "paper-2k-cherry-blossom-maiden",
+        "title": "Cherry Blossom Maiden",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Sakura",
+            "Maiden",
+            "Portrait",
+            "Aesthetic",
+            "Soft"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cherry-blossom-maiden.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cherry-blossom-maiden.jpg",
+        "dominant_color_hex": "#FCA1A0",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270660000
+    },
+    {
+        "id": "paper-2k-neon-night-anime",
+        "title": "Neon Night Anime Silhouette",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Cyberpunk",
+            "Silhouette",
+            "Night",
+            "Glow",
+            "City"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-night-anime.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-night-anime.jpg",
+        "dominant_color_hex": "#100E1B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270720000
+    },
+    {
+        "id": "paper-2k-cosmic-astronaut-visor",
+        "title": "Cosmic Astronaut Visor",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Astronaut",
+            "Space",
+            "Cosmic",
+            "Visor",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cosmic-astronaut-visor.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cosmic-astronaut-visor.jpg",
+        "dominant_color_hex": "#272727",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270780000
+    },
+    {
+        "id": "paper-2k-binary-skull-core",
+        "title": "Matrix Binary Skull Core",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Matrix",
+            "Skull",
+            "Binary",
+            "Cyberpunk",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-binary-skull-core.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-binary-skull-core.jpg",
+        "dominant_color_hex": "#081009",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270840000
+    },
+    {
+        "id": "paper-2k-shadow-feline-eyes",
+        "title": "Shadow Feline Golden Eyes",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Cat",
+            "Feline",
+            "GoldenEyes",
+            "Shadow",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-shadow-feline-eyes.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-shadow-feline-eyes.jpg",
+        "dominant_color_hex": "#161618",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270900000
+    },
+    {
+        "id": "paper-2k-hypercar-drift-smoke",
+        "title": "Shadow Hypercar Drift Smoke",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Car",
+            "Supercar",
+            "Drift",
+            "Smoke",
+            "Stealth"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-hypercar-drift-smoke.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-hypercar-drift-smoke.jpg",
+        "dominant_color_hex": "#0E0E10",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729270960000
+    },
+    {
+        "id": "paper-2k-stealth-supercar-burnout",
+        "title": "Stealth Supercar Night Burnout",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Car",
+            "Burnout",
+            "Night",
+            "Automotive",
+            "Speed"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-stealth-supercar-burnout.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-stealth-supercar-burnout.jpg",
+        "dominant_color_hex": "#0C0B0D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271020000
+    },
+    {
+        "id": "paper-2k-neon-highway-rearview",
+        "title": "Neon Highway Rearview",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Car",
+            "Highway",
+            "Neon",
+            "Reflection",
+            "Night"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-highway-rearview.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-highway-rearview.jpg",
+        "dominant_color_hex": "#060D19",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271080000
+    },
+    {
+        "id": "paper-2k-playful-pocket-sprites",
+        "title": "Playful Pocket Sprites",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Sprites",
+            "Cartoon",
+            "Cute",
+            "Creatures",
+            "Playful"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-playful-pocket-sprites.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-playful-pocket-sprites.jpg",
+        "dominant_color_hex": "#988779",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271140000
+    },
+    {
+        "id": "paper-2k-winter-cat-snow",
+        "title": "Snow Flake Winter Cat",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Cat",
+            "Winter",
+            "Snow",
+            "Cozy",
+            "Wildlife"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-winter-cat-snow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-winter-cat-snow.jpg",
+        "dominant_color_hex": "#CBDDEB",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271200000
+    },
+    {
+        "id": "paper-2k-golden-hour-cat",
+        "title": "Golden Hour Strolling Cat",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Cat",
+            "GoldenHour",
+            "Sunset",
+            "Warm",
+            "Illustration"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-golden-hour-cat.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-golden-hour-cat.jpg",
+        "dominant_color_hex": "#CBC574",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271260000
+    },
+    {
+        "id": "paper-2k-neon-audio-fidelity",
+        "title": "Neon Audio Fidelity",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Audio",
+            "Headphones",
+            "Music",
+            "Neon",
+            "Purple"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-audio-fidelity.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-audio-fidelity.jpg",
+        "dominant_color_hex": "#2D030A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271320000
+    },
+    {
+        "id": "paper-2k-dapper-ducks",
+        "title": "Distinguished Dapper Ducks",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Ducks",
+            "Dapper",
+            "Whimsical",
+            "Animals",
+            "Cute"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-dapper-ducks.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-dapper-ducks.jpg",
+        "dominant_color_hex": "#0C0B0A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271380000
+    },
+    {
+        "id": "paper-2k-misty-pine-ridge",
+        "title": "Misty Obsidian Pine Ridge",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Forest",
+            "Pine",
+            "Fog",
+            "Misty",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-misty-pine-ridge.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-misty-pine-ridge.jpg",
+        "dominant_color_hex": "#0A0B0B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271440000
+    },
+    {
+        "id": "paper-2k-phantom-cheshire-grin",
+        "title": "Phantom Glowing Cheshire Grin",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Glow",
+            "Smile",
+            "Minimal",
+            "TrueBlack",
+            "Mysterious"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-phantom-cheshire-grin.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-phantom-cheshire-grin.jpg",
+        "dominant_color_hex": "#0A0A0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271500000
+    },
+    {
+        "id": "paper-2k-velvet-grey-cat",
+        "title": "Velvet Grey Whisker Portrait",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Cat",
+            "Grey",
+            "Portrait",
+            "Eyes",
+            "Moody"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-velvet-grey-cat.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-velvet-grey-cat.jpg",
+        "dominant_color_hex": "#0C0B13",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271560000
+    },
+    {
+        "id": "paper-2k-lone-wanderer-twilight",
+        "title": "Lone Wanderer Twilight Peak",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Hiker",
+            "Mountains",
+            "Sunset",
+            "Solitude",
+            "Twilight"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-lone-wanderer-twilight.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-lone-wanderer-twilight.jpg",
+        "dominant_color_hex": "#0C0C0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271620000
+    },
+    {
+        "id": "paper-2k-prismatic-rubik-void",
+        "title": "Prismatic Floating Rubik Void",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cube",
+            "Rubik",
+            "Geometry",
+            "Color",
+            "Abstract"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-prismatic-rubik-void.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-prismatic-rubik-void.jpg",
+        "dominant_color_hex": "#150E03",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271680000
+    },
+    {
+        "id": "paper-2k-keyhole-mountain-horizon",
+        "title": "Pastel Keyhole Mountain Horizon",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Mountains",
+            "Pastel",
+            "Horizon",
+            "Keyhole",
+            "Art"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-keyhole-mountain-horizon.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-keyhole-mountain-horizon.jpg",
+        "dominant_color_hex": "#F1C8BF",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271740000
+    },
+    {
+        "id": "paper-2k-paper-sculptures",
+        "title": "Architectural Paper Sculptures",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "PaperCraft",
+            "Sculpture",
+            "Architecture",
+            "White",
+            "Clean"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-paper-sculptures.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-paper-sculptures.jpg",
+        "dominant_color_hex": "#161921",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271800000
+    },
+    {
+        "id": "paper-2k-retro-synthwave-lines",
+        "title": "Retro Synthwave Geometry",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Retro",
+            "Synthwave",
+            "Geometric",
+            "Lines",
+            "Abstract"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-retro-synthwave-lines.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-retro-synthwave-lines.jpg",
+        "dominant_color_hex": "#350F10",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271860000
+    },
+    {
+        "id": "paper-2k-crimson-spectral-skull",
+        "title": "Crimson Spectral Skull",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Skull",
+            "Crimson",
+            "Spectral",
+            "Dark",
+            "Glow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-spectral-skull.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-spectral-skull.jpg",
+        "dominant_color_hex": "#8C1926",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271920000
+    },
+    {
+        "id": "paper-2k-brutalist-tower-a",
+        "title": "Brutalist Monolith Tower A",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Architecture",
+            "Skyscraper",
+            "Brutalist",
+            "Monochrome",
+            "Facade"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-brutalist-tower-a.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-brutalist-tower-a.jpg",
+        "dominant_color_hex": "#0B0B0C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729271980000
+    },
+    {
+        "id": "paper-2k-brutalist-tower-b",
+        "title": "Brutalist Monolith Tower B",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Architecture",
+            "Skyscraper",
+            "Geometry",
+            "Urban",
+            "Tower"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-brutalist-tower-b.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-brutalist-tower-b.jpg",
+        "dominant_color_hex": "#0F0F0F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729272040000
+    },
+    {
+        "id": "paper-2k-modular-terraces",
+        "title": "Monochrome Modular Terraces",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Modular",
+            "Plates",
+            "Squares",
+            "Terraces"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-modular-terraces.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-modular-terraces.jpg",
+        "dominant_color_hex": "#0B0B0B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729272100000
+    },
+    {
+        "id": "paper-2k-ceremonial-blade-sakura",
+        "title": "Ceremonial Blade & Sakura",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Katana",
+            "Sword",
+            "Sakura",
+            "Flowers",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-ceremonial-blade-sakura.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-ceremonial-blade-sakura.jpg",
+        "dominant_color_hex": "#272727",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729272160000
+    },
+    {
+        "id": "paper-2k-alpine-lake-cabin",
+        "title": "Midnight Alpine Lake Cabin",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Cabin",
+            "Lake",
+            "Alpine",
+            "Night",
+            "Stars"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-alpine-lake-cabin.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-alpine-lake-cabin.jpg",
+        "dominant_color_hex": "#020E18",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729272220000
+    },
+    {
+        "id": "paper-2k-saturn-celestial-rings",
+        "title": "Saturn Celestial Rings Void",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Saturn",
+            "Space",
+            "Cosmic",
+            "Rings",
+            "Planets"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-saturn-celestial-rings.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-saturn-celestial-rings.jpg",
+        "dominant_color_hex": "#5D4B3A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1729272280000
+    },
+    {
+        "id": "paper-obito-split-panels",
+        "title": "Obito Split Panels",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Anime",
+            "Obito",
+            "Naruto",
+            "Sharingan",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-split-panels.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-split-panels.jpg",
+        "dominant_color_hex": "#0D0D0D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-itachi-crimson-smoke",
+        "title": "Itachi Crimson Smoke",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Itachi",
+            "Akatsuki",
+            "Sharingan",
+            "Crimson",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crimson-smoke.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crimson-smoke.jpg",
+        "dominant_color_hex": "#201415",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-itachi-crow-flock",
+        "title": "Itachi Crow Swarm",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Itachi",
+            "Crows",
+            "Akatsuki",
+            "Dark",
+            "Naruto"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-crow-flock.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-crow-flock.jpg",
+        "dominant_color_hex": "#151B1D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-itachi-pole-silhouette",
+        "title": "Itachi Pole Silhouette",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Itachi",
+            "Silhouette",
+            "Moon",
+            "Naruto",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-pole-silhouette.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-pole-silhouette.jpg",
+        "dominant_color_hex": "#3B3A3B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-kakashi-autumn-drift",
+        "title": "Kakashi Autumn Drift",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Anime",
+            "Kakashi",
+            "Leaves",
+            "Dark",
+            "Naruto"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-autumn-drift.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-autumn-drift.jpg",
+        "dominant_color_hex": "#090707",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-vintage-mustang-rear",
+        "title": "Classic Mustang Muscle",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Car",
+            "Mustang",
+            "Vintage",
+            "Minimal",
+            "Automotive"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-vintage-mustang-rear.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-vintage-mustang-rear.jpg",
+        "dominant_color_hex": "#282625",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-honey-drip-minimal",
+        "title": "Honey Drip Minimal",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Yellow",
+            "Drip",
+            "Abstract",
+            "Clean",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-honey-drip-minimal.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-honey-drip-minimal.jpg",
+        "dominant_color_hex": "#845F01",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-dot-matrix-dune-wave",
+        "title": "Dot Matrix Dune Wave",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "DotMatrix",
+            "NothingOS",
+            "LED",
+            "Waves",
+            "Amber"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dot-matrix-dune-wave.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dot-matrix-dune-wave.jpg",
+        "dominant_color_hex": "#3A120E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-retro-sunset-curves",
+        "title": "Retro Sunset Curves",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Retro",
+            "Sunset",
+            "Curves",
+            "Warm",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-retro-sunset-curves.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-retro-sunset-curves.jpg",
+        "dominant_color_hex": "#8B2001",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-porsche-gt3rs-mountain",
+        "title": "Porsche GT3 RS Mountain Pass",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Car",
+            "Porsche",
+            "Supercar",
+            "Moody",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-porsche-gt3rs-mountain.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-porsche-gt3rs-mountain.jpg",
+        "dominant_color_hex": "#2C2C30",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-bauhaus-stacked-blocks",
+        "title": "Bauhaus Stacked Blocks",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Orange",
+            "Geometry",
+            "Modern",
+            "Clean"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-stacked-blocks.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-stacked-blocks.jpg",
+        "dominant_color_hex": "#9A6749",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-ember-matrix-mesh",
+        "title": "Ember Matrix Mesh",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Mesh",
+            "LED",
+            "Matrix",
+            "Embers",
+            "Red"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-ember-matrix-mesh.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-ember-matrix-mesh.jpg",
+        "dominant_color_hex": "#6A200F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-peeking-black-cat",
+        "title": "Peeking Black Cat",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cat",
+            "Orange",
+            "Cute",
+            "Dark",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-peeking-black-cat.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-peeking-black-cat.jpg",
+        "dominant_color_hex": "#6B3B10",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-bauhaus-dot-folder",
+        "title": "Bauhaus Dot Folders",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "DotMatrix",
+            "DieterRams",
+            "Red",
+            "Yellow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-dot-folder.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-dot-folder.jpg",
+        "dominant_color_hex": "#ECAE82",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-akatsuki-moonlit-gathering",
+        "title": "Akatsuki Moonlit Gathering",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Akatsuki",
+            "Red Moon",
+            "Dark",
+            "Clouds",
+            "Naruto"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-akatsuki-moonlit-gathering.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-akatsuki-moonlit-gathering.png",
+        "dominant_color_hex": "#403E3E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-itachi-red-moon",
+        "title": "Itachi Uchiha Red Moon",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Itachi",
+            "Sharingan",
+            "Red Moon",
+            "Uchiha",
+            "Crow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-itachi-red-moon.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-itachi-red-moon.png",
+        "dominant_color_hex": "#231B19",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-kakashi-sharingan-moon",
+        "title": "Kakashi Hatake Sharingan Moon",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Kakashi",
+            "Sharingan",
+            "Moon",
+            "Ninja",
+            "Chidori"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-kakashi-sharingan-moon.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-kakashi-sharingan-moon.png",
+        "dominant_color_hex": "#47413F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-obito-spiral-mask",
+        "title": "Obito Uchiha Spiral Mask",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Obito",
+            "Spiral Mask",
+            "Kamui",
+            "Moon",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-obito-spiral-mask.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-obito-spiral-mask.png",
+        "dominant_color_hex": "#2E2C2B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-minimal-capsule-stack",
+        "title": "Minimal Pill Capsule Stack",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Pills",
+            "Capsule",
+            "Red Accent",
+            "3D",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-minimal-capsule-stack.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-minimal-capsule-stack.png",
+        "dominant_color_hex": "#6B4649",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-solitary-red-boat",
+        "title": "Solitary Red Boat in Dark Ocean",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Ocean",
+            "Waves",
+            "Red Boat",
+            "Aerial",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-solitary-red-boat.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-solitary-red-boat.png",
+        "dominant_color_hex": "#1F2022",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-cherry-blossom-black",
+        "title": "Cherry Blossom Crimson Buds",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Sakura",
+            "Cherry Blossom",
+            "Branch",
+            "Minimal",
+            "AMOLED"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-cherry-blossom-black.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-cherry-blossom-black.png",
+        "dominant_color_hex": "#131010",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-black-feather-red-spine",
+        "title": "Black Feather Red Spine",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Feather",
+            "Crimson Spine",
+            "Minimal",
+            "Filigree",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-black-feather-red-spine.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-black-feather-red-spine.png",
+        "dominant_color_hex": "#110F0F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-eclipse-spheres-red-glow",
+        "title": "Eclipse Spheres Neon Red Glow",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Spheres",
+            "Eclipse",
+            "Red Glow",
+            "Geometry",
+            "Curvature"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-red-glow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-red-glow.png",
+        "dominant_color_hex": "#281B1B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-eclipse-spheres-amber-glow",
+        "title": "Eclipse Spheres Amber Glow",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Spheres",
+            "Eclipse",
+            "Amber Glow",
+            "Geometry",
+            "Warm"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-eclipse-spheres-amber-glow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-eclipse-spheres-amber-glow.png",
+        "dominant_color_hex": "#5A3325",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-crimson-amber-fluid-flow",
+        "title": "Crimson & Amber Fluid Petals",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Fluid Flow",
+            "Crimson",
+            "Amber",
+            "3D Flow",
+            "Abstract"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crimson-amber-fluid-flow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crimson-amber-fluid-flow.png",
+        "dominant_color_hex": "#7B2513",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-monochrome-crimson-petal",
+        "title": "Monochrome Wave Crimson Petal",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Monochrome",
+            "Wave",
+            "Crimson Petal",
+            "Minimal",
+            "Abstract"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-monochrome-crimson-petal.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-monochrome-crimson-petal.png",
+        "dominant_color_hex": "#4A2C2E",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-red-solar-eclipse",
+        "title": "Red Solar Eclipse Minimal",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Eclipse",
+            "Solar",
+            "Corona",
+            "Red Sun",
+            "Space"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-solar-eclipse.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-solar-eclipse.png",
+        "dominant_color_hex": "#190303",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-crescent-moon-minimal-orbit",
+        "title": "Crescent Moon Minimal Orbit",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Moon",
+            "Crescent",
+            "Orbit",
+            "Space",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-crescent-moon-minimal-orbit.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-crescent-moon-minimal-orbit.png",
+        "dominant_color_hex": "#181818",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-red-moon-misty-forest",
+        "title": "Red Moon Misty Forest",
+        "category": "Nature",
+        "tags": [
+            "Nature",
+            "Red Moon",
+            "Forest",
+            "Fog",
+            "Mountains",
+            "Dark Pines"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-red-moon-misty-forest.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-red-moon-misty-forest.png",
+        "dominant_color_hex": "#292222",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-circular-speaker-grille",
+        "title": "Circular Speaker Grille",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Audio",
+            "Acoustic",
+            "Speaker",
+            "Grille",
+            "Hardware"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-circular-speaker-grille.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-circular-speaker-grille.png",
+        "dominant_color_hex": "#1C1C1C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-concentric-metallic-rings",
+        "title": "Concentric Metallic Rings",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Aperture",
+            "Concentric",
+            "Rings",
+            "Precision",
+            "Optics"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-concentric-metallic-rings.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-concentric-metallic-rings.png",
+        "dominant_color_hex": "#080808",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-dotted-sound-wave",
+        "title": "Dotted Sound Wave Minimal",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Sound Wave",
+            "Dots",
+            "Audio",
+            "AMOLED",
+            "Digital"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-dotted-sound-wave.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-dotted-sound-wave.png",
+        "dominant_color_hex": "#000000",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-geometric-circles-diagram",
+        "title": "Geometric Circles Diagram",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Geometry",
+            "Diagram",
+            "Concentric",
+            "Circles",
+            "Linear"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-geometric-circles-diagram.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-geometric-circles-diagram.png",
+        "dominant_color_hex": "#060606",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-transparent-cassette",
+        "title": "Transparent Audio Cassette",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cassette",
+            "Retro",
+            "Transparent",
+            "Audio",
+            "Vintage"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-transparent-cassette.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-transparent-cassette.png",
+        "dominant_color_hex": "#1A1919",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-bauhaus-geometry-ochre-red",
+        "title": "Bauhaus Geometry Ochre & Red",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Geometric",
+            "Dotted",
+            "Pill",
+            "Modern"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-ochre-red.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-ochre-red.png",
+        "dominant_color_hex": "#AC775C",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
+    },
+    {
+        "id": "paper-bauhaus-geometry-monochrome-red",
+        "title": "Bauhaus Geometry Monochrome & Red",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Geometric",
+            "Monochrome",
+            "Red Accent",
+            "Dotted"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-bauhaus-geometry-monochrome-red.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-bauhaus-geometry-monochrome-red.png",
+        "dominant_color_hex": "#8B6564",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1740000000000
     }
 ]
