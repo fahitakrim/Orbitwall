@@ -8,6 +8,7 @@ import androidx.lifecycle.viewModelScope
 import coil.Coil
 import com.example.data.SplitBackendRepository
 import com.example.data.local.AppDatabase
+import com.example.model.AppUpdateInfo
 import com.example.model.Wallpaper
 import com.example.model.toFavoriteEntity
 import com.example.model.toWallpaper
@@ -15,6 +16,7 @@ import com.example.ui.theme.AppThemeMode
 import com.example.util.WallpaperDestination
 import com.example.util.WallpaperSystemHelper
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
@@ -96,6 +98,12 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
 
     private val _uploadState = MutableStateFlow(UploadUiState())
     val uploadState: StateFlow<UploadUiState> = _uploadState.asStateFlow()
+
+    private val _updateInfo = MutableStateFlow<AppUpdateInfo?>(null)
+    val updateInfo: StateFlow<AppUpdateInfo?> = _updateInfo.asStateFlow()
+
+    private val _isCheckingUpdates = MutableStateFlow(false)
+    val isCheckingUpdates: StateFlow<Boolean> = _isCheckingUpdates.asStateFlow()
 
     // One-time transient events for Snackbars and notifications
     private val _userMessage = MutableSharedFlow<String>()
@@ -535,4 +543,104 @@ class WallpaperViewModel(application: Application) : AndroidViewModel(applicatio
             }
         }
     }
+
+    // --- Dynamic In-App Update Service ---
+
+    fun checkForUpdates(onComplete: ((AppUpdateInfo) -> Unit)? = null) {
+        viewModelScope.launch {
+            _isCheckingUpdates.value = true
+            val update = withContext(Dispatchers.IO) {
+                fetchLatestReleaseFromGitHub()
+            }
+            _isCheckingUpdates.value = false
+            _updateInfo.value = update
+            onComplete?.invoke(update)
+        }
+    }
+
+    private fun fetchLatestReleaseFromGitHub(): AppUpdateInfo {
+        val currentVersion = com.example.BuildConfig.VERSION_NAME.removePrefix("v").trim()
+        return try {
+            val client = okhttp3.OkHttpClient.Builder()
+                .connectTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
+                .readTimeout(8, java.util.concurrent.TimeUnit.SECONDS)
+                .build()
+            val request = okhttp3.Request.Builder()
+                .url("https://api.github.com/repos/fahitakrim/Orbitwall/releases/latest")
+                .header("Accept", "application/vnd.github.v3+json")
+                .header("User-Agent", "Orbitwall-App")
+                .build()
+            client.newCall(request).execute().use { response ->
+                if (response.isSuccessful) {
+                    val json = org.json.JSONObject(response.body?.string() ?: "{}")
+                    val tagName = json.optString("tag_name", "v$currentVersion").removePrefix("v").trim()
+                    val releaseName = json.optString("name", "Orbitwall v$tagName")
+                    val releaseBody = json.optString("body", "Includes bug fixes and performance improvements.")
+                    val assets = json.optJSONArray("assets")
+                    var downloadUrl = ""
+                    var fileSizeFormatted = ""
+                    if (assets != null && assets.length() > 0) {
+                        for (i in 0 until assets.length()) {
+                            val asset = assets.getJSONObject(i)
+                            val name = asset.optString("name", "")
+                            if (name.endsWith(".apk", ignoreCase = true)) {
+                                downloadUrl = asset.optString("browser_download_url", "")
+                                val size = asset.optLong("size", 0L)
+                                if (size > 0) {
+                                    fileSizeFormatted = String.format(java.util.Locale.US, "%.1f MB", size / (1024.0 * 1024.0))
+                                }
+                                break
+                            }
+                        }
+                        if (downloadUrl.isEmpty() && assets.length() > 0) {
+                            downloadUrl = assets.getJSONObject(0).optString("browser_download_url", "")
+                        }
+                    }
+                    if (downloadUrl.isEmpty()) {
+                        downloadUrl = json.optString("html_url", "https://github.com/fahitakrim/Orbitwall/releases")
+                    }
+
+                    val isNewer = isVersionNewer(latest = tagName, current = currentVersion)
+                    AppUpdateInfo(
+                        isUpdateAvailable = isNewer,
+                        latestVersion = "v$tagName",
+                        currentVersion = "v$currentVersion",
+                        releaseTitle = releaseName,
+                        releaseNotes = releaseBody,
+                        downloadUrl = downloadUrl,
+                        fileSizeFormatted = fileSizeFormatted
+                    )
+                } else {
+                    fallbackUpdateInfo(currentVersion)
+                }
+            }
+        } catch (e: Exception) {
+            fallbackUpdateInfo(currentVersion)
+        }
+    }
+
+    private fun fallbackUpdateInfo(currentVersion: String): AppUpdateInfo {
+        return AppUpdateInfo(
+            isUpdateAvailable = false,
+            latestVersion = "v$currentVersion",
+            currentVersion = "v$currentVersion",
+            releaseTitle = "Orbitwall v$currentVersion",
+            releaseNotes = "You are running the latest version of Orbitwall.",
+            downloadUrl = "https://github.com/fahitakrim/Orbitwall/releases"
+        )
+    }
+
+    private fun isVersionNewer(latest: String, current: String): Boolean {
+        val latestParts = latest.split(".").mapNotNull { it.toIntOrNull() }
+        val currentParts = current.split(".").mapNotNull { it.toIntOrNull() }
+        val maxLen = maxOf(latestParts.size, currentParts.size)
+        for (i in 0 until maxLen) {
+            val l = latestParts.getOrElse(i) { 0 }
+            val c = currentParts.getOrElse(i) { 0 }
+            if (l > c) return true
+            if (l < c) return false
+        }
+        return false
+    }
 }
+

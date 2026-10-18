@@ -73,6 +73,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.R
+import com.example.model.AppUpdateInfo
 import com.example.ui.components.TechnicalCircleGraphic
 import com.example.ui.theme.AppThemeMode
 import com.example.ui.theme.DotMatrixFont
@@ -90,6 +91,9 @@ fun SettingsScreen(
     onHapticToggle: (Boolean) -> Unit,
     onClearCache: () -> Unit,
     isAdmin: Boolean = false,
+    updateInfo: AppUpdateInfo? = null,
+    isCheckingUpdates: Boolean = false,
+    onCheckForUpdates: (((AppUpdateInfo) -> Unit) -> Unit)? = null,
     onAdminLogin: (username: String, code: String) -> Boolean = { _, _ -> false },
     onOpenAdminConsole: () -> Unit = {},
     onAdminLogout: () -> Unit = {},
@@ -101,7 +105,7 @@ fun SettingsScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var showUpdateDialog by remember { mutableStateOf(false) }
-    var isCheckingUpdates by remember { mutableStateOf(false) }
+    var localChecking by remember { mutableStateOf(false) }
     var showAnnouncementsDialog by remember { mutableStateOf(false) }
     var versionClickCount by remember { mutableIntStateOf(0) }
     var showAdminLoginDialog by remember { mutableStateOf(false) }
@@ -502,7 +506,7 @@ fun SettingsScreen(
                     }
 
                     Text(
-                        text = "Version 1.0.0",
+                        text = "Version ${com.example.BuildConfig.VERSION_NAME}",
                         fontSize = 12.sp,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                         modifier = Modifier.clickable { handleVersionClick() }
@@ -537,7 +541,7 @@ fun SettingsScreen(
                             )
                             Spacer(modifier = Modifier.height(2.dp))
                             Text(
-                                text = "Version 1.0.0",
+                                text = "Version ${com.example.BuildConfig.VERSION_NAME}",
                                 fontSize = 12.sp,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                                 modifier = Modifier.clickable { handleVersionClick() }
@@ -549,11 +553,17 @@ fun SettingsScreen(
                     Button(
                         onClick = {
                             triggerHaptic()
-                            isCheckingUpdates = true
-                            coroutineScope.launch {
-                                delay(650) // Realistic check delay
-                                isCheckingUpdates = false
-                                showUpdateDialog = true
+                            if (onCheckForUpdates != null) {
+                                onCheckForUpdates {
+                                    showUpdateDialog = true
+                                }
+                            } else {
+                                localChecking = true
+                                coroutineScope.launch {
+                                    delay(650)
+                                    localChecking = false
+                                    showUpdateDialog = true
+                                }
                             }
                         },
                         colors = ButtonDefaults.buttonColors(
@@ -563,7 +573,7 @@ fun SettingsScreen(
                         shape = RoundedCornerShape(20.dp),
                         contentPadding = PaddingValues(horizontal = 22.dp, vertical = 8.dp)
                     ) {
-                        if (isCheckingUpdates) {
+                        if (isCheckingUpdates || localChecking) {
                             CircularProgressIndicator(
                                 modifier = Modifier.size(16.dp),
                                 color = Color.White,
@@ -708,6 +718,7 @@ fun SettingsScreen(
 
     // --- System Update Dialog ---
     if (showUpdateDialog) {
+        val hasUpdate = updateInfo?.isUpdateAvailable == true
         AlertDialog(
             onDismissRequest = { showUpdateDialog = false },
             shape = RoundedCornerShape(24.dp),
@@ -722,11 +733,11 @@ fun SettingsScreen(
                     )
                     Spacer(modifier = Modifier.width(8.dp))
                     Text(
-                        text = "SYSTEM UPDATE",
+                        text = if (hasUpdate) "UPDATE AVAILABLE" else "SYSTEM UPDATE",
                         fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Bold,
-                        fontSize = 18.sp,
-                        letterSpacing = 2.sp,
+                        fontSize = 17.sp,
+                        letterSpacing = 1.8.sp,
                         color = MaterialTheme.colorScheme.onSurface
                     )
                     Spacer(modifier = Modifier.width(4.dp))
@@ -746,7 +757,7 @@ fun SettingsScreen(
                         modifier = Modifier.fillMaxWidth()
                     ) {
                         Text(
-                            text = "ORBITWALL v1.0.0",
+                            text = if (hasUpdate) "ORBITWALL ${updateInfo?.latestVersion}" else "ORBITWALL ${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}",
                             fontFamily = DotMatrixFont,
                             fontWeight = FontWeight.Bold,
                             fontSize = 13.sp,
@@ -754,44 +765,94 @@ fun SettingsScreen(
                         )
                         Surface(
                             shape = RoundedCornerShape(12.dp),
-                            color = NothingRed.copy(alpha = 0.15f),
-                            border = BorderStroke(1.dp, NothingRed.copy(alpha = 0.4f))
+                            color = if (hasUpdate) NothingRed else NothingRed.copy(alpha = 0.15f),
+                            border = BorderStroke(1.dp, if (hasUpdate) NothingRed else NothingRed.copy(alpha = 0.4f))
                         ) {
                             Text(
-                                text = "UP TO DATE",
+                                text = if (hasUpdate) "NEW VERSION" else "UP TO DATE",
                                 fontFamily = DotMatrixFont,
                                 fontWeight = FontWeight.Bold,
                                 fontSize = 10.sp,
-                                color = NothingRed,
+                                color = if (hasUpdate) Color.White else NothingRed,
                                 modifier = Modifier.padding(horizontal = 8.dp, vertical = 3.dp)
                             )
                         }
                     }
                     Spacer(modifier = Modifier.height(12.dp))
-                    Text(
-                        text = "You are running the latest version of Orbitwall. All Nothing OS themes, Dot-Matrix typography, and high-speed cloud edge catalogs are up to date.",
-                        fontSize = 13.sp,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        lineHeight = 18.sp
-                    )
+                    if (hasUpdate) {
+                        Text(
+                            text = updateInfo?.releaseTitle ?: "New Features & Improvements",
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurface
+                        )
+                        Spacer(modifier = Modifier.height(6.dp))
+                        Text(
+                            text = updateInfo?.releaseNotes ?: "Bug fixes, performance improvements, and refreshed wallpapers.",
+                            fontSize = 12.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 17.sp
+                        )
+                        if (!updateInfo?.fileSizeFormatted.isNullOrEmpty()) {
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Text(
+                                text = "PACKAGE SIZE: ${updateInfo?.fileSizeFormatted}",
+                                fontFamily = DotMatrixFont,
+                                fontSize = 10.sp,
+                                letterSpacing = 1.sp,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                            )
+                        }
+                    } else {
+                        Text(
+                            text = "You are running the latest version of Orbitwall (${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}). All Nothing OS themes, Dot-Matrix typography, and high-speed cloud edge catalogs are up to date.",
+                            fontSize = 13.sp,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                            lineHeight = 18.sp
+                        )
+                    }
                 }
             },
             confirmButton = {
-                Button(
-                    onClick = { showUpdateDialog = false },
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = NothingRed,
-                        contentColor = Color.White
-                    ),
-                    shape = RoundedCornerShape(18.dp)
-                ) {
-                    Text(
-                        text = "CLOSE",
-                        fontFamily = DotMatrixFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
-                        letterSpacing = 1.sp
-                    )
+                if (hasUpdate) {
+                    Button(
+                        onClick = {
+                            showUpdateDialog = false
+                            val url = updateInfo?.downloadUrl ?: "https://github.com/fahitakrim/Orbitwall/releases"
+                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+                            context.startActivity(intent)
+                        },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NothingRed,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(18.dp)
+                    ) {
+                        Text(
+                            text = "DOWNLOAD & INSTALL",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.sp
+                        )
+                    }
+                } else {
+                    Button(
+                        onClick = { showUpdateDialog = false },
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = NothingRed,
+                            contentColor = Color.White
+                        ),
+                        shape = RoundedCornerShape(18.dp)
+                    ) {
+                        Text(
+                            text = "CLOSE",
+                            fontFamily = DotMatrixFont,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 11.sp,
+                            letterSpacing = 1.sp
+                        )
+                    }
                 }
             },
             dismissButton = {
@@ -802,7 +863,7 @@ fun SettingsScreen(
                     }
                 ) {
                     Text(
-                        text = "GITHUB RELEASES",
+                        text = if (hasUpdate) "LATER" else "GITHUB RELEASES",
                         fontFamily = DotMatrixFont,
                         fontWeight = FontWeight.Bold,
                         fontSize = 11.sp,
@@ -851,6 +912,11 @@ fun SettingsScreen(
                     modifier = Modifier.verticalScroll(rememberScrollState()),
                     verticalArrangement = Arrangement.spacedBy(14.dp)
                 ) {
+                    AnnouncementCard(
+                        title = "Orbitwall v1.1.0 Released",
+                        tag = "LATEST UPDATE",
+                        description = "Admin Console with 9-tap login (17288), automated duplicate detection & deletion, home screen featured wallpapers carousel, and in-app update checker."
+                    )
                     AnnouncementCard(
                         title = "Orbitwall v1.0 Released",
                         tag = "OFFICIAL LAUNCH",
