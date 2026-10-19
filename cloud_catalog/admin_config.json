@@ -1,26 +1,46 @@
-{
-  "featured_ids": [
-    "paper-2k-prism-smoke-cube",
-    "paper-2k-black-hole-singularity",
-    "paper-2k-cherry-blossom-maiden",
-    "paper-2k-crimson-eclipse-orbit",
-    "paper-obito-split-panels",
-    "paper-itachi-crimson-smoke"
-  ],
-  "onboarding_ids": [
-    "paper-akatsuki-moonlit-gathering",
-    "paper-minimal-capsule-stack",
-    "paper-itachi-red-moon",
-    "paper-solitary-red-boat",
-    "paper-eclipse-spheres-red-glow",
-    "paper-kakashi-sharingan-moon",
-    "paper-crimson-amber-fluid-flow",
-    "paper-cherry-blossom-black"
-  ],
-  "promoted_ids": [],
-  "demoted_ids": [],
-  "deleted_ids": [],
-  "global_total_downloads_override": null,
-  "telemetry_url": "",
-  "last_updated": "2026-10-19T04:00:00Z"
+﻿{
+    "featured_ids":  [
+                         "paper-2k-crimson-glyph-core",
+                         "paper-2k-shadow-feline-eyes",
+                         "paper-bauhaus-geometry-ochre-red",
+                         "paper-transparent-cassette"
+                     ],
+    "onboarding_ids":  [
+                           "paper-2k-crimson-glyph-core",
+                           "paper-2k-minimal-red-shard",
+                           "paper-2k-minimalist-endurance-racer",
+                           "paper-2k-ethereal-spiderweb-void",
+                           "paper-2k-black-hole-singularity",
+                           "paper-2k-cherry-blossom-maiden",
+                           "paper-2k-shadow-feline-eyes",
+                           "paper-2k-velvet-grey-cat",
+                           "paper-2k-retro-synthwave-lines",
+                           "paper-itachi-pole-silhouette",
+                           "paper-crescent-moon-minimal-orbit",
+                           "paper-red-solar-eclipse"
+                       ],
+    "promoted_ids":  [
+                         "paper-2k-shadow-feline-eyes",
+                         "paper-2k-minimalist-endurance-racer"
+                     ],
+    "demoted_ids":  [
+                        "paper-itachi-red-moon",
+                        "paper-cherry-blossom-black",
+                        "paper-akatsuki-moonlit-gathering",
+                        "paper-kakashi-sharingan-moon",
+                        "paper-obito-spiral-mask"
+                    ],
+    "deleted_ids":  [
+                        "paper-2k-lone-wanderer-ridge",
+                        "paper-2k-prism-smoke-cube",
+                        "paper-2k-neon-sign-aesthetics",
+                        "paper-2k-geometric-deer-crest",
+                        "paper-2k-stealth-supercar-burnout",
+                        "paper-2k-crimson-slate-monolith",
+                        "paper-2k-lone-wanderer-twilight",
+                        "paper-kakashi-autumn-drift"
+                    ],
+    "global_total_downloads_override":  null,
+    "telemetry_url":  "",
+    "last_updated":  "2026-10-19T20.21.25Z"
 }
