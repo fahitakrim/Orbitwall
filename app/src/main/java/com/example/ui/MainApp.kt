@@ -368,6 +368,11 @@ fun MainApp(
                     onboardingWallpaperIds = uiState.onboardingWallpaperIds,
                     promotedWallpaperIds = uiState.promotedWallpaperIds,
                     demotedWallpaperIds = uiState.demotedWallpaperIds,
+                    deletedWallpaperIds = uiState.deletedWallpaperIds,
+                    pendingDeletedCount = uiState.pendingDeletedCount,
+                    pendingFeaturedCount = uiState.pendingFeaturedCount,
+                    pendingOnboardingCount = uiState.pendingOnboardingCount,
+                    pendingRankingsCount = uiState.pendingRankingsCount,
                     totalDownloads = uiState.totalAppDownloads,
                     uploadState = uploadState,
                     categories = viewModel.categories,
@@ -388,15 +393,13 @@ fun MainApp(
                     onResetUploadForm = { viewModel.resetUploadForm() },
                     onLogout = { viewModel.logoutAdmin() },
                     onNavigateBack = { viewModel.closeAdminConsole() },
-                    onSyncToGitHub = { token, onComplete ->
-                        viewModel.syncAdminConfigToCloud(token, onComplete)
+                    onExportStagedConfig = { viewModel.exportAdminStagedConfig() },
+                    onResetStagedConfig = { viewModel.resetAllStagedChanges() },
+                    onSyncToCloud = { onComplete ->
+                        viewModel.syncAdminConfigToCloud(onComplete)
                     },
-                    onPullFromGitHub = {
+                    onPullFromCloud = {
                         viewModel.syncAdminConfigAndTelemetry()
-                    },
-                    initialGitHubToken = viewModel.getAdminGitHubToken(),
-                    onSaveGitHubToken = { token ->
-                        viewModel.saveAdminGitHubToken(token)
                     },
                     initialTelemetryUrl = viewModel.getTelemetryUrl(),
                     onSaveTelemetryUrl = { url ->

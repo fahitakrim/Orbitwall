@@ -42,8 +42,13 @@ object AdminConfigManager {
         .readTimeout(15, TimeUnit.SECONDS)
         .build()
 
+    var skipNetworkForTesting = false
+
     suspend fun fetchAdminConfig(context: Context): AdminConfig = withContext(Dispatchers.IO) {
         val prefs = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+        if (skipNetworkForTesting) {
+            return@withContext getCachedAdminConfig(prefs)
+        }
 
         // 1. Try Primary GitHub Raw
         var jsonString: String? = null
@@ -240,6 +245,57 @@ object AdminConfigManager {
         obj.put("last_updated", sdf.format(Date()))
 
         return obj.toString(2)
+    }
+
+    suspend fun pushAdminConfigViaCloudProxy(
+        context: Context,
+        adminPasscode: String,
+        config: AdminConfig
+    ): Result<String> = withContext(Dispatchers.IO) {
+        val webhookUrl = DownloadTracker.remoteTelemetryUrl.ifBlank {
+            context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE).getString("telemetry_url", "") ?: ""
+        }
+
+        if (webhookUrl.isBlank() || !webhookUrl.startsWith("http")) {
+            return@withContext Result.failure(IllegalStateException("Cloud Webhook URL is not configured. Please save your Webhook URL in the SYNC tab."))
+        }
+
+        try {
+            val payload = JSONObject().apply {
+                put("action", "sync_admin_config")
+                put("admin_passcode", adminPasscode)
+                put("config", JSONObject(serializeToJson(config)))
+            }
+
+            val body = payload.toString().toRequestBody("application/json; charset=utf-8".toMediaTypeOrNull())
+            val req = Request.Builder()
+                .url(webhookUrl)
+                .header("Accept", "application/json")
+                .header("User-Agent", "Orbitwall-Admin")
+                .post(body)
+                .build()
+
+            val resp = httpClient.newCall(req).execute()
+            val respBody = resp.body?.string().orEmpty()
+            val isSuccess = resp.isSuccessful
+            resp.close()
+
+            if (isSuccess && respBody.isNotBlank()) {
+                val respJson = JSONObject(respBody)
+                val status = respJson.optString("status", "")
+                if (status == "success") {
+                    val msg = respJson.optString("message", "Changes synced to Cloud! Live for all users worldwide 🚀")
+                    Result.success(msg)
+                } else {
+                    val errorMsg = respJson.optString("message", "Cloud sync rejected.")
+                    Result.failure(Exception(errorMsg))
+                }
+            } else {
+                Result.failure(Exception("HTTP ${resp.code}: Failed to contact Cloud Webhook"))
+            }
+        } catch (e: Exception) {
+            Result.failure(e)
+        }
     }
 
     suspend fun pushAdminConfigToGitHub(

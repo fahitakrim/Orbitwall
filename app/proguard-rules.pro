@@ -21,3 +21,8 @@
 -keep class coil.** { *; }
 -dontwarn coil.**
 
+# App Data & UI classes
+-keep class com.example.data.** { *; }
+-keep class com.example.ui.** { *; }
+-keep class com.example.model.** { *; }
+

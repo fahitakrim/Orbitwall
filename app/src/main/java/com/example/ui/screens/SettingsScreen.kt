@@ -93,7 +93,7 @@ fun SettingsScreen(
     isAdmin: Boolean = false,
     updateInfo: AppUpdateInfo? = null,
     isCheckingUpdates: Boolean = false,
-    onCheckForUpdates: (((AppUpdateInfo) -> Unit) -> Unit)? = null,
+    onCheckForUpdates: (((Result<AppUpdateInfo>) -> Unit) -> Unit)? = null,
     onAdminLogin: (username: String, code: String) -> Boolean = { _, _ -> false },
     onOpenAdminConsole: () -> Unit = {},
     onAdminLogout: () -> Unit = {},
@@ -104,7 +104,6 @@ fun SettingsScreen(
     val scrollState = rememberScrollState()
     val coroutineScope = rememberCoroutineScope()
 
-    var showUpdateDialog by remember { mutableStateOf(false) }
     var localChecking by remember { mutableStateOf(false) }
     var showAnnouncementsDialog by remember { mutableStateOf(false) }
     var versionClickCount by remember { mutableIntStateOf(0) }
@@ -554,15 +553,33 @@ fun SettingsScreen(
                         onClick = {
                             triggerHaptic()
                             if (onCheckForUpdates != null) {
-                                onCheckForUpdates {
-                                    showUpdateDialog = true
+                                onCheckForUpdates { result ->
+                                    result.onSuccess { update ->
+                                        if (!update.isUpdateAvailable) {
+                                            android.widget.Toast.makeText(
+                                                context,
+                                                "Orbitwall is up to date (v${com.example.BuildConfig.VERSION_NAME})",
+                                                android.widget.Toast.LENGTH_SHORT
+                                            ).show()
+                                        }
+                                    }.onFailure {
+                                        android.widget.Toast.makeText(
+                                            context,
+                                            "Unable to check for updates. Check internet connection.",
+                                            android.widget.Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
                                 }
                             } else {
                                 localChecking = true
                                 coroutineScope.launch {
                                     delay(650)
                                     localChecking = false
-                                    showUpdateDialog = true
+                                    android.widget.Toast.makeText(
+                                        context,
+                                        "Orbitwall is up to date (v${com.example.BuildConfig.VERSION_NAME})",
+                                        android.widget.Toast.LENGTH_SHORT
+                                    ).show()
                                 }
                             }
                         },
@@ -716,190 +733,7 @@ fun SettingsScreen(
         }
     }
 
-    // --- System Update Bottom Sheet (Orbit Bottom-Sheet-First Architecture) ---
-    if (showUpdateDialog) {
-        val hasUpdate = updateInfo?.isUpdateAvailable == true
-        OrbitModalBottomSheet(
-            onDismissRequest = { showUpdateDialog = false }
-        ) {
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 6.dp)
-            ) {
-                // Header Row
-                Row(
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(
-                            modifier = Modifier
-                                .size(10.dp)
-                                .background(NothingRed, CircleShape)
-                        )
-                        Spacer(modifier = Modifier.width(10.dp))
-                        Text(
-                            text = if (hasUpdate) "UPDATE AVAILABLE" else "SYSTEM UPDATE",
-                            fontFamily = DotMatrixFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            letterSpacing = 1.6.sp,
-                            color = Color.White
-                        )
-                    }
 
-                    // Version Badge
-                    Box(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(8.dp))
-                            .background(if (hasUpdate) Color(0xFF00E5FF).copy(alpha = 0.15f) else Color(0xFF00E676).copy(alpha = 0.15f))
-                            .border(1.dp, if (hasUpdate) Color(0xFF00E5FF).copy(alpha = 0.4f) else Color(0xFF00E676).copy(alpha = 0.4f), RoundedCornerShape(8.dp))
-                            .padding(horizontal = 8.dp, vertical = 3.dp)
-                    ) {
-                        Text(
-                            text = if (hasUpdate) (updateInfo?.latestVersion ?: "NEW") else "UP TO DATE",
-                            fontFamily = DotMatrixFont,
-                            fontSize = 10.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = if (hasUpdate) Color(0xFF00E5FF) else Color(0xFF00E676)
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Release Card (Hardware Hairline Border #26262A)
-                Surface(
-                    shape = RoundedCornerShape(18.dp),
-                    color = Color(0xFF141416),
-                    border = BorderStroke(1.dp, Color(0xFF26262A)),
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(
-                            text = if (hasUpdate) (updateInfo?.releaseTitle ?: "New Release") else "Orbitwall ${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}",
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 15.sp,
-                            color = Color.White
-                        )
-                        Spacer(modifier = Modifier.height(8.dp))
-                        Text(
-                            text = if (hasUpdate) {
-                                updateInfo?.releaseNotes ?: "Bug fixes, performance improvements, and refreshed wallpapers."
-                            } else {
-                                "You are running the latest version of Orbitwall (${updateInfo?.currentVersion ?: "v${com.example.BuildConfig.VERSION_NAME}"}). All themes, Dot-Matrix typography, and high-speed cloud edge catalogs are up to date."
-                            },
-                            fontSize = 12.sp,
-                            color = Color(0xFFB0B0B8),
-                            lineHeight = 18.sp
-                        )
-                        if (hasUpdate && !updateInfo?.fileSizeFormatted.isNullOrEmpty()) {
-                            Spacer(modifier = Modifier.height(10.dp))
-                            Text(
-                                text = "PACKAGE SIZE // ${updateInfo?.fileSizeFormatted}",
-                                fontFamily = DotMatrixFont,
-                                fontSize = 10.sp,
-                                letterSpacing = 1.2.sp,
-                                color = Color(0xFF8E8E93)
-                            )
-                        }
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(22.dp))
-
-                // Tactile Full-Capsule Action Button
-                if (hasUpdate) {
-                    Button(
-                        onClick = {
-                            triggerHaptic()
-                            showUpdateDialog = false
-                            val url = updateInfo?.downloadUrl ?: "https://github.com/fahitakrim/Orbitwall/releases"
-                            val intent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
-                            context.startActivity(intent)
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = NothingRed,
-                            contentColor = Color.White
-                        ),
-                        shape = RoundedCornerShape(percent = 50),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 4.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
-                    ) {
-                        Icon(
-                            imageVector = Icons.Default.SystemUpdate,
-                            contentDescription = null,
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "DOWNLOAD & INSTALL UPDATE",
-                            fontFamily = DotMatrixFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            letterSpacing = 1.2.sp
-                        )
-                    }
-                } else {
-                    Button(
-                        onClick = {
-                            triggerHaptic()
-                            showUpdateDialog = false
-                        },
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = Color.White,
-                            contentColor = Color.Black
-                        ),
-                        shape = RoundedCornerShape(percent = 50),
-                        elevation = ButtonDefaults.buttonElevation(defaultElevation = 2.dp),
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(52.dp)
-                    ) {
-                        Text(
-                            text = "DONE",
-                            fontFamily = DotMatrixFont,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 12.sp,
-                            letterSpacing = 1.2.sp
-                        )
-                    }
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                Box(
-                    contentAlignment = Alignment.Center,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(percent = 50))
-                        .clickable {
-                            triggerHaptic()
-                            if (hasUpdate) {
-                                showUpdateDialog = false
-                            } else {
-                                val intent = Intent(Intent.ACTION_VIEW, Uri.parse("https://github.com/fahitakrim/Orbitwall/releases"))
-                                context.startActivity(intent)
-                            }
-                        }
-                        .padding(vertical = 10.dp)
-                ) {
-                    Text(
-                        text = if (hasUpdate) "LATER" else "GITHUB RELEASES",
-                        fontFamily = DotMatrixFont,
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 11.sp,
-                        letterSpacing = 1.2.sp,
-                        color = Color(0xFF8E8E93)
-                    )
-                }
-            }
-        }
-    }
 
     // --- Announcements Bottom Sheet (AnnouncementSheet) ---
     if (showAnnouncementsDialog) {

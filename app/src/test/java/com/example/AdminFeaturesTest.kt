@@ -38,16 +38,27 @@ class AdminFeaturesTest {
             .edit()
             .clear()
             .commit()
+        // Set isolated mock admin hash for testing
+        val testPass = "test_mock_admin_key"
+        val testHash = java.security.MessageDigest.getInstance("SHA-256")
+            .digest(testPass.toByteArray(Charsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
+        WallpaperViewModel.activeAdminHash = testHash
+
+        com.example.data.AdminConfigManager.skipNetworkForTesting = true
+
         viewModel = WallpaperViewModel(application)
         ShadowLooper.idleMainLooper()
     }
 
     @After
     fun tearDown() {
+        com.example.data.AdminConfigManager.skipNetworkForTesting = false
+        WallpaperViewModel.activeAdminHash = WallpaperViewModel.DEFAULT_ADMIN_HASH
         Dispatchers.resetMain()
     }
 
-    private val TEST_SECRET_PASS = "17" + "288"
+    private val TEST_SECRET_PASS = "test_mock_admin_key"
 
     @Test
     fun `admin login with valid credentials succeeds`() {
@@ -116,10 +127,12 @@ class AdminFeaturesTest {
 
     @Test
     fun `toggle onboarding wallpaper updates onboarding list and onboardingWallpapers`() {
+        ShadowLooper.idleMainLooper()
         val testWallpaperId = "paper-minimal-capsule-stack"
         val initialOnboarding = viewModel.uiState.value.onboardingWallpaperIds.contains(testWallpaperId)
 
         viewModel.toggleOnboardingWallpaper(testWallpaperId)
+        ShadowLooper.idleMainLooper()
         val afterFirstToggle = viewModel.uiState.value.onboardingWallpaperIds.contains(testWallpaperId)
         assertEquals(!initialOnboarding, afterFirstToggle)
 
