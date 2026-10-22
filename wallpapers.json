@@ -1349,25 +1349,6 @@
         "created_at": 1729271260000
     },
     {
-        "id": "paper-2k-neon-audio-fidelity",
-        "title": "Neon Audio Fidelity",
-        "category": "AMOLED",
-        "tags": [
-            "AMOLED",
-            "Audio",
-            "Headphones",
-            "Music",
-            "Neon",
-            "Purple"
-        ],
-        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-audio-fidelity.jpg",
-        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-audio-fidelity.jpg",
-        "dominant_color_hex": "#2D030A",
-        "downloads": 0,
-        "views": 0,
-        "created_at": 1729271320000
-    },
-    {
         "id": "paper-2k-dapper-ducks",
         "title": "Distinguished Dapper Ducks",
         "category": "Nature",
@@ -1404,25 +1385,6 @@
         "downloads": 0,
         "views": 0,
         "created_at": 1729271440000
-    },
-    {
-        "id": "paper-2k-phantom-cheshire-grin",
-        "title": "Phantom Glowing Cheshire Grin",
-        "category": "AMOLED",
-        "tags": [
-            "AMOLED",
-            "Glow",
-            "Smile",
-            "Minimal",
-            "TrueBlack",
-            "Mysterious"
-        ],
-        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-phantom-cheshire-grin.jpg",
-        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-phantom-cheshire-grin.jpg",
-        "dominant_color_hex": "#0A0A0C",
-        "downloads": 0,
-        "views": 0,
-        "created_at": 1729271500000
     },
     {
         "id": "paper-2k-velvet-grey-cat",
