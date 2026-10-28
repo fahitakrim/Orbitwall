@@ -1,5 +1,41 @@
 ﻿[
     {
+        "id": "paper-2k-sukuna-kimono-glance",
+        "title": "Sukuna Kimono Glance",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Jujutsu Kaisen",
+            "Sukuna",
+            "AMOLED",
+            "Minimal"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-sukuna-kimono-glance.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-sukuna-kimono-glance.jpg",
+        "dominant_color_hex": "#020305",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793203438129
+    },
+    {
+        "id": "paper-2k-sukuna-chibi-blush",
+        "title": "Sukuna Playful Blush",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Jujutsu Kaisen",
+            "Sukuna",
+            "Chibi",
+            "Cute"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-sukuna-chibi-blush.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-sukuna-chibi-blush.jpg",
+        "dominant_color_hex": "#141414",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793203437129
+    },
+    {
         "id": "paper-2k-shinchan-spotlight-wall",
         "title": "Shin-chan Spotlight Wall",
         "category": "Anime",
