@@ -1,5 +1,203 @@
 ﻿[
     {
+        "id": "paper-2k-neon-amber-mesh-chevron",
+        "title": "Neon Amber Mesh Chevron",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Geometric",
+            "Mesh",
+            "Orange",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-neon-amber-mesh-chevron.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-neon-amber-mesh-chevron.jpg",
+        "dominant_color_hex": "#1F232F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812505793
+    },
+    {
+        "id": "paper-2k-cobalt-drip-texture",
+        "title": "Cobalt Drip Texture",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Blue",
+            "Texture",
+            "Liquid"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cobalt-drip-texture.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cobalt-drip-texture.jpg",
+        "dominant_color_hex": "#04071A",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812504793
+    },
+    {
+        "id": "paper-2k-material-amber-perforated",
+        "title": "Material Amber Perforated",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Material",
+            "Geometric",
+            "Orange",
+            "Texture"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-material-amber-perforated.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-material-amber-perforated.jpg",
+        "dominant_color_hex": "#000000",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812503793
+    },
+    {
+        "id": "paper-2k-crimson-azure-powder-blast",
+        "title": "Crimson Azure Powder Blast",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Red",
+            "Blue",
+            "Splatter"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-azure-powder-blast.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-azure-powder-blast.jpg",
+        "dominant_color_hex": "#BDBDBD",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812502793
+    },
+    {
+        "id": "paper-2k-sleepy-beret-duck",
+        "title": "Sleepy Beret Duck",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cute",
+            "Duck",
+            "Blue",
+            "Illustration"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-sleepy-beret-duck.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-sleepy-beret-duck.jpg",
+        "dominant_color_hex": "#2873C6",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812501793
+    },
+    {
+        "id": "paper-2k-fluted-monolith-tiles",
+        "title": "Fluted Monolith Tiles",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "3D",
+            "Geometric",
+            "Dark"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-fluted-monolith-tiles.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-fluted-monolith-tiles.jpg",
+        "dominant_color_hex": "#020202",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812500793
+    },
+    {
+        "id": "paper-2k-denim-embroidered-moon",
+        "title": "Denim Embroidered Moon",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Space",
+            "Moon",
+            "Stars",
+            "Texture"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-denim-embroidered-moon.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-denim-embroidered-moon.jpg",
+        "dominant_color_hex": "#060610",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812499793
+    },
+    {
+        "id": "paper-2k-shadow-colossus-gaze",
+        "title": "Shadow Colossus Gaze",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Solo Leveling",
+            "Monochrome",
+            "Dark",
+            "Shadow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-shadow-colossus-gaze.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-shadow-colossus-gaze.jpg",
+        "dominant_color_hex": "#000000",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812498793
+    },
+    {
+        "id": "paper-2k-biometric-chalk-spiral",
+        "title": "Biometric Chalk Spiral",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Monochrome",
+            "Abstract",
+            "Fingerprint"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-biometric-chalk-spiral.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-biometric-chalk-spiral.jpg",
+        "dominant_color_hex": "#000000",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812497793
+    },
+    {
+        "id": "paper-2k-frosted-pebble-balance",
+        "title": "Frosted Pebble Balance",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Bauhaus",
+            "Abstract",
+            "Glass",
+            "Red"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-frosted-pebble-balance.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-frosted-pebble-balance.jpg",
+        "dominant_color_hex": "#A8A4A5",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812496793
+    },
+    {
+        "id": "paper-2k-bauhaus-color-palette-capsules",
+        "title": "Bauhaus Color Palette Capsules",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Bauhaus",
+            "Geometric",
+            "Color"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-bauhaus-color-palette-capsules.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-bauhaus-color-palette-capsules.jpg",
+        "dominant_color_hex": "#FEFEFE",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1793812495793
+    },
+    {
         "id": "paper-2k-sukuna-kimono-glance",
         "title": "Sukuna Kimono Glance",
         "category": "Anime",
