@@ -1,5 +1,149 @@
 ﻿[
     {
+        "id": "paper-2k-moss-pebble-shadows",
+        "title": "Moss Pebble Shadows",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Abstract",
+            "Green",
+            "Organic",
+            "Modern"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-moss-pebble-shadows.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-moss-pebble-shadows.jpg",
+        "dominant_color_hex": "#94C275",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396659814
+    },
+    {
+        "id": "paper-2k-pepe-crying-gloss-red",
+        "title": "Pepe Crying Gloss Red",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "3D",
+            "Pepe",
+            "Red",
+            "Character"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-pepe-crying-gloss-red.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-pepe-crying-gloss-red.jpg",
+        "dominant_color_hex": "#891921",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396658814
+    },
+    {
+        "id": "paper-2k-rainbow-timber-crevasse",
+        "title": "Rainbow Timber Crevasse",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Texture",
+            "Wood",
+            "Rainbow",
+            "Glow"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-rainbow-timber-crevasse.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-rainbow-timber-crevasse.jpg",
+        "dominant_color_hex": "#101011",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396657814
+    },
+    {
+        "id": "paper-2k-crimson-dusk-crescent",
+        "title": "Crimson Dusk Crescent",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Red",
+            "Dark",
+            "Space"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-crimson-dusk-crescent.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-crimson-dusk-crescent.jpg",
+        "dominant_color_hex": "#9B001D",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396656814
+    },
+    {
+        "id": "paper-2k-cascading-granite-skulls",
+        "title": "Cascading Granite Skulls",
+        "category": "AMOLED",
+        "tags": [
+            "AMOLED",
+            "Minimal",
+            "Skulls",
+            "Dark",
+            "Black"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-cascading-granite-skulls.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-cascading-granite-skulls.jpg",
+        "dominant_color_hex": "#2F2F2F",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396655814
+    },
+    {
+        "id": "paper-2k-retro-handheld-meadow",
+        "title": "Retro Handheld Meadow",
+        "category": "Anime",
+        "tags": [
+            "Anime",
+            "Pixel",
+            "Retro",
+            "Gaming",
+            "Green"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-retro-handheld-meadow.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-retro-handheld-meadow.jpg",
+        "dominant_color_hex": "#1F2A24",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396654814
+    },
+    {
+        "id": "paper-2k-rainy-neon-transit",
+        "title": "Rainy Neon Transit",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "Cyberpunk",
+            "Neon",
+            "Red",
+            "Urban"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-rainy-neon-transit.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-rainy-neon-transit.jpg",
+        "dominant_color_hex": "#760E1B",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396653814
+    },
+    {
+        "id": "paper-2k-pepe-pearl-earring",
+        "title": "Pepe with Pearl Earring",
+        "category": "Minimal",
+        "tags": [
+            "Minimal",
+            "3D",
+            "Pepe",
+            "Art",
+            "Classic"
+        ],
+        "thumbnail_url": "https://cdn.jsdelivr.net/gh/fahitakrim/Orbitwall@main/cloud_catalog/thumbs/paper-2k-pepe-pearl-earring.jpg",
+        "full_res_url": "https://github.com/fahitakrim/Orbitwall/releases/download/wallpapers-v1/paper-2k-pepe-pearl-earring.jpg",
+        "dominant_color_hex": "#6A1727",
+        "downloads": 0,
+        "views": 0,
+        "created_at": 1794396652814
+    },
+    {
         "id": "paper-2k-neon-amber-mesh-chevron",
         "title": "Neon Amber Mesh Chevron",
         "category": "Minimal",
